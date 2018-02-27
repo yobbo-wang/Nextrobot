@@ -1,0 +1,54 @@
+<!--html块-->
+<div class="easyui-panel" data-options="border:false" style="width:100%;height: 100%;">
+    <div style="padding:10px 60px 20px 60px">
+        <form id="menu-edit" method="post">
+            <table cellpadding="5">
+                <tr>
+                    <td>菜单名称:</td>
+                    <td>
+                        <input class="easyui-textbox" type="text" name="text" data-options="required:true" style="height:30px;width: 300px;"></input>
+                    </td>
+                </tr>
+                <tr>
+                    <td>上级菜单:</td>
+                    <td><input class="easyui-combotree" name="parentId" style="height:30px;width:300px;"
+                               data-options="url:'<#if contextPath ??>${contextPath}</#if>/menu/findByPId',
+                               lines:true,initState:'closed',editable:false" /></td>
+                </tr>
+                <tr>
+                    <td>链接方式:</td>
+                    <td>
+                        <select class="easyui-combobox" name="type" data-options="panelHeight:50" style="height:30px;width:300px;">
+                            <option value="tab">选项卡</option>
+                            <option value="_blank">新标签</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>链接地址:</td>
+                    <td><input class="easyui-textbox" type="text" name="url" data-options="required:true" style="height:30px;width:300px;"></input></td>
+                </tr>
+                <tr>
+                    <td>序&emsp;&emsp;号:</td>
+                    <td><input class="easyui-numberbox" type="text" name="orderNmuber" style="height:30px;width:300px;"></input></td>
+                </tr>
+                <tr>
+                    <td>备&emsp;&emsp;注:</td>
+                    <td>
+                        <input class="easyui-textbox" data-options="multiline:true" style="height:60px;width:300px;" name="remark"/>
+                    </td>
+                </tr>
+            </table>
+            <div><label id="errorMsg" /></div>
+            <input type="hidden" name="id" />
+        </form>
+    </div>
+</div>
+<script type="application/javascript">
+    (function () {
+        var data = '<#if sysMenu ??>${sysMenu}</#if>';
+        if(data != undefined && data != ""){
+            $('#menu-edit').form('load', JSON.parse(data));
+        }
+    })();
+</script>

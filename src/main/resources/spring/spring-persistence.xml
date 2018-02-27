@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- dataSource -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${db.driverClassName}"/>
+        <property name="url" value="${db.url}" />
+        <property name="username" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="${druid.initialSize}" />
+        <property name="minIdle" value="${druid.minIdle}" />
+        <property name="maxActive" value="${druid.maxActive}" />
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="${druid.maxWait}" />
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}" />
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
+        <property name="validationQuery" value="${druid.validationQuery}" />
+        <property name="testWhileIdle" value="${druid.testWhileIdle}" />
+        <property name="testOnBorrow" value="${druid.testOnBorrow}" />
+        <property name="testOnReturn" value="${druid.testOnReturn}" />
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小  如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。-->
+        <property name="poolPreparedStatements" value="${druid.poolPreparedStatements}" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${druid.maxPoolPreparedStatementPerConnectionSize}" />
+        <!-- Druid内置提供一个StatFilter，用于统计监控信息 -->
+        <property name="proxyFilters">
+            <list>
+                <ref bean="stat-filter" />
+                <ref bean="log-filter" />
+            </list>
+        </property>
+    </bean>
+    <!-- druid slow sql query -->
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <property name="mergeSql" value="${druid.mergeSql}" />
+        <property name="slowSqlMillis" value="${druid.slowSqlMillis}" />
+        <property name="logSlowSql" value="${druid.logSlowSql}" />
+    </bean>
+
+    <!-- druid log -->
+    <bean id="log-filter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter"/>
+
+    <bean id="ehcacheEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
+                <property name="showSql" value="${jpa.showSql}" />
+                <property name="generateDdl" value="${jpa.generateDdl}" />
+                <property name="database" value="${jpa.database}" />
+                <property name="databasePlatform" value="${jpa.databasePlatform}" />
+            </bean>
+        </property>
+        <property name="jpaDialect"><bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" /></property>
+        <property name="packagesToScan" value="wang.yobbo.**.entity"/>
+       <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.archive.autodetection" value="class"/>
+                <entry key="hibernate.query.startup_check" value="false"/>
+                <entry key="hibernate.query.substitutions" value="${hibernate.query.substitutions}"/>
+                <entry key="hibernate.default_batch_fetch_size" value="${hibernate.default_batch_fetch_size}"/>
+                <entry key="hibernate.max_fetch_depth" value="${hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.generate_statistics" value="${hibernate.generate_statistics}"/>
+                <entry key="hibernate.bytecode.use_reflection_optimizer" value="${hibernate.bytecode.use_reflection_optimizer}"/>
+                 <entry key="hibernate.cache.use_second_level_cache" value="${hibernate.cache.use_second_level_cache}"/>
+                <entry key="hibernate.cache.use_query_cache" value="${hibernate.cache.use_query_cache}"/>
+                <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory"/>
+                <entry key="net.sf.ehcache.configurationResourceName" value="spring/ehcache/ehcache-hibernate.xml"/>
+                <entry key="hibernate.cache.use_structured_entries" value="${hibernate.cache.use_structured_entries}"/>
+                <entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
+            </map>
+        </property>
+    </bean>
+
+    <!-- spring data jpa transaction -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="ehcacheEntityManagerFactory" />
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- util get、count、find、list prefix，all open transaction  -->
+            <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="count*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="find*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="list*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config expose-proxy="true" proxy-target-class="true">
+        <aop:pointcut id="txPointcut" expression="execution(* wang.yobbo.**.service..*+.*(..))" />
+        <aop:advisor id="txAdvisor" advice-ref="txAdvice" pointcut-ref="txPointcut" />
+    </aop:config>
+
+    <!-- open can add annotation -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <!-- 使用EntityManagerFactory封装公共接口 -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" >
+        <property name="staticMethod" value="wang.yobbo.common.appengine.BaseDaoManager.setEntityManagerFactory" />
+        <property name="arguments" ref="ehcacheEntityManagerFactory" />
+    </bean>
+
+    <!--<jpa:repositories base-package="wang.yobbo.**.dao" entity-manager-factory-ref="ehcacheEntityManagerFactory"
+                      transaction-manager-ref="transactionManager"/>-->
+
+</beans>

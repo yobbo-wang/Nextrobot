@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" name="bcm-ehcache">
+
+    <diskStore path="java.io.tmpdir" />
+    <!--
+        maxElementsInMemory为缓存对象的最大数目, eternal设置是否永远不过期
+        timeToIdleSeconds对象处于空闲状态的最多秒数 timeToLiveSeconds对象处于缓存状态的最多秒数
+    -->
+    <defaultCache maxElementsInMemory="10000"
+                  eternal="false"
+                  timeToIdleSeconds="300"
+                  timeToLiveSeconds="600"
+                  overflowToDisk="true" />
+    <cache name="org.hibernate.cache.StandardQueryCache"
+           maxElementsInMemory="10000"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="4200"
+           overflowToDisk="true" />
+    <cache name="org.hibernate.cache.UpdateTimestampsCache"
+           maxElementsInMemory="5000"
+           eternal="true"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           overflowToDisk="false" />
+</ehcache>

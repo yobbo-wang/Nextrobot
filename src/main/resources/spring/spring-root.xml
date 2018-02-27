@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 自定义PropertyConfigurer类，用来获取配置文件 -->
+    <bean id="propertyConfigurer" class="wang.yobbo.common.spring.PropertyConfigurer">
+        <property name="locations">
+            <array>
+                <value>classpath:props/**.properties</value>
+            </array>
+        </property>
+    </bean>
+    <import resource="classpath*:spring/spring-persistence.xml"/>
+    <import resource="classpath*:spring/spring-core.xml" />
+    <import resource="classpath*:spring/spring-activiti.xml"/>
+</beans>

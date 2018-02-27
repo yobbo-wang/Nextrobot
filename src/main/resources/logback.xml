@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration debug="true">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="org.springframework" level="INFO"  additivity="true">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </logger>
+    <logger name="org.hibernate" level="INFO"  additivity="true">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </logger>
+    <!--<logger name="wang.yobbo" level="DEBUG"  additivity="true">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </logger>
+    <logger name="com.alibaba" level="DEBUG"  additivity="true">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </logger>
+    <logger name="com.activiti" level="DEBUG"  additivity="true">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </logger>-->
+</configuration>

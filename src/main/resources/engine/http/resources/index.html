@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="./easyui/css/default/easyui.css" rel="stylesheet" type="text/css">
+<link href="./easyui/css/icon.css" rel="stylesheet" type="text/css"/>
+<script type="application/javascript">var path = '<#if contextPath ??>${contextPath}</#if>'</script>
+<title>应用引擎</title>
+</head>
+<body class="easyui-layout">   
+    <div data-options="region:'west',title:'菜单配置',split:true" style="width:600px;border-right: 1px solid #95B8E7;">
+    	<div style="background-color: #F4F4F4;border-width: 0 0 1px 0;border-style: solid;border-color: #dddddd;">
+			<span class="datagrid-btn-separator" style="vertical-align: middle; display:inline-block;float:none"></span>
+			<a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'" onclick="appEngine.editMenu('add')">新增菜单</a>
+			<span class="datagrid-btn-separator" style="vertical-align: middle; display:inline-block;float:none"></span>
+			<a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit'" onclick="appEngine.editMenu('mod')">修改菜单</a>
+			<span class="datagrid-btn-separator" style="vertical-align: middle; display:inline-block;float:none"></span>
+			<a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-del'" onclick="appEngine.editMenu('del')">删除菜单</a>
+			<span class="datagrid-btn-separator" style="vertical-align: middle; display:inline-block;float:none"></span>
+			<a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-large-clipart'" onclick="appEngine.editTables('access-conf')">权限配置</a>
+			<span class="datagrid-btn-separator" style="vertical-align: middle; display:inline-block;float:none"></span>
+			<a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'" onclick="appEngine.addEntity()">新增实体</a>
+		</div>
+		<table id="menu-list" class="easyui-treegrid" style="width:100%;height:94%;"
+			   data-options="url:'<#if contextPath ??>${contextPath}</#if>/menu/findByPId',
+			   idField:'id',treeField:'text',border:false,rownumbers:true,
+			   animate:true,fit:true">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'text',width:'27%'">名称</th>
+					<th data-options="field:'type',width:'10%',formatter:typeFormatter">链接方式</th>
+					<th data-options="field:'url',width:'26%'">路径</th>
+					<th data-options="field:'remark',width:'25%'">备注</th>
+					<th data-options="field:'table',width:'10%',align:'center',formatter:tableFormatter">实体信息</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+    <div data-options="region:'center',title:'实体信息'">
+    	<form id="entityInfo" style="height:14%">
+			<table>
+				<tbody>
+					<tr style="color:#444;">
+						<td>&nbsp业务分类:</td>
+						<td>
+							<input class="easyui-textbox" name="businessClassification" data-options="required:true"/>
+						</td>
+						<td>&nbsp;实体名:</td>
+						<td>
+							<input class="easyui-textbox" name="entityName" data-options="readonly:true"/>
+							<input type="hidden" id="sysMenuTableId" name="id"/>
+						</td>
+						<td>&nbsp表名:</td>
+						<td>
+							<input class="easyui-textbox" name="tableName" data-options="readonly:true"/>
+						</td>
+					</tr>
+					<tr>
+						<td rowspan="4">&nbsp;注&emsp;&emsp;释:</td>
+						<td><input class="easyui-textbox" name="remark" data-options="multiline:true"/></td>
+						<td colspan="2">
+							<a class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="appEngine.createEntityCode()">生成代码</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		
+		<div style="height:86%;padding: 0 5px;">
+			<table style="width: 100%;height:100%;border-left: 0;" id="datagrid-entity" class="easyui-datagrid" data-options="onLoadSuccess:function(data){appEngine.loadSuccessData(data)},pagination:true,fitColumns:true,
+			fit:true,striped:true,singleSelect:true,toolbar:'#entityTool',onClickCell:appEngine.onClickCell">
+				<thead>   
+					<tr>
+						<th data-options="field:'COLUMN_NAME',width:40,align:'center',editor:'text'">属性名称</th>   
+						<th data-options="field:'TYPE_NAME',width:65,align:'center',editor:{type:'combobox',options:{data:appEngine.dataType,panelHeight:160}}">属性类型</th>
+						<th data-options="field:'PRIMARYKEYS',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">主键标记</th>   
+						<th data-options="field:'IS_NULLABLE',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">允许为空</th>   
+						<th data-options="field:'IS_AUTOINCREMENT',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">自动递增</th>   
+						<th data-options="field:'COLUMN_SIZE',width:50,align:'center',editor:'numberbox'">属性长度</th>   
+						<th data-options="field:'COLUMN_DEF',width:50,align:'center',editor:'text'">默认值</th>   
+						<th data-options="field:'informName',width:50,align:'center'">是否字典转换</th>   
+						<th data-options="field:'ORDINAL_POSITION',width:30,align:'center'">顺序</th>   
+						<th data-options="field:'REMARKS',width:80,align:'center',editor:'text'">备注</th>   
+					</tr>   
+				</thead>   
+			</table>
+		</div>	
+		
+		<div id="entityTool">
+			<span><font>实体属性列表：</font></span>
+			<a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="appEngine.editEntity('add')">添加实体属性</a>
+			<span class="datagrid-btn-separator" style="vertical-align: middle; display:inline-block;float:none"></span>
+			<a class="easyui-linkbutton" data-options="iconCls:'icon-del',plain:true" onclick="appEngine.editEntity('del')">删除实体属性</a>
+			<span class="datagrid-btn-separator" style="vertical-align: middle; display:inline-block;float:none"></span>
+			<a class="easyui-linkbutton" data-options="iconCls:'icon-tjmb',plain:true" onclick="appEngine.editEntity('maintain')">维护主从表关系</a>
+			<span class="datagrid-btn-separator" style="vertical-align: middle; display:inline-block;float:none"></span>
+			<span><font color="#0000FF">规则:属性列表中选择了自动递增，那该属性默认值必须为空。</font></span>
+		</div>
+							
+    </div>
+</body>  
+<script type="text/javascript" src="./easyui/jquery.min.js"></script>
+<script type="text/javascript" src="./easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="./easyui/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="./engineJs/index.js"></script>
+<script type="text/javascript">
+$.extend($.fn.datagrid.methods, {
+	editCell: function(jq,param){
+		return jq.each(function(){
+			var opts = $(this).datagrid('options');
+			var fields = $(this).datagrid('getColumnFields',true).concat($(this).datagrid('getColumnFields'));
+			for(var i=0; i<fields.length; i++){
+				var col = $(this).datagrid('getColumnOption', fields[i]);
+				col.editor1 = col.editor;
+				if (fields[i] != param.field){
+					col.editor = null;
+				}
+			}
+			$(this).datagrid('beginEdit', param.index);
+			for(var i=0; i<fields.length; i++){
+				var col = $(this).datagrid('getColumnOption', fields[i]);
+				col.editor = col.editor1;
+			}
+		});
+	}
+});
+function typeFormatter(value){
+    var type = "";
+	switch (value){
+		case 'tab': type = '选项卡'; break;
+        case '_blank': type = '新标签'; break;
+		default:  type = ''; break;
+	}
+	return type;
+}
+appEngine.endIndex = undefined;
+
+function tableFormatter(rowIndex, rowData) {
+    var data = {index: rowIndex, row: rowData};
+    data = JSON.stringify(data);
+    data = data.replace(new RegExp('"',"gm"),"'");
+    return '<a href="javascript:;" style="text-decoration: none;" onclick="appEngine.displayTable(this)", data-detail="'+ data +'">查看</a>';
+}
+</script>
+</html>

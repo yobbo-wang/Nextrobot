@@ -1,0 +1,9 @@
+---
+- name: Simple
+  hosts: webservers
+  gather_facts: True
+  tasks:
+  - name: Web
+    command: /bin/sh -c "echo 'web' > ~/sample.txt"
+  - name: Local Web
+    local_action: command /bin/sh -c "echo 'local web' > ~/sample.txt"
