@@ -57,7 +57,7 @@
                         <dd><a href="javascript:;">应用权限配置</a><hr></dd>
                         <dd>
                             <a href="javascript:;" class="kit-target"
-                               data-options="url:'<%= path%>/engine/index.html',icon:'fa-share-alt',title:'应用引擎',id:'engine-setting'">应用引擎</a>
+                               data-options="url:'<%= path%>/engine/appengine/index.html',icon:'fa-share-alt',title:'应用引擎',id:'engine-setting'">应用引擎</a>
                         </dd>
                     </dl>
                 </li>

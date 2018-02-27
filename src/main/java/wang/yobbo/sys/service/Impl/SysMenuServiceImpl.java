@@ -70,13 +70,12 @@ public class SysMenuServiceImpl implements SysMenuService {
             String basePathPrefix = basePath + "/src/main/java/" + packageName;
 
             for(String mode : entityModeBean){
-                String path = basePathPrefix + "/" + mode;
                 if("entity".equals(mode)){
-                    this.createEntity(path,nextRobotSysMenuTable,entityRow );
+                    this.createEntity(basePathPrefix,nextRobotSysMenuTable,entityRow);
                 }else if("service".equals(mode)){
-                    this.createService(path,nextRobotSysMenuTable,entityRow);
+                    this.createService(basePathPrefix,nextRobotSysMenuTable,entityRow);
                 }else if("dao".equals(mode)){
-                    this.createDao(path,nextRobotSysMenuTable,entityRow);
+                    this.createDao(basePathPrefix,nextRobotSysMenuTable,entityRow);
                 }
             }
         } catch (IOException e) {
@@ -86,15 +85,29 @@ public class SysMenuServiceImpl implements SysMenuService {
         return true;
     }
 
+    //生成entity
+    public void createEntity(String path, NextRobotSysMenuTable nextRobotSysMenuTable, String entityRow) throws Exception{
+        String templateEntityPath = "monitor/codeEngine/ame_entity.ftl";
+        String entityPath = path + "/" + nextRobotSysMenuTable.getBusinessClassification() + "/entity/" + nextRobotSysMenuTable.getEntityName() + ".java";
+        System.out.println(entityPath);
+    }
+
     //生成dao
     private void createDao(String path, NextRobotSysMenuTable nextRobotSysMenuTable, String entityRow) throws Exception{
+        String templateDaoPath = "monitor/codeEngine/ame_dao.ftl";
+        String templateDaoImplPath = "monitor/codeEngine/ame_daoImpl.ftl";
+        String daoPath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/dao/" + nextRobotSysMenuTable.getEntityName() + "Dao.java";
+        String daoImplPath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/dao/Impl/" + nextRobotSysMenuTable.getEntityName() + "DaoImpl.java";
+        System.out.println(daoImplPath);
     }
 
     //生成service
     private void createService(String path, NextRobotSysMenuTable nextRobotSysMenuTable, String entityRow) throws Exception{
+        String templateServicePath = "monitor/codeEngine/ame_service.ftl";
+        String templateServiceImplPath = "monitor/codeEngine/ame_serviceImpl.ftl";
+        String servicePath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/service/" + nextRobotSysMenuTable.getEntityName() + "Service.java";
+        String serviceImplPath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/service/Impl/" + nextRobotSysMenuTable.getEntityName() + "ServiceImpl.java";
+        System.out.println(serviceImplPath);
     }
 
-    //生成entity
-    public void createEntity(String path, NextRobotSysMenuTable nextRobotSysMenuTable, String entityRow) throws Exception{
-    }
 }

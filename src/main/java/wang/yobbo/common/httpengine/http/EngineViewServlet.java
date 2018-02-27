@@ -37,7 +37,7 @@ public class EngineViewServlet extends HttpServlet {
     private String table_prefix_name                      = null;
     private static String entity_prefix_name                = null;
     private String jar_version                             = null;
-    private static String package_name					         = null;
+    private static String package_name					     = null;
     private Configuration configuration                    = null;
 
     @Override

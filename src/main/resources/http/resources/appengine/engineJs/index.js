@@ -166,7 +166,7 @@
                 height: 300,
                 modal: true,
                 maximizable: false,
-                title: (id != undefined) ? '新增实体' : '修改实体',
+                title: (id == undefined) ? '新增实体' : '修改实体',
                 closed: true,
                 id: "addEntity",
                 url: path + '/engine/appengine/menu/entity.html?menuId=' + menuId + '&id='+id,

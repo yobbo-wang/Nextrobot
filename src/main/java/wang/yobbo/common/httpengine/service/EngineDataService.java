@@ -25,11 +25,11 @@ public class EngineDataService extends EngineDataServiceHelp{
      */
     public Object processTemplate(String url, Map<String, String> parameters){
         Map<String,Object> basicInfo = getBasicInfo(parameters);
-        if (url.startsWith("/index.html")) { //首页信息
+        if (url.startsWith("/appengine/index.html")) { //首页信息
             return  engineDataManagerFacade.getIndexInfo(basicInfo);
-        }else if(url.startsWith("/menu/index.html")){
+        }else if(url.startsWith("/appengine/menu/index.html")){
             return engineDataManagerFacade.getMenuInfo(basicInfo);
-        }else if(url.startsWith("/menu/entity.html")){
+        }else if(url.startsWith("/appengine/menu/entity.html")){
             return engineDataManagerFacade.getMenuTableInfo(basicInfo);
         }
         return null;
