@@ -169,7 +169,7 @@
                 title: (id != undefined) ? '新增实体' : '修改实体',
                 closed: true,
                 id: "addEntity",
-                url: path + '/engine/menu/entity.html?menuId=' + menuId + '&id='+id,
+                url: path + '/engine/appengine/menu/entity.html?menuId=' + menuId + '&id='+id,
                 save:function(){
                     $('#add-entity').form('submit', {
                         url : path + "/menu/addEntity",
@@ -306,7 +306,7 @@
             title: type == 'add' ? "新增菜单" : "修改菜单",
             closed: true,
             id: "editMenu",
-            url: path + '/engine/menu/index.html?id=' + id,
+            url: path + '/engine/appengine/menu/index.html?id=' + id,
             save:function(){
                 $('#menu-edit').form('submit', {
                     url : path + "/menu/save",

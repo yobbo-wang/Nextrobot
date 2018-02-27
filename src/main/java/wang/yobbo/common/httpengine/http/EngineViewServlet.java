@@ -30,10 +30,10 @@ public class EngineViewServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(EngineViewServlet.class);
 
-    private final static String RESOURCE_PATH            = "engine/http/resources";
+    private final static String RESOURCE_PATH            = "http/resources";
     private static String jar_path                         = null;
     private String webAppPath				                 = null;
-    private static String base_path						         = null;
+    private static String base_path						 = null;
     private String table_prefix_name                      = null;
     private static String entity_prefix_name                = null;
     private String jar_version                             = null;
