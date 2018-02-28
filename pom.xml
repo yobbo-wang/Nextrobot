@@ -9,14 +9,10 @@
   <url>http://maven.apache.org</url>
 
   <repositories>
-    <!-- 推荐使用oschina仓库 -->
+    <!-- 推荐使用aliyun仓库 -->
     <repository>
-      <id>nexus-osc</id>
-      <url>http://maven.oschina.net/content/groups/public/</url>
-    </repository>
-    <repository>
-      <id>nexus-osc-thirdparty</id>
-      <url>http://maven.oschina.net/content/repositories/thirdparty/</url>
+      <id>nexus-aliyun</id>
+      <url>http://maven.aliyun.com/nexus/content/groups/public</url>
     </repository>
   </repositories>
   <!-- libs version-->
@@ -40,6 +36,7 @@
     <dwr.version>3.0.2-RELEASE</dwr.version>
     <google-collections.version>1.0-rc2</google-collections.version>
     <oracle.version>12.1.0</oracle.version>
+    <sqlserver.version>4.0</sqlserver.version>
     <freemarker.version>2.3.23</freemarker.version>
   </properties>
 
@@ -127,6 +124,12 @@
       <groupId>com.oracle</groupId>
       <artifactId>ojdbc7</artifactId>
       <version>${oracle.version}</version>
+    </dependency>
+    <!-- sqlserver lib -->
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>sqljdbc4</artifactId>
+      <version>${sqlserver.version}</version>
     </dependency>
     <!-- database content libs-->
     <dependency>
@@ -450,6 +453,26 @@
         <db.validationQuery>select 1 from dual</db.validationQuery>
         <db.generateDdl>true</db.generateDdl>
         <db.dialect>org.hibernate.dialect.Oracle10gDialect</db.dialect>
+        <log.moduleName>FrontMusik</log.moduleName>
+        <log.base>FrontMusikLogs</log.base>
+        <log.other.level>DEBUG</log.other.level>
+        <log.root.level>DEBUG</log.root.level>
+        <log.max.size>10kb</log.max.size>
+        <log.stdout.ref><![CDATA[<appender-ref ref="stdout" />]]></log.stdout.ref>
+        <cacheManagerTpye>ehcache</cacheManagerTpye>
+      </properties>
+    </profile>
+    <profile>
+      <id>sqlserver_company</id>
+      <properties>
+        <db.driverClassName>com.microsoft.sqlserver.jdbc.SQLServerDriver</db.driverClassName>
+        <db.url>jdbc:sqlserver://localhost:1433;DatabaseName=nextrobot</db.url>
+        <db.username>sa</db.username>
+        <db.password>YJ04051711</db.password>
+        <db.Type>SQL_SERVER</db.Type>
+        <db.validationQuery>select 1</db.validationQuery>
+        <db.generateDdl>true</db.generateDdl>
+        <db.dialect>org.hibernate.dialect.SQLServerDialect</db.dialect>
         <log.moduleName>FrontMusik</log.moduleName>
         <log.base>FrontMusikLogs</log.base>
         <log.other.level>DEBUG</log.other.level>

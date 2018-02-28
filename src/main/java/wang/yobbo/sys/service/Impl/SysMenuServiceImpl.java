@@ -2,10 +2,14 @@ package wang.yobbo.sys.service.Impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.Version;
 import org.apache.shiro.codec.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
+import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.sys.dao.SysMenuDao;
 import wang.yobbo.sys.dao.SysMenuTableDao;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
@@ -15,17 +19,15 @@ import wang.yobbo.sys.service.SysMenuService;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class SysMenuServiceImpl implements SysMenuService {
-    @Autowired
-    private SysMenuDao sysMenuDao;
-
-    @Autowired
-    private SysMenuTableDao sysMenuTableDao;
+    @Autowired private SysMenuDao sysMenuDao;
+    @Autowired private SysMenuTableDao sysMenuTableDao;
 
     //使用懒加载
     public List<NextRobotSysMenu> findByPId(String pid) {
@@ -69,15 +71,27 @@ public class SysMenuServiceImpl implements SysMenuService {
             packageName = packageName.replaceAll("\\.", "/");
             String basePathPrefix = basePath + "/src/main/java/" + packageName;
 
+            List<Map<String, String>> files = new ArrayList<Map<String, String>>();
             for(String mode : entityModeBean){
                 if("entity".equals(mode)){
-                    this.createEntity(basePathPrefix,nextRobotSysMenuTable,entityRow);
+                    Map entity = this.createEntity(basePathPrefix, nextRobotSysMenuTable, entityRow);
+                    files.add(entity);
                 }else if("service".equals(mode)){
-                    this.createService(basePathPrefix,nextRobotSysMenuTable,entityRow);
+                    List<Map<String, String>> service = this.createService(basePathPrefix, nextRobotSysMenuTable);
+                    files.addAll(service);
                 }else if("dao".equals(mode)){
-                    this.createDao(basePathPrefix,nextRobotSysMenuTable,entityRow);
+                    List<Map<String, String>> dao = this.createDao(basePathPrefix, nextRobotSysMenuTable);
+                    files.addAll(dao);
+                }else{
+                    //直接是模板路径情况....
                 }
             }
+
+            //遍历模板文件，写入到指定文件中
+            for(Map<String, String> file : files){
+                System.out.println(file);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -86,28 +100,99 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     //生成entity
-    public void createEntity(String path, NextRobotSysMenuTable nextRobotSysMenuTable, String entityRow) throws Exception{
-        String templateEntityPath = "monitor/codeEngine/ame_entity.ftl";
+    public Map createEntity(String path, NextRobotSysMenuTable nextRobotSysMenuTable, String entityRow) throws Exception{
+        Map<String,Object> dataMap = new HashMap<String, Object>();
+        dataMap.put("nowDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        Map<String,Object> engine = new HashMap<String, Object>();
+        engine.put("entityName", nextRobotSysMenuTable.getEntityName());
+        engine.put("businessClassification", nextRobotSysMenuTable.getBusinessClassification());
+        engine.put("tableName", nextRobotSysMenuTable.getTableName());
+        String templateEntityPath = "ame_entity.ftl";
         String entityPath = path + "/" + nextRobotSysMenuTable.getBusinessClassification() + "/entity/" + nextRobotSysMenuTable.getEntityName() + ".java";
-        System.out.println(entityPath);
+        ObjectMapper mapper = new ObjectMapper();
+        List<Map> entitys = mapper.readValue(entityRow, new TypeReference<List<Map>>(){});
+        dataMap.put("engine", engine);
+        dataMap.put("fieldList", entitys);
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
+        configuration.setDefaultEncoding( "UTF-8" );
+        configuration.setClassForTemplateLoading(this.getClass(), "/monitor/codeEngine");
+        Template template = configuration.getTemplate(templateEntityPath);
+        StringWriter stringWriter = new StringWriter();// 本应用无需生成文件，直接输出即可
+        template.process(dataMap, stringWriter);
+        Map<String,Object> fileInfo = new HashMap<String, Object>();
+        fileInfo.put("filePath",entityPath);
+        fileInfo.put("fileContent", stringWriter.toString());
+        return fileInfo;
     }
 
     //生成dao
-    private void createDao(String path, NextRobotSysMenuTable nextRobotSysMenuTable, String entityRow) throws Exception{
-        String templateDaoPath = "monitor/codeEngine/ame_dao.ftl";
-        String templateDaoImplPath = "monitor/codeEngine/ame_daoImpl.ftl";
+    private List<Map<String, String>> createDao(String path, NextRobotSysMenuTable nextRobotSysMenuTable) throws Exception{
+        List<Map<String, String>> filesInfo = new ArrayList<Map<String, String>>();
+        Map<String,Object> dataMap = new HashMap<String, Object>();
+        dataMap.put("entityName", nextRobotSysMenuTable.getEntityName());
+        dataMap.put("businessClassification", nextRobotSysMenuTable.getBusinessClassification());
+        String templateDaoPath = "ame_dao.ftl";
+        String templateDaoImplPath = "ame_daoImpl.ftl";
         String daoPath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/dao/" + nextRobotSysMenuTable.getEntityName() + "Dao.java";
         String daoImplPath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/dao/Impl/" + nextRobotSysMenuTable.getEntityName() + "DaoImpl.java";
-        System.out.println(daoImplPath);
+
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
+        configuration.setDefaultEncoding( "UTF-8" );
+        configuration.setClassForTemplateLoading(this.getClass(), "/monitor/codeEngine");
+        Template templateDao = configuration.getTemplate(templateDaoPath);
+        StringWriter stringWriterDao = new StringWriter();// 本应用无需生成文件，直接输出即可
+        templateDao.process(dataMap, stringWriterDao);
+
+        Template templateDaoImpl = configuration.getTemplate(templateDaoImplPath);
+        StringWriter stringWriterDaoImpl = new StringWriter();// 本应用无需生成文件，直接输出即可
+        templateDaoImpl.process(dataMap, stringWriterDaoImpl);
+
+        HashMap<String, String> file = new HashMap<String, String>();
+        file.put("filePath", daoPath);
+        file.put("fileContent", stringWriterDao.toString());
+        filesInfo.add(file);
+
+        HashMap<String, String> fileImpl = new HashMap<String, String>();
+        file.put("filePath", daoImplPath);
+        file.put("fileContent", stringWriterDaoImpl.toString());
+        filesInfo.add(fileImpl);
+
+        return filesInfo;
     }
 
     //生成service
-    private void createService(String path, NextRobotSysMenuTable nextRobotSysMenuTable, String entityRow) throws Exception{
-        String templateServicePath = "monitor/codeEngine/ame_service.ftl";
-        String templateServiceImplPath = "monitor/codeEngine/ame_serviceImpl.ftl";
+    private List<Map<String, String>> createService(String path, NextRobotSysMenuTable nextRobotSysMenuTable) throws Exception{
+        List<Map<String, String>> filesInfo = new ArrayList<Map<String, String>>();
+        Map<String,Object> dataMap = new HashMap<String, Object>();
+        dataMap.put("entityName", nextRobotSysMenuTable.getEntityName());
+        dataMap.put("businessClassification", nextRobotSysMenuTable.getBusinessClassification());
+        String templateServicePath = "ame_service.ftl";
+        String templateServiceImplPath = "ame_serviceImpl.ftl";
         String servicePath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/service/" + nextRobotSysMenuTable.getEntityName() + "Service.java";
         String serviceImplPath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/service/Impl/" + nextRobotSysMenuTable.getEntityName() + "ServiceImpl.java";
-        System.out.println(serviceImplPath);
+
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
+        configuration.setDefaultEncoding( "UTF-8" );
+        configuration.setClassForTemplateLoading(this.getClass(), "/monitor/codeEngine");
+        Template templateService = configuration.getTemplate(templateServicePath);
+        StringWriter stringWriterService = new StringWriter();// 本应用无需生成文件，直接输出即可
+        templateService.process(dataMap, stringWriterService);
+
+        Template templateServiceImpl = configuration.getTemplate(templateServiceImplPath);
+        StringWriter stringWriterServiceImpl = new StringWriter();// 本应用无需生成文件，直接输出即可
+        templateServiceImpl.process(dataMap, stringWriterServiceImpl);
+
+        HashMap<String, String> file = new HashMap<String, String>();
+        file.put("filePath", servicePath);
+        file.put("fileContent", stringWriterService.toString());
+        filesInfo.add(file);
+
+        HashMap<String, String> fileImpl = new HashMap<String, String>();
+        file.put("filePath", serviceImplPath);
+        file.put("fileContent", stringWriterServiceImpl.toString());
+        filesInfo.add(fileImpl);
+
+        return filesInfo;
     }
 
 }

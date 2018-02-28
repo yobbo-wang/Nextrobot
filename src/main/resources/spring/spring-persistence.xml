@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
@@ -25,6 +25,7 @@
         <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
         <property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
         <property name="validationQuery" value="${druid.validationQuery}" />
+        <property name="validationQueryTimeout" value="${druid.validationQueryTimeout}" />
         <property name="testWhileIdle" value="${druid.testWhileIdle}" />
         <property name="testOnBorrow" value="${druid.testOnBorrow}" />
         <property name="testOnReturn" value="${druid.testOnReturn}" />

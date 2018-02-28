@@ -69,7 +69,9 @@ public class EngineDataManagerFacade {
             if(StringUtils.isNotEmpty(id)){
                 SysMenuService sysMenuService = SpringContextUtil.getBean(SysMenuService.class); //获取SysMenuService bean
                 NextRobotSysMenuTable sysMenuTable = sysMenuService.findSysMenuTableById(id);
-                sysMenuTable.setEntityName(sysMenuTable.getEntityName().replace(EngineViewServlet.getEntity_prefix_name(), ""));
+                if(sysMenuTable != null){
+                    sysMenuTable.setEntityName(sysMenuTable.getEntityName().replace(EngineViewServlet.getEntity_prefix_name(), ""));
+                }
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     String json = mapper.writeValueAsString(sysMenuTable);

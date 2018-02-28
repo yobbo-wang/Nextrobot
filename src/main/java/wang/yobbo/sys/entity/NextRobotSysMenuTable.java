@@ -28,7 +28,7 @@ public class NextRobotSysMenuTable extends BaseEntity<String> {
     @Column(name = "MENU_ID", length = 32)
     private String menuId;
 
-    @Column(name = "Business_Classification", length = 30)
+    @Column(name = "BUSINESS_CLASSIFICATION", length = 30)
     private String businessClassification;
 
     /*@ManyToOne(fetch = FetchType.LAZY)
