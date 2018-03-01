@@ -2,25 +2,37 @@ package wang.yobbo.sys.service.Impl;
 
 import net.sf.ehcache.config.Searchable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import wang.yobbo.sys.dao.SysUsersDao;
 import wang.yobbo.sys.entity.NextRobotSysUsers;
 import wang.yobbo.sys.service.SysUserService;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class SysUserServiceImpl implements SysUserService {
     @Autowired
     private SysUsersDao usersDao;
 
-    public Map findBySqlOne(String sql, Object... params) {
+    public Page<NextRobotSysUsers> getPage(wang.yobbo.common.entity.Searchable searchable) {
+        return null;
+    }
+
+    public NextRobotSysUsers findBySqlOne(String sql, Object... params) {
         return this.usersDao.findBySqlOne(sql, params);
     }
 
-    public int findBySqlCount(String sql, Object... params) {
+    public List<NextRobotSysUsers> findAllBySql(String sql, Object... params) {
+        return this.usersDao.findAllBySql(sql, params);
+    }
+
+    public Long findBySqlCount(String sql, Object... params) {
         return this.usersDao.findBySqlCount(sql, params);
+    }
+
+    public long getCount(wang.yobbo.common.entity.Searchable searchable) {
+        return 0;
     }
 
     public long getCount(Searchable searchable) {

@@ -1,20 +1,19 @@
 package wang.yobbo.common.appengine.dao.Impl;
 
-import net.sf.ehcache.config.Searchable;
-import org.hibernate.transform.Transformers;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 import wang.yobbo.common.appengine.BaseDaoManager;
 import wang.yobbo.common.appengine.dao.BaseDao;
 import wang.yobbo.common.appengine.entity.AbstractEntity;
+import wang.yobbo.common.entity.Searchable;
+import wang.yobbo.common.exception.SearchException;
 
 import javax.persistence.Query;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by xiaoyang on 2017/12/28.
@@ -22,9 +21,10 @@ import java.util.Map;
  * 如果父类没有指定是哪个实体对象，那DaoImpl里只能查询自定义sql。不能操作实体对象
  */
 public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> implements BaseDao<E, ID>{
+
     private BaseDaoManager baseDaoManager;
 
-    public BaseDaoManager getBaseDaoManager(){
+    private BaseDaoManager getBaseDaoManager(){
         if(null == this.baseDaoManager) {
             this.baseDaoManager = new BaseDaoManager(this.getClassForStatic());
         }
@@ -47,23 +47,28 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
     }
 
 
-    public Long count(Searchable v0) {
-        return this.count(v0);
+    public Long count(Searchable searchable) {
+        return this.count(searchable);
     }
 
     public long count() {
         return 0;
     }
 
-    public Page<E> find(Searchable v0) {
+    /**
+     * 根据searchable查询结果集
+     * @param searchable
+     * @return
+     */
+    public Page<E> find(Searchable searchable) {
+        return this.getBaseDaoManager().findAll(searchable);
+    }
+
+    public List<E> findPageWithoutCount(Searchable searchable) {
         return null;
     }
 
-    public List<E> findPageWithoutCount(Searchable v0) {
-        return null;
-    }
-
-    public Page<E> find(Searchable var0, E var1) {
+    public Page<E> find(Searchable searchable, E var1) {
         return null;
     }
 
@@ -111,67 +116,83 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
         return entity;
     }
 
+
     /**
-     * 根据自定义sql更新
+     * 根据HQL语句查询
+     * @param hql hql语句
+     * @param params 参数数组
+     * @return
+     */
+    public <T> List<T> queryByHQL(String hql,  Class<T> entityBean, Object ...params){
+        Query query = this.getBaseDaoManager().getEntityManager().createQuery(hql, entityBean);
+        this.getBaseDaoManager().setParameter(query, params);
+        try{
+            List<T> resultList = query.getResultList();
+            return resultList;
+        }catch (Exception e){
+            e.printStackTrace(); //unable set result to bean
+        }
+        return null;
+    }
+
+    /**
+     * 根据自定义sql执行
      * @param sql 自定义sql
-     * @param var0 参数数组
+     * @param params 参数数组
      * @return 返回影响行数
      */
-    public int updateBysql(String sql, Object ...var0){
+    public int updateBysql(String sql, Object ...params){
         Assert.notNull(sql, "sql must not null.");
         Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql);
-        baseDaoManager.setParameter(query, var0);
+        this.getBaseDaoManager().setParameter(query, params);
         return query.executeUpdate();
     }
 
     /**
      * 自定义sql查询记录数
      * @param sql 自定义sql
-     * @param var0 参数数组
+     * @param params 参数数组
      * @return 记录数
      */
-    public int findBySqlCount(String sql, Object ...var0){
+    public Long findBySqlCount(String sql, Object ...params){
         Assert.notNull(sql, "sql must not null.");
         sql = "select count(1) as COUNT from ( " + sql + ") a";
         Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql);
-        //查询结果返回MAP
-        // Transformers.TO_LIST
-        query.unwrap(org.hibernate.SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-        baseDaoManager.setParameter(query, var0);
-        Map<String, Object> map = (Map<String, Object>)query.getSingleResult();
-        return map != null ? Integer.valueOf(map.get("COUNT").toString()): 0;
+        this.getBaseDaoManager().setParameter(query, params);
+        long total = new BigInteger(query.getSingleResult().toString()).longValue();
+        return total;
     }
 
     /**
      * 自定义sql查询多个结果集。
      * @param sql 自定义sql
-     * @param var0 参数数组
-     * @return 返回List<Map>结果集
+     * @param params 参数数组
+     * @return 返回指定entity
      */
-    public List fingBySqlList(String sql, Object ...var0){
+    public <T> List<T> fingAllBySql(String sql,Class<T> entityType, Object ...params){
         Assert.notNull(sql, "sql must not null.");
-        Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql);
-        query.unwrap(org.hibernate.SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP); //查询结果返回MAP
-        this.baseDaoManager.setParameter(query, var0);
+        Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql, entityType);
+        this.getBaseDaoManager().setParameter(query, params);
         return query.getResultList();
     }
 
     /**
-     * 自定义sql查询单条记录。工具不保证单条记录，如果查询到多条会抛出result returns more than one elements错误
+     * 自定义sql查询单条记录。这里按照分页原理，返回第一条数据
      * @param sql 自定义sql
-     * @param var0 参数数组
+     * @param params 参数数组
      * @return 返回Map结果集
      */
-    public Map<String, Object> findBySqlOne(String sql, Object... var0) {
+    public <T> T findBySqlOne(String sql, Class<T> entityType, Object... params) {
         Assert.notNull(sql, "sql must not null.");
-        Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql);
-        query.unwrap(org.hibernate.SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP); // 查询结果返回MAP
-        this.baseDaoManager.setParameter(query, var0);
+        Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql, entityType);
+        query.setFirstResult(0);
+        query.setMaxResults(1);
+        this.getBaseDaoManager().setParameter(query, params);
         try{
-            Object row = query.getSingleResult();
-            return (Map<String, Object>)row;
-        }catch (Exception e){
-            return new HashMap<String, Object>();
+            return (T)query.getSingleResult();
+        }catch (SearchException e){
+            e.printStackTrace();
+            return null;
         }
     }
 }

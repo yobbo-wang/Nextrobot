@@ -1,4 +1,4 @@
-package wang.yobbo.common.security.shiro.extend;
+package wang.yobbo.sys.security.shiro.extend;
 
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.util.CollectionUtils;

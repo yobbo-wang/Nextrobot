@@ -1,4 +1,4 @@
-package wang.yobbo.common.security.filter;
+package wang.yobbo.sys.security.filter;
 
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.Subject;

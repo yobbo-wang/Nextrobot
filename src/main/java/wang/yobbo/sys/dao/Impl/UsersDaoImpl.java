@@ -16,11 +16,11 @@ import java.util.Map;
 @Service
 public class UsersDaoImpl extends BaseDaoImpl<NextRobotSysUsers, String> implements SysUsersDao {
 
-    public Map<String, Object> findBySqlOne(String sql, Object...params) {
-        return super.findBySqlOne(sql, params);
+    public NextRobotSysUsers findBySqlOne(String sql, Object...params) {
+        return super.findBySqlOne(sql, NextRobotSysUsers.class, params);
     }
     @Override
-    public int findBySqlCount(String sql, Object... params) {
+    public Long findBySqlCount(String sql, Object... params) {
         return super.findBySqlCount(sql, params);
     }
 
@@ -50,5 +50,9 @@ public class UsersDaoImpl extends BaseDaoImpl<NextRobotSysUsers, String> impleme
 
     public NextRobotSysUsers save(NextRobotSysUsers user){
         return super.saveOfEntity(user);
+    }
+
+    public List<NextRobotSysUsers> findAllBySql(String sql, Object[] params) {
+        return super.fingAllBySql(sql, NextRobotSysUsers.class, params);
     }
 }

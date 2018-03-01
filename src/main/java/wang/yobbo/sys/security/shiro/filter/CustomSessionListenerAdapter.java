@@ -1,4 +1,4 @@
-package wang.yobbo.common.security.shiro.filter;
+package wang.yobbo.sys.security.shiro.filter;
 
 import org.apache.shiro.session.SessionListenerAdapter;
 

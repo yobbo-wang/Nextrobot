@@ -1,15 +1,13 @@
 package wang.yobbo.common.appengine;
 
 import com.google.common.collect.Sets;
-import net.sf.ehcache.config.Searchable;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
@@ -18,6 +16,9 @@ import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
 import wang.yobbo.common.appengine.entity.AbstractEntity;
 import wang.yobbo.common.appengine.plugin.EntityUtils;
 import wang.yobbo.common.appengine.plugin.LogicDeleteable;
+import wang.yobbo.common.entity.PageAble;
+import wang.yobbo.common.entity.Searchable;
+import wang.yobbo.common.entity.SortAble;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -98,6 +99,7 @@ public final class BaseDaoManager {
         }
     }
 
+    @Contract("_, null -> null")
     public <T extends AbstractEntity> T find(Class<T> clazz, Serializable id) {
         if (id == null) {
             return null;
@@ -212,6 +214,47 @@ public final class BaseDaoManager {
         Query query = entityManager.createQuery(xql);
         this.setParameter(query, params);
         return query.executeUpdate();
+    }
+
+    /**
+     * 根据查询条件、分页、排序查询结果集
+     * @param searchable
+     * @param <T>
+     * @return
+     */
+    public <T extends AbstractEntity> Page<T> findAll(Searchable searchable) {
+        List<T> list = this.findAll(this.findAllJPQL, searchable);
+        long total = searchable.hasPageable() ? this.count(searchable) : (long)list.size();
+        return new PageImpl(list, getPageable(searchable), total);
+    }
+
+    /**
+     * 获取分页和排序对象
+     * @param searchable
+     * @return
+     */
+    public Pageable getPageable(Searchable searchable){
+        Integer page = null;
+        Integer size = null;
+        Sort sort = null;
+        PageAble pageAble = searchable.getPage();
+        SortAble sortAble = searchable.getSort();
+        if(pageAble != null) {
+            page = pageAble.getPage();
+            size = pageAble.getSize();
+        }
+        if(sortAble != null){
+            sort = new Sort(sortAble.getOrders());
+        }
+        Pageable pageable = new PageRequest(page, size, sort);
+        return pageable;
+    }
+
+    //TODO 查询条件
+    private <T extends AbstractEntity> List<T> findAll(String jpql, Searchable searchable) {
+        StringBuilder s = new StringBuilder(jpql);
+        Query query = this.getEntityManager().createQuery(s.toString());
+        return query.getResultList();
     }
 
     /**

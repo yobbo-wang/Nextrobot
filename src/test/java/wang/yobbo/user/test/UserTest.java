@@ -2,15 +2,18 @@ package wang.yobbo.user.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.sf.ehcache.config.Searchable;
 import org.apache.shiro.codec.Base64;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import wang.yobbo.common.entity.PageAble;
+import wang.yobbo.common.entity.Searchable;
+import wang.yobbo.common.entity.SortAble;
 import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.common.spring.SpringContextUtil;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
@@ -73,10 +76,32 @@ public class UserTest {
     @Autowired
     private SysUserService sysService;
 
+    @Autowired SysMenuService sysMenuService;
+
     @Autowired
     private PropertyConfigurer propertyConfigurer;
 
     private short a;
+
+    @Test
+    public void testGetPage(){
+        Searchable searchable = new Searchable(null, new PageAble(1,2), new SortAble(SortAble.Sort.DESC, "createDate"));
+        Page<NextRobotSysMenu> page = this.sysMenuService.getPage(searchable);
+        System.out.println("TotalElements:" + page.getTotalElements());
+        System.out.println("TotalPages:" + page.getTotalPages());
+        System.out.println("list<NextRobotSysMenu>:" + page.getContent());
+        System.out.println("getNumber:" + page.getNumber());
+        System.out.println("getSort:" + page.getSort());
+
+        //object -> json
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String s = mapper.writeValueAsString(page);
+            System.out.println("json:" + s);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testGetBean(){
@@ -97,24 +122,38 @@ public class UserTest {
         String sql = " SELECT * FROM act_re_model where ID_ = ?1 and CREATE_TIME_ >= ?2 and CREATE_TIME_ <= ?3";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            this.sysService.findBySqlOne(sql, 1, sdf.parse("2017-1-1").getTime(),
+            NextRobotSysUsers nextRobotSysUsers = this.sysService.findBySqlOne(sql, 1, sdf.parse("2017-1-1").getTime(),
                     new Timestamp(System.currentTimeMillis()));
+            System.out.println(nextRobotSysUsers);
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-//    @Test
-    public void testOne(){
-        System.out.println(this.sysService.findBySqlOne("SELECT * FROM bcm_sys_users"));
+    @Test
+    public void testFindCountBySql(){
+        Long count = this.sysService.findBySqlCount("SELECT * FROM NEXT_ROBOT_SYS_USERS");
+        System.out.println(count);
     }
 
-//    @Test
+    @Test
+    public void testFindAllBySql(){
+        List<NextRobotSysUsers> sss = this.sysService.findAllBySql("SELECT * FROM NEXT_ROBOT_SYS_USERS");
+        System.out.println(sss);
+    }
+
+    @Test
+    public void testOne(){
+        NextRobotSysUsers nextRobotSysUsers = this.sysService.findBySqlOne("SELECT * FROM NEXT_ROBOT_SYS_USERS");
+        System.out.println(nextRobotSysUsers);
+    }
+
+    @Test
     public void findBySqlCount(){
         System.out.println(this.sysService.findBySqlCount("SELECT * FROM act_hi_actinst"));
     }
 
-//    @Test
+    @Test
     public void findAll(){
         List<NextRobotSysUsers> all = this.sysService.findUserAll();
         for (NextRobotSysUsers user : all){
@@ -122,7 +161,7 @@ public class UserTest {
         }
     }
 
-//    @Test
+    @Test
     public void getCount(){
         Searchable searchable = new Searchable();
 //        searchable.addSearchAttribute(");
@@ -136,14 +175,14 @@ public class UserTest {
         System.out.println(count);
     }
 
-//    @Test
+    @Test
     public void deleteByEntity(){
         NextRobotSysUsers user = new NextRobotSysUsers();
         user.setId("2c9f8c0b614183c201614183cbfe0000");
         this.sysService.deleteForUser(user);
     }
 
-//    @Test
+    @Test
     public void update(){
 //        User user = new User();
 //        user.setId("2c9f8c0b614183c201614183cbfe0000");

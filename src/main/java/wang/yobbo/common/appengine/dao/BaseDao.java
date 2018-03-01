@@ -1,8 +1,8 @@
 package wang.yobbo.common.appengine.dao;
 
-import net.sf.ehcache.config.Searchable;
 import org.springframework.data.domain.Page;
 import wang.yobbo.common.appengine.entity.AbstractEntity;
+import wang.yobbo.common.entity.Searchable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -56,5 +56,21 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
 
     E get(Serializable id);
 
-    Map findBySqlOne(String sql, Object...params);
+    /**
+     * 根据hql语句查询记录
+     * @param hql
+     * @param entityType 实体类型
+     * @param params
+     * @param <T>
+     * @return
+     */
+    <T> List<T> queryByHQL(String hql,  Class<T> entityType, Object ...params);
+
+    int updateBysql(String sql, Object ...params);
+
+    <T> List<T> fingAllBySql(String sql,Class<T> entityType, Object ...params);
+
+    Long findBySqlCount(String sql, Object ...params);
+
+    <T> T findBySqlOne(String sql,Class<T> entityType, Object...params);
 }

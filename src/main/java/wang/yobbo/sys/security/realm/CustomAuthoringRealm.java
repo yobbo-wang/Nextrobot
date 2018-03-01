@@ -1,4 +1,4 @@
-package wang.yobbo.common.security.realm;
+package wang.yobbo.sys.security.realm;
 
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;

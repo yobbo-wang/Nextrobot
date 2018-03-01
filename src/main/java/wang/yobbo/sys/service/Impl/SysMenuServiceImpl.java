@@ -4,23 +4,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.Version;
-import org.apache.shiro.codec.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import wang.yobbo.common.entity.Searchable;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
-import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.sys.dao.SysMenuDao;
 import wang.yobbo.sys.dao.SysMenuTableDao;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
 import wang.yobbo.sys.entity.NextRobotSysMenuTable;
 import wang.yobbo.sys.service.SysMenuService;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -28,6 +24,10 @@ import java.util.*;
 public class SysMenuServiceImpl implements SysMenuService {
     @Autowired private SysMenuDao sysMenuDao;
     @Autowired private SysMenuTableDao sysMenuTableDao;
+
+    public Page<NextRobotSysMenu> getPage(Searchable searchable) {
+        return this.sysMenuDao.getPage(searchable);
+    }
 
     //使用懒加载
     public List<NextRobotSysMenu> findByPId(String pid) {

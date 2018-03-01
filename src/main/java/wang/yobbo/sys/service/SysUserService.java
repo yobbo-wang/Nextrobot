@@ -1,25 +1,35 @@
 package wang.yobbo.sys.service;
 
-import net.sf.ehcache.config.Searchable;
+import org.springframework.data.domain.Page;
+import wang.yobbo.common.entity.Searchable;
 import wang.yobbo.sys.entity.NextRobotSysUsers;
 
 import java.util.List;
-import java.util.Map;
 
 public interface SysUserService{
+
+    Page<NextRobotSysUsers> getPage(Searchable searchable);
     /**
      * 根据自定义sql查询数据结果集
      * @param sql 自定sql
      * @param params 参数数组
      */
-    Map findBySqlOne(String sql, Object...params);
+    NextRobotSysUsers findBySqlOne(String sql, Object...params);
+
+    /**
+     * 根据自定义sql查询数据结果集
+     * @param sql
+     * @param params
+     * @return
+     */
+    List<NextRobotSysUsers> findAllBySql(String sql, Object...params);
 
     /**
      * 根据自定义sql查询数据结果集记录数
      * @param sql 自定sql
      * @param params 参数数组
      */
-    int findBySqlCount(String sql, Object ...params);
+    Long findBySqlCount(String sql, Object ...params);
 
     /**
      * 获取结果集个数

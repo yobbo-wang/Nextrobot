@@ -21,7 +21,7 @@
     </bean>
 
     <!-- 用户认证 -->
-    <bean id="userRealm" class="wang.yobbo.common.security.realm.CustomAuthoringRealm">
+    <bean id="userRealm" class="wang.yobbo.sys.security.realm.CustomAuthoringRealm">
         <property name="authenticationCachingEnabled" value="false" />
         <property name="authorizationCachingEnabled" value="false" />
     </bean>
@@ -42,13 +42,13 @@
     </bean>
 
     <!--替换默认的form 验证过滤器 -->
-    <bean id="formAuthenticationFilter" class="wang.yobbo.common.security.filter.CustomFormAuthenticationFilter">
+    <bean id="formAuthenticationFilter" class="wang.yobbo.sys.security.filter.CustomFormAuthenticationFilter">
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/>
     </bean>
 
-    <bean id="filterChainManager" class="wang.yobbo.common.security.shiro.extend.CustomDefaultFilterChainManager">
+    <bean id="filterChainManager" class="wang.yobbo.sys.security.shiro.extend.CustomDefaultFilterChainManager">
         <property name="loginUrl" value="${shiro.login.url}" />
         <property name="successUrl" value="${shiro.default.success.url}"/>
         <property name="customFilters">
@@ -73,7 +73,7 @@
         </property>
     </bean>
 
-    <bean id="filterChainResolver" class="wang.yobbo.common.security.shiro.extend.CustomPathMatchingFilterChainResolver">
+    <bean id="filterChainResolver" class="wang.yobbo.sys.security.shiro.extend.CustomPathMatchingFilterChainResolver">
         <property name="customDefaultFilterChainManager" ref="filterChainManager"/>
     </bean>
 
@@ -91,7 +91,7 @@
     <!-- session 管理 -->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
         <property name="sessionListeners">
-            <bean class="wang.yobbo.common.security.shiro.filter.CustomSessionListenerAdapter"></bean>
+            <bean class="wang.yobbo.sys.security.shiro.filter.CustomSessionListenerAdapter"></bean>
         </property>
         <property name="globalSessionTimeout" value="${shiro.session.globalSessionTimeout}"></property>
         <!--<property name="sessionDAO" ref="${cacheManagerTpye}ShiroSessionDAO" />-->

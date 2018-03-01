@@ -1,8 +1,6 @@
 package wang.yobbo.sys.entity;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * 主机信息

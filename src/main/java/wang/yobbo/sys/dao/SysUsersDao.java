@@ -12,14 +12,14 @@ public interface SysUsersDao {
      * @param sql 自定sql
      * @param params 参数数组
      */
-    Map findBySqlOne(String sql, Object...params);
+    NextRobotSysUsers findBySqlOne(String sql, Object...params);
 
     /**
      * 根据自定义sql查询数据结果集记录数
      * @param sql 自定sql
      * @param params 参数数组
      */
-    int findBySqlCount(String sql, Object ...params);
+    Long findBySqlCount(String sql, Object ...params);
 
     /**
      * 获取结果集个数
@@ -53,4 +53,6 @@ public interface SysUsersDao {
     NextRobotSysUsers updateUser(NextRobotSysUsers user);
 
     NextRobotSysUsers save(NextRobotSysUsers user);
+
+    List<NextRobotSysUsers> findAllBySql(String sql, Object[] params);
 }
