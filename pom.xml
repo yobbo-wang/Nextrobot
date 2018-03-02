@@ -386,9 +386,9 @@
       </activation>
       <properties>
         <db.driverClassName>com.mysql.jdbc.Driver</db.driverClassName>
-        <db.url>jdbc:mysql://127.0.0.1:3306/movie?characterEncoding=utf8</db.url>
-        <db.username>movie</db.username>
-        <db.password>YJ04051711</db.password>
+        <db.url>jdbc:mysql://127.0.0.1:3306/nextrobot?characterEncoding=utf8</db.url>
+        <db.username>root</db.username>
+        <db.password>mysql</db.password>
         <log.moduleName>FrontMusik</log.moduleName>
         <db.validationQuery>select 1 from dual</db.validationQuery>
         <db.generateDdl>true</db.generateDdl>
