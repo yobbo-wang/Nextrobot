@@ -1,6 +1,7 @@
-package wang.yobbo.${engine.businessClassification}.entity;
+package ${engine.packageName}.${engine.businessClassification}.entity;
 
-import wang.yobbo.common.appengine.entity.BaseEntity;
+import ${engine.packageName}.common.appengine.entity.BaseEntity;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 /**
@@ -13,11 +14,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "${engine.tableName}")
-public class ${engine.entityName?cap_first} extends BaseEntity<String> {
+public class ${engine.entityName ? cap_first} extends BaseEntity<String> {
 	private static final long serialVersionUID = 1L;
 
-<#list fieldList as field>
+<#list fieldList as field>    <#if field.REMARKS ? exists>//${field.REMARKS}</#if>
+    @Column(name = "${field.COLUMN_NAME ? upper_case}"<#if field.COLUMN_SIZE ? exists>,length = ${field.COLUMN_SIZE} </#if><#if field.PRIMARYKEYS ? exists && field.PRIMARYKEYS == "YES">,unique = true</#if><#if field.IS_NULLABLE ? exists && field.PRIMARYKEYS == "NO">,nullable = false</#if>)
+    private ${field.TYPE_NAME} ${field.COLUMN_NAME};
+</#list>
 
+<#list fieldList as field>
+    public ${field.TYPE_NAME} get${field.COLUMN_NAME ? cap_first}(){
+		return ${field.COLUMN_NAME};
+	}
+	public void set${field.COLUMN_NAME ? cap_first}(${field.TYPE_NAME} ${field.COLUMN_NAME}){
+		this.${field.COLUMN_NAME} = ${field.COLUMN_NAME};
+	}
 </#list>
 
     public boolean isNew() {

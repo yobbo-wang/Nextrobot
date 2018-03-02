@@ -3,7 +3,7 @@ package wang.yobbo.sys.dao.Impl;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
-import wang.yobbo.common.entity.Searchable;
+import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.sys.dao.SysMenuDao;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
 
@@ -29,14 +29,18 @@ public class SysMenuDaoImpl extends BaseDaoImpl<NextRobotSysMenu, String> implem
     }
 
     public NextRobotSysMenu save(NextRobotSysMenu sysMenu) {
-        return super.saveOfEntity(sysMenu);
+        return super.save(sysMenu);
     }
 
     public int delete(String id) {
-        return super.deleteById(id);
+        return super.delete(id);
     }
 
     public Page<NextRobotSysMenu> getPage(Searchable searchable) {
         return super.find(searchable);
+    }
+
+    public Long getCount(Searchable searchable) {
+        return super.count(searchable);
     }
 }

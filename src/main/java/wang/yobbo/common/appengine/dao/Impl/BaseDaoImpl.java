@@ -1,11 +1,12 @@
 package wang.yobbo.common.appengine.dao.Impl;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.util.Assert;
 import wang.yobbo.common.appengine.BaseDaoManager;
 import wang.yobbo.common.appengine.dao.BaseDao;
 import wang.yobbo.common.appengine.entity.AbstractEntity;
-import wang.yobbo.common.entity.Searchable;
+import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.exception.SearchException;
 
 import javax.persistence.Query;
@@ -13,6 +14,8 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -47,12 +50,17 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
     }
 
 
+    /**
+     * 根据给定的条件查询结果集
+     * @param searchable
+     * @return
+     */
     public Long count(Searchable searchable) {
-        return this.count(searchable);
+        return this.getBaseDaoManager().count(searchable);
     }
 
     public long count() {
-        return 0;
+        return this.getBaseDaoManager().count();
     }
 
     /**
@@ -64,12 +72,25 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
         return this.getBaseDaoManager().findAll(searchable);
     }
 
+    //查询分页，不带count
     public List<E> findPageWithoutCount(Searchable searchable) {
-        return null;
+        return this.getBaseDaoManager().findPageWithoutCount(searchable);
     }
 
-    public Page<E> find(Searchable searchable, E var1) {
-        return null;
+    //按条件查询后，过滤掉实体中的数据
+    public Page<E> find(Searchable searchable, E entity) {
+        Page<E> findAll = this.getBaseDaoManager().findAll(searchable);
+        List<E> entities = findAll.getContent();
+        List<E> dtos = new ArrayList();
+        Iterator iterator = entities.iterator();
+
+        while(iterator.hasNext()) {
+            E next = (E)iterator.next();
+            if(next != null){
+                dtos.add(next);
+            }
+        }
+        return new PageImpl(dtos, this.getBaseDaoManager().getPageable(searchable), findAll.getTotalElements());
     }
 
     public List<E> findAll() {
@@ -80,16 +101,12 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
         return this.getBaseDaoManager().findAll(var0);
     }
 
-    public E createOfEntity(E entity) {
-        return null;
-    }
-
     /**
      * 保存或更新
      * @param entity
      * @return
      */
-    public E saveOfEntity(E entity) {
+    public E save(E entity) {
         return this.getBaseDaoManager().save(entity);
     }
 
@@ -98,7 +115,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param ids 主键ID数组
      * @return
      */
-    public int deleteById(ID ... ids) {
+    public int delete(ID ... ids) {
         return this.getBaseDaoManager().delete(ids);
     }
 
@@ -107,7 +124,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param entity
      * @return
      */
-    public void deleteOfEntity(E entity){
+    public void delete(E entity){
         this.getBaseDaoManager().delete(entity);
     }
 

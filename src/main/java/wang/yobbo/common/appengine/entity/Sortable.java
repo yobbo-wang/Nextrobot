@@ -1,4 +1,4 @@
-package wang.yobbo.common.entity;
+package wang.yobbo.common.appengine.entity;
 
 import org.springframework.data.domain.Sort;
 
@@ -9,27 +9,27 @@ import java.util.List;
 /**
  * 框架排序规则
  * 用法：
- *      new SortAble(Sort.ASC, "name");
+ *      new Sortable(Sort.ASC, "name");
  */
-public class SortAble implements Serializable{
+public class Sortable implements Serializable{
 
     public enum Sort {
         ASC, DESC;
     }
 
-    public SortAble(){
+    public Sortable(){
     }
 
-    public SortAble(Sort sortRelu, String name){
-        if("ASC".equals(sortRelu.name())){
+    public Sortable(Sort sort, String name){
+        if("ASC".equals(sort.name())){
             orders.add(new org.springframework.data.domain.Sort.Order(org.springframework.data.domain.Sort.Direction.ASC,name));
         }else{
             orders.add(new org.springframework.data.domain.Sort.Order(org.springframework.data.domain.Sort.Direction.DESC,name));
         }
     }
 
-    public void add(Sort sortRelu, String name){
-        if("ASC".equals(sortRelu.name())){
+    public void add(Sort sort, String name){
+        if("ASC".equals(sort.name())){
             orders.add(new org.springframework.data.domain.Sort.Order(org.springframework.data.domain.Sort.Direction.ASC,name));
         }else{
             orders.add(new org.springframework.data.domain.Sort.Order(org.springframework.data.domain.Sort.Direction.DESC,name));

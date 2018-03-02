@@ -196,12 +196,7 @@
         },
         createEntityCode: function () {  //生成实体代码
             if($("#sysMenuTableId").val() == "") return;
-            var result = $('#entityInfo').form('validate');
-            if(!result)return;
             appEngine.endEditing();//结束所有编辑行
-            var entityRow = $('#datagrid-entity').datagrid("getRows");
-            if(entityRow.length == 0)return;
-            var entityInfo = $('#entityInfo').serializeArray();
             appEngine.openDialog({
                 width: 400,
                 height: 200,
@@ -211,6 +206,11 @@
                 closed: true,
                 id: "createEntityMode",
                 save:function(){
+                    var result = $('#entityInfo').form('validate');
+                    if(!result)return;
+                    var entityRow = $('#datagrid-entity').datagrid("getRows");
+                    if(entityRow.length == 0)return;
+                    var entityInfo = $('#entityInfo').serializeArray();
                     var checks = $('#entityMode input:checkbox:checked');
                     if(checks.length == 0) return;
                     var entityMode = [];

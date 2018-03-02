@@ -406,8 +406,8 @@
       <id>mysql_company</id>
       <properties>
         <db.driverClassName>com.mysql.jdbc.Driver</db.driverClassName>
-        <db.url>jdbc:mysql://127.0.0.1:3306/front_musik?characterEncoding=utf8</db.url>
-        <db.username>musik</db.username>
+        <db.url>jdbc:mysql://127.0.0.1:3306/nextrobot?characterEncoding=utf8</db.url>
+        <db.username>root</db.username>
         <db.password>123456</db.password>
         <db.validationQuery>select 1 from dual</db.validationQuery>
         <db.generateDdl>true</db.generateDdl>

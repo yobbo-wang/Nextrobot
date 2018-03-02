@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import wang.yobbo.common.entity.PageAble;
-import wang.yobbo.common.entity.Searchable;
-import wang.yobbo.common.entity.SortAble;
+import wang.yobbo.common.appengine.entity.Pageable;
+import wang.yobbo.common.appengine.entity.Searchable;
+import wang.yobbo.common.appengine.entity.Sortable;
+import wang.yobbo.common.appengine.plugin.SearchOperator;
 import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.common.spring.SpringContextUtil;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
@@ -27,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -84,8 +86,56 @@ public class UserTest {
     private short a;
 
     @Test
+    public void testCount(){
+        Searchable searchable = new Searchable();
+        //多条件查询
+        searchable.addSearchRule("name", "任", SearchOperator.like);
+        searchable.addSearchRule("type", "tab", SearchOperator.eq);  //eq
+        Long count = this.sysMenuService.getCount(searchable);
+        System.out.println("count: " + count);
+    }
+
+    @Test
     public void testGetPage(){
-        Searchable searchable = new Searchable(null, new PageAble(1,2), new SortAble(SortAble.Sort.DESC, "createDate"));
+        /*
+        SELECT
+	nextrobots0_.ID AS ID1_1_,
+	nextrobots0_.CREATE_DATE AS CREATE_D2_1_,
+	nextrobots0_.UPDATE_DATE AS UPDATE_D3_1_,
+	nextrobots0_.ORDER_NUMBER AS ORDER_NU4_1_,
+	nextrobots0_.PARENT_ID AS PARENT_I5_1_,
+	nextrobots0_.REMARK AS REMARK6_1_,
+	nextrobots0_. NAME AS NAME7_1_,
+	nextrobots0_.TYPE AS TYPE8_1_,
+	nextrobots0_.URL AS URL9_1_
+    FROM
+        NEXT_ROBOT_SYS_MENU nextrobots0_
+    WHERE
+        1 = 1
+    AND (NAME LIKE ?)
+    AND nextrobots0_.TYPE =?
+    AND (nextrobots0_.ID IN(?, ?, ?))
+    ORDER BY
+        nextrobots0_.CREATE_DATE DESC,
+        NAME ASC
+    LIMIT ?
+         */
+        //分页
+        Pageable pageable = new Pageable(1, 6);
+        //排序
+        Sortable sortable = new Sortable();
+        sortable.add(Sortable.Sort.DESC, "createDate");
+        sortable.add(Sortable.Sort.ASC, "name");
+
+        Searchable searchable = new Searchable(pageable, sortable);
+        //多条件查询
+        searchable.addSearchRule("name", "任", SearchOperator.like);
+        searchable.addSearchRule("type", "tab", SearchOperator.eq);  //eq
+        String[] ids = new String[]{"402881c261e4b0e50161e4b1978c0001","402881c261e4b0e50161e4b1ed2e0002","402881c261e4b0e50161e4b2224f0003"};
+        List<String> strings = Arrays.asList(ids);
+
+        searchable.addSearchRule("id", Arrays.asList(ids), SearchOperator.in); //in
+
         Page<NextRobotSysMenu> page = this.sysMenuService.getPage(searchable);
         System.out.println("TotalElements:" + page.getTotalElements());
         System.out.println("TotalPages:" + page.getTotalPages());

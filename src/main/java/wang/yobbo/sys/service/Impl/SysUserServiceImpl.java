@@ -15,7 +15,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Autowired
     private SysUsersDao usersDao;
 
-    public Page<NextRobotSysUsers> getPage(wang.yobbo.common.entity.Searchable searchable) {
+    public Page<NextRobotSysUsers> getPage(wang.yobbo.common.appengine.entity.Searchable searchable) {
         return null;
     }
 
@@ -31,7 +31,7 @@ public class SysUserServiceImpl implements SysUserService {
         return this.usersDao.findBySqlCount(sql, params);
     }
 
-    public long getCount(wang.yobbo.common.entity.Searchable searchable) {
+    public long getCount(wang.yobbo.common.appengine.entity.Searchable searchable) {
         return 0;
     }
 

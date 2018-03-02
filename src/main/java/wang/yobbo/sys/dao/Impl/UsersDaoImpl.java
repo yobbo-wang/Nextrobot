@@ -7,7 +7,6 @@ import wang.yobbo.sys.dao.SysUsersDao;
 import wang.yobbo.sys.entity.NextRobotSysUsers;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by xiaoyang on 2017/12/28.
@@ -37,19 +36,19 @@ public class UsersDaoImpl extends BaseDaoImpl<NextRobotSysUsers, String> impleme
     }
 
     public int deleteByPrimaryKeys(String... primaryKey) {
-        return super.deleteById(primaryKey);
+        return super.delete(primaryKey);
     }
 
     public void deleteForSysUser(NextRobotSysUsers user) {
-        super.deleteOfEntity(user);
+        super.delete(user);
     }
 
     public NextRobotSysUsers updateUser(NextRobotSysUsers user) {
-        return super.saveOfEntity(user);
+        return super.save(user);
     }
 
     public NextRobotSysUsers save(NextRobotSysUsers user){
-        return super.saveOfEntity(user);
+        return super.save(user);
     }
 
     public List<NextRobotSysUsers> findAllBySql(String sql, Object[] params) {

@@ -1,7 +1,7 @@
 package wang.yobbo.sys.service;
 
 import org.springframework.data.domain.Page;
-import wang.yobbo.common.entity.Searchable;
+import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.sys.entity.NextRobotSysUsers;
 
 import java.util.List;

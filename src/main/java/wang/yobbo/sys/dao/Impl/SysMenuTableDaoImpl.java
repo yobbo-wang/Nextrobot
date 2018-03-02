@@ -9,11 +9,11 @@ import wang.yobbo.sys.entity.NextRobotSysMenuTable;
 public class SysMenuTableDaoImpl extends BaseDaoImpl<NextRobotSysMenuTable, String> implements SysMenuTableDao {
 
     public NextRobotSysMenuTable addEntity(NextRobotSysMenuTable sysMenuTable) {
-        return super.saveOfEntity(sysMenuTable);
+        return super.save(sysMenuTable);
     }
 
     public int deleteEntity(String id) {
-        return super.deleteById(id);
+        return super.delete(id);
     }
 
     public NextRobotSysMenuTable findSysMenuTableById(String id) {

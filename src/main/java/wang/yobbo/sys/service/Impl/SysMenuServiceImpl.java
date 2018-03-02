@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import wang.yobbo.common.entity.Searchable;
+import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
+import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.sys.dao.SysMenuDao;
 import wang.yobbo.sys.dao.SysMenuTableDao;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
@@ -24,9 +26,14 @@ import java.util.*;
 public class SysMenuServiceImpl implements SysMenuService {
     @Autowired private SysMenuDao sysMenuDao;
     @Autowired private SysMenuTableDao sysMenuTableDao;
+    @Autowired private PropertyConfigurer propertyConfigurer;
 
     public Page<NextRobotSysMenu> getPage(Searchable searchable) {
         return this.sysMenuDao.getPage(searchable);
+    }
+
+    public Long getCount(Searchable searchable) {
+        return this.sysMenuDao.getCount(searchable);
     }
 
     //使用懒加载
@@ -59,12 +66,30 @@ public class SysMenuServiceImpl implements SysMenuService {
         return this.sysMenuTableDao.findSysMenuTableById(id);
     }
 
+    //首字母转小写
+    private String toLowerCaseFirstOne(String s){
+        if(Character.isLowerCase(s.charAt(0)))
+            return s;
+        else
+            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+    }
+
+
+    //首字母转大写
+    private String toUpperCaseFirstOne(String s){
+        if(Character.isUpperCase(s.charAt(0)))
+            return s;
+        else
+            return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
+    }
+
     public boolean createBusinessCode(NextRobotSysMenuTable nextRobotSysMenuTable,String entityMode,String entityRow) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         try {
             this.sysMenuTableDao.addEntity(nextRobotSysMenuTable); //保存
+            //业务分类首字母设置为小写
+            nextRobotSysMenuTable.setBusinessClassification(this.toLowerCaseFirstOne(nextRobotSysMenuTable.getBusinessClassification()));
             List<String> entityModeBean = mapper.readValue(entityMode, new TypeReference<List<String>>() {});
-            List<Map> entityRowBean = mapper.readValue(entityRow, new TypeReference<List<Map>>() {});
             //获取应用引擎信息
             String basePath = EngineViewServlet.getBase_path();
             String packageName = EngineViewServlet.getPackage_name();
@@ -78,10 +103,12 @@ public class SysMenuServiceImpl implements SysMenuService {
                     files.add(entity);
                 }else if("service".equals(mode)){
                     List<Map<String, String>> service = this.createService(basePathPrefix, nextRobotSysMenuTable);
-                    files.addAll(service);
+                    files.add(service.get(0));
+                    files.add(service.get(1));
                 }else if("dao".equals(mode)){
                     List<Map<String, String>> dao = this.createDao(basePathPrefix, nextRobotSysMenuTable);
-                    files.addAll(dao);
+                    files.add(dao.get(0));
+                    files.add(dao.get(1));
                 }else{
                     //直接是模板路径情况....
                 }
@@ -107,6 +134,8 @@ public class SysMenuServiceImpl implements SysMenuService {
         engine.put("entityName", nextRobotSysMenuTable.getEntityName());
         engine.put("businessClassification", nextRobotSysMenuTable.getBusinessClassification());
         engine.put("tableName", nextRobotSysMenuTable.getTableName());
+        engine.put("remark", nextRobotSysMenuTable.getRemark());
+        engine.put("packageName", propertyConfigurer.getProperty("system.package.name"));
         String templateEntityPath = "ame_entity.ftl";
         String entityPath = path + "/" + nextRobotSysMenuTable.getBusinessClassification() + "/entity/" + nextRobotSysMenuTable.getEntityName() + ".java";
         ObjectMapper mapper = new ObjectMapper();
@@ -120,17 +149,22 @@ public class SysMenuServiceImpl implements SysMenuService {
         StringWriter stringWriter = new StringWriter();// 本应用无需生成文件，直接输出即可
         template.process(dataMap, stringWriter);
         Map<String,Object> fileInfo = new HashMap<String, Object>();
-        fileInfo.put("filePath",entityPath);
-        fileInfo.put("fileContent", stringWriter.toString());
+        fileInfo.put("entityFilePath",entityPath);
+        fileInfo.put("entityFileContent", stringWriter.toString());
         return fileInfo;
     }
 
     //生成dao
     private List<Map<String, String>> createDao(String path, NextRobotSysMenuTable nextRobotSysMenuTable) throws Exception{
-        List<Map<String, String>> filesInfo = new ArrayList<Map<String, String>>();
+
         Map<String,Object> dataMap = new HashMap<String, Object>();
-        dataMap.put("entityName", nextRobotSysMenuTable.getEntityName());
-        dataMap.put("businessClassification", nextRobotSysMenuTable.getBusinessClassification());
+        dataMap.put("nowDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        Map<String,Object> engine = new HashMap<String, Object>();
+        engine.put("entityName", nextRobotSysMenuTable.getEntityName());
+        engine.put("businessClassification", nextRobotSysMenuTable.getBusinessClassification());
+        engine.put("remark", nextRobotSysMenuTable.getRemark());
+        engine.put("packageName", propertyConfigurer.getProperty("system.package.name"));
+        dataMap.put("engine", engine);
         String templateDaoPath = "ame_dao.ftl";
         String templateDaoImplPath = "ame_daoImpl.ftl";
         String daoPath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/dao/" + nextRobotSysMenuTable.getEntityName() + "Dao.java";
@@ -147,15 +181,16 @@ public class SysMenuServiceImpl implements SysMenuService {
         StringWriter stringWriterDaoImpl = new StringWriter();// 本应用无需生成文件，直接输出即可
         templateDaoImpl.process(dataMap, stringWriterDaoImpl);
 
-        HashMap<String, String> file = new HashMap<String, String>();
-        file.put("filePath", daoPath);
-        file.put("fileContent", stringWriterDao.toString());
-        filesInfo.add(file);
+        List<Map<String, String>> filesInfo = new ArrayList<Map<String, String>>();
+        Map<String, String> file = new HashMap<String, String>();
+        file.put("daoFilePath", daoPath);
+        file.put("daoFileContent", stringWriterDao.toString());
+        filesInfo.add(0, file);
 
-        HashMap<String, String> fileImpl = new HashMap<String, String>();
-        file.put("filePath", daoImplPath);
-        file.put("fileContent", stringWriterDaoImpl.toString());
-        filesInfo.add(fileImpl);
+        Map<String, String> fileImpl = new HashMap<String, String>();
+        file.put("daoImplFilePath", daoImplPath);
+        file.put("daoImplFileContent", stringWriterDaoImpl.toString());
+        filesInfo.add(1, fileImpl);
 
         return filesInfo;
     }
@@ -164,8 +199,14 @@ public class SysMenuServiceImpl implements SysMenuService {
     private List<Map<String, String>> createService(String path, NextRobotSysMenuTable nextRobotSysMenuTable) throws Exception{
         List<Map<String, String>> filesInfo = new ArrayList<Map<String, String>>();
         Map<String,Object> dataMap = new HashMap<String, Object>();
-        dataMap.put("entityName", nextRobotSysMenuTable.getEntityName());
-        dataMap.put("businessClassification", nextRobotSysMenuTable.getBusinessClassification());
+        dataMap.put("nowDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        Map<String,Object> engine = new HashMap<String, Object>();
+        engine.put("entityName", nextRobotSysMenuTable.getEntityName());
+        engine.put("businessClassification", nextRobotSysMenuTable.getBusinessClassification());
+        engine.put("remark", nextRobotSysMenuTable.getRemark());
+        engine.put("packageName", propertyConfigurer.getProperty("system.package.name"));
+        dataMap.put("engine", engine);
+
         String templateServicePath = "ame_service.ftl";
         String templateServiceImplPath = "ame_serviceImpl.ftl";
         String servicePath = path + "/"+ nextRobotSysMenuTable.getBusinessClassification() + "/service/" + nextRobotSysMenuTable.getEntityName() + "Service.java";
@@ -182,14 +223,14 @@ public class SysMenuServiceImpl implements SysMenuService {
         StringWriter stringWriterServiceImpl = new StringWriter();// 本应用无需生成文件，直接输出即可
         templateServiceImpl.process(dataMap, stringWriterServiceImpl);
 
-        HashMap<String, String> file = new HashMap<String, String>();
-        file.put("filePath", servicePath);
-        file.put("fileContent", stringWriterService.toString());
+        Map<String, String> file = new HashMap<String, String>();
+        file.put("serviceFilePath", servicePath);
+        file.put("serviceFileContent", stringWriterService.toString());
         filesInfo.add(file);
 
-        HashMap<String, String> fileImpl = new HashMap<String, String>();
-        file.put("filePath", serviceImplPath);
-        file.put("fileContent", stringWriterServiceImpl.toString());
+        Map<String, String> fileImpl = new HashMap<String, String>();
+        file.put("serviceImplFilePath", serviceImplPath);
+        file.put("serviceImplFileContent", stringWriterServiceImpl.toString());
         filesInfo.add(fileImpl);
 
         return filesInfo;

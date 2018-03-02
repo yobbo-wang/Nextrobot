@@ -2,11 +2,10 @@ package wang.yobbo.common.appengine.dao;
 
 import org.springframework.data.domain.Page;
 import wang.yobbo.common.appengine.entity.AbstractEntity;
-import wang.yobbo.common.entity.Searchable;
+import wang.yobbo.common.appengine.entity.Searchable;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by xiaoyang on 2017/12/28.
@@ -16,23 +15,28 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
 
     /**
      * 获取记录数
-     * @param v0
+     * @param searchable
      * @return
      */
-    Long count(Searchable v0);
+    Long count(Searchable searchable);
 
     long count();
 
-    Page<E> find(Searchable v0);
+    /**
+     * 根据查询条件结果集
+     * @param searchable
+     * @return
+     */
+    Page<E> find(Searchable searchable);
 
     /**
      * 查询分页
-     * @param v0
+     * @param searchable
      * @return
      */
-    List<E> findPageWithoutCount(Searchable v0);
+    List<E> findPageWithoutCount(Searchable searchable);
 
-    Page<E> find(Searchable var0, E var1);
+    Page<E> find(Searchable searchable, E entity);
 
     /**
      * 查询所有
@@ -46,13 +50,11 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
      */
     List<E> findAll(E entity);
 
-    E createOfEntity(E entity);
+    E save(E entity);
 
-    E saveOfEntity(E entity);
+    int delete(ID... ids);
 
-    int deleteById(ID... ids);
-
-    void deleteOfEntity(E entity);
+    void delete(E entity);
 
     E get(Serializable id);
 
@@ -66,8 +68,22 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
      */
     <T> List<T> queryByHQL(String hql,  Class<T> entityType, Object ...params);
 
+    /**
+     * 根据自定义sql执行
+     * @param sql
+     * @param params
+     * @return
+     */
     int updateBysql(String sql, Object ...params);
 
+    /**
+     * 根据自定义sql查询全部
+     * @param sql
+     * @param entityType
+     * @param params
+     * @param <T>
+     * @return
+     */
     <T> List<T> fingAllBySql(String sql,Class<T> entityType, Object ...params);
 
     Long findBySqlCount(String sql, Object ...params);

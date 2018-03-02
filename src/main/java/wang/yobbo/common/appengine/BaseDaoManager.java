@@ -7,18 +7,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
 import org.springframework.util.Assert;
 import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
 import wang.yobbo.common.appengine.entity.AbstractEntity;
+import wang.yobbo.common.appengine.entity.Pageable;
+import wang.yobbo.common.appengine.entity.Searchable;
+import wang.yobbo.common.appengine.entity.Sortable;
 import wang.yobbo.common.appengine.plugin.EntityUtils;
 import wang.yobbo.common.appengine.plugin.LogicDeleteable;
-import wang.yobbo.common.entity.PageAble;
-import wang.yobbo.common.entity.Searchable;
-import wang.yobbo.common.entity.SortAble;
+import wang.yobbo.common.appengine.plugin.SearchCallback;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -39,18 +43,21 @@ public final class BaseDaoManager {
     private static final String FIND_QUERY_STRING = "from %s x where 1=1 ";
     private static final String DELETE_QUERY_STRING = "delete from %s x where x in (?1)";
     private static EntityManager entityManager;
+    private SearchCallback searchCallback;
     private JpaEntityInformation jpaEntityInformation;
     private String entityName;
     private String IDName;
     private Class<?> entityClass;
     private String countAllJPQLL;
     private String findAllJPQL;
+
     /**
      * 实例化是，假如clazz是BaseDaoImpl，则不给entityClass赋值
      * @param clazz
      */
     public BaseDaoManager(Class<?> clazz) {
         if(!StringUtils.equals(clazz.getName(), BaseDaoImpl.class.getName())){
+            this.searchCallback = SearchCallback.DEFAULT; //实例化
             this.entityClass = clazz;
             //新版Spring jpa可能把JpaEntityInformationSupport.getEntityInformation替换成JpaEntityInformationSupport.getMetadata了。
             this.jpaEntityInformation = JpaEntityInformationSupport.getMetadata(entityClass, entityManager);
@@ -225,7 +232,7 @@ public final class BaseDaoManager {
     public <T extends AbstractEntity> Page<T> findAll(Searchable searchable) {
         List<T> list = this.findAll(this.findAllJPQL, searchable);
         long total = searchable.hasPageable() ? this.count(searchable) : (long)list.size();
-        return new PageImpl(list, getPageable(searchable), total);
+        return new PageImpl(list, this.getPageable(searchable), total);
     }
 
     /**
@@ -233,12 +240,12 @@ public final class BaseDaoManager {
      * @param searchable
      * @return
      */
-    public Pageable getPageable(Searchable searchable){
-        Integer page = null;
-        Integer size = null;
-        Sort sort = null;
-        PageAble pageAble = searchable.getPage();
-        SortAble sortAble = searchable.getSort();
+    public org.springframework.data.domain.Pageable getPageable(Searchable searchable){
+        Integer page = 1;
+        Integer size = 10;
+        Sort sort = new Sort("id");
+        Pageable pageAble = searchable.getPage();
+        Sortable sortAble = searchable.getSort();
         if(pageAble != null) {
             page = pageAble.getPage();
             size = pageAble.getSize();
@@ -246,14 +253,23 @@ public final class BaseDaoManager {
         if(sortAble != null){
             sort = new Sort(sortAble.getOrders());
         }
-        Pageable pageable = new PageRequest(page, size, sort);
+        org.springframework.data.domain.Pageable pageable = new PageRequest(page, size, sort);
         return pageable;
     }
 
-    //TODO 查询条件
+    //组装hql
     private <T extends AbstractEntity> List<T> findAll(String jpql, Searchable searchable) {
         StringBuilder s = new StringBuilder(jpql);
+        this.searchCallback.prepareHQL(s, searchable); //设置自定义查询语句
+        Sortable sortAble = searchable.getSort();
+        if(sortAble != null){
+            Sort sort = new Sort(sortAble.getOrders());
+            String orderHql = this.prepareOrder(sort);
+            s.append(orderHql);
+        }
         Query query = this.getEntityManager().createQuery(s.toString());
+        searchCallback.setValues(query, searchable); //设置值
+        searchCallback.setPageable(query, searchable); //设置分页
         return query.getResultList();
     }
 
@@ -268,10 +284,10 @@ public final class BaseDaoManager {
     }
 
     private <T> List<T> findAll(String hql, Object... params) {
-        return this.findAll(hql, (Pageable)null, params);
+        return this.findAll(hql, (org.springframework.data.domain.Pageable)null, params);
     }
 
-    private  <T> List<T> findAll(String hql, Pageable pageable, Object... params) {
+    private  <T> List<T> findAll(String hql, org.springframework.data.domain.Pageable pageable, Object... params) {
         Query query = entityManager.createQuery(hql + this.prepareOrder(pageable != null ? pageable.getSort() : null));
         this.setParameter(query, params);
         if(pageable != null) {
@@ -302,12 +318,34 @@ public final class BaseDaoManager {
         return this.count(this.countAllJPQLL, searchable);
     }
 
-    private long count(String nxql, Searchable searchable) {
-//        this.assertConverted(searchable);
-        StringBuilder s = new StringBuilder(nxql);
-//        searchCallback.prepareNXQL(s, searchable);
+    //查询所有结果集记录
+    public long count() {
+        return this.count(this.countAllJPQLL);
+    }
+
+    //查询分页，未带count
+    public <T extends AbstractEntity> List<T> findPageWithoutCount(Searchable searchable) {
+        List<T> list = this.findAll(this.findAllJPQL, searchable);
+        return (new PageImpl(list, this.getPageable(searchable), list.size()).getContent());
+    }
+
+    public long count(String nxql, Object... params) {
+        Query query = entityManager.createQuery(nxql);
+        this.setParameter(query, params);
+        return (Long)query.getSingleResult();
+    }
+
+    /**
+     * 根据条件查询结果集记录数
+     * @param hql
+     * @param searchable
+     * @return
+     */
+    private long count(String hql, Searchable searchable) {
+        StringBuilder s = new StringBuilder(hql);
+        this.searchCallback.prepareHQL(s, searchable); //设置自定义查询语句
         Query query = this.getEntityManager().createQuery(s.toString());
-//        searchCallback.setValues(query, searchable);
+        searchCallback.setValues(query, searchable); //设置值
         return (Long) query.getSingleResult();
     }
 
@@ -334,5 +372,4 @@ public final class BaseDaoManager {
             }
         }
     }
-
 }
