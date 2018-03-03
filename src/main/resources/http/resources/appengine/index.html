@@ -69,19 +69,20 @@
 		</form>
 		
 		<div style="height:86%;padding: 0 5px;">
-			<table style="width: 100%;height:100%;border-left: 0;" id="datagrid-entity" class="easyui-datagrid" data-options="onLoadSuccess:function(data){appEngine.loadSuccessData(data)},pagination:true,fitColumns:true,
+			<table style="width: 100%;height:100%;border-left: 0;" id="datagrid-entity" class="easyui-datagrid" data-options="pagination:true,fitColumns:true,
 			fit:true,striped:true,singleSelect:true,toolbar:'#entityTool',onClickCell:appEngine.onClickCell">
 				<thead>   
 					<tr>
-						<th data-options="field:'COLUMN_NAME',width:40,align:'center',editor:'text'">属性名称</th>   
-						<th data-options="field:'TYPE_NAME',width:65,align:'center',editor:{type:'combobox',options:{data:appEngine.dataType,panelHeight:160}}">属性类型</th>
-						<th data-options="field:'PRIMARYKEYS',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">主键标记</th>   
-						<th data-options="field:'IS_NULLABLE',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">允许为空</th>   
-						<th data-options="field:'IS_AUTOINCREMENT',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">自动递增</th>   
-						<th data-options="field:'COLUMN_SIZE',width:50,align:'center',editor:'numberbox'">属性长度</th>   
-						<th data-options="field:'COLUMN_DEF',width:50,align:'center',editor:'text'">默认值</th>
-						<th data-options="field:'ORDINAL_POSITION',width:30,align:'center'">顺序</th>   
-						<th data-options="field:'REMARKS',width:80,align:'center',editor:'text'">备注</th>   
+						<th data-options="field:'entity_id',hidden:true"></th>
+						<th data-options="field:'column_name',width:40,align:'center',editor:'text'">属性名称</th>
+						<th data-options="field:'type_name',width:65,align:'center',editor:{type:'combobox',options:{data:appEngine.dataType,panelHeight:160}}">属性类型</th>
+						<th data-options="field:'primary_key',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">主键标记</th>
+						<th data-options="field:'is_null_able',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">允许为空</th>
+						<th data-options="field:'is_autoincrement',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">自动递增</th>
+						<th data-options="field:'column_size',width:50,align:'center',editor:'numberbox'">属性长度</th>
+						<th data-options="field:'column_def',width:50,align:'center',editor:'text'">默认值</th>
+						<th data-options="field:'ordinal_position',width:30,align:'center'">顺序</th>
+						<th data-options="field:'remarks',width:80,align:'center',editor:'text'">备注</th>
 					</tr>   
 				</thead>   
 			</table>
@@ -140,7 +141,7 @@ function tableFormatter(rowIndex, rowData) {
     var data = {index: rowIndex, row: rowData};
     data = JSON.stringify(data);
     data = data.replace(new RegExp('"',"gm"),"'");
-    return '<a href="javascript:;" style="text-decoration: none;" onclick="appEngine.displayTable(this)", data-detail="'+ data +'">查看</a>';
+    return '<a href="javascript:;" style="text-decoration: none;" onclick="appEngine.displayTable(this)" data-detail="'+ data +'">查看</a>';
 }
 </script>
 </html>

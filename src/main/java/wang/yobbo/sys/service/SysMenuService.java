@@ -2,8 +2,9 @@ package wang.yobbo.sys.service;
 
 import org.springframework.data.domain.Page;
 import wang.yobbo.common.appengine.entity.Searchable;
+import wang.yobbo.sys.entity.NextRobotEntityProperty;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
-import wang.yobbo.sys.entity.NextRobotSysMenuTable;
+import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
 
 import java.util.List;
 
@@ -20,12 +21,12 @@ public interface SysMenuService {
 
     int delete(String id);
 
-    NextRobotSysMenuTable addEntity(NextRobotSysMenuTable sysMenuTable);
+    NextRobotSysMenuEntity addEntity(NextRobotSysMenuEntity sysMenuTable);
 
     int deleteEntity(String id);
 
-    NextRobotSysMenuTable findSysMenuTableById(String id);
+    NextRobotSysMenuEntity findSysMenuTableById(String id);
 
-    boolean createBusinessCode(NextRobotSysMenuTable nextRobotSysMenuTable,String entityMode,String entityRow) throws Exception;
+    boolean createBusinessCode(NextRobotSysMenuEntity nextRobotSysMenuTable, String entityMode, List<NextRobotEntityProperty> nextRobotEntityProperties) throws Exception;
 
 }

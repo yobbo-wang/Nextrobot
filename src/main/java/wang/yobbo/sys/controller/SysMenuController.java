@@ -5,27 +5,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import wang.yobbo.common.appengine.InvokeResult;
 import wang.yobbo.common.spring.PropertyConfigurer;
+import wang.yobbo.sys.entity.NextRobotEntityProperty;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
-import wang.yobbo.sys.entity.NextRobotSysMenuTable;
+import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
 import wang.yobbo.sys.service.SysMenuService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Controller
-@RequestMapping("menu")
+@RequestMapping("/menu")
 public class SysMenuController {
 
     @Autowired private PropertyConfigurer propertyConfigurer;
     @Autowired private SysMenuService sysMenuService;
+
+    @RequestMapping(value = "/getEntityProperty/{entityName}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEntityProperty(@PathVariable(value = "entityName") String entityName){
+
+        return null;
+    }
 
     @RequestMapping(value = "findByPId", method = RequestMethod.POST)
     @ResponseBody
@@ -55,15 +58,17 @@ public class SysMenuController {
 
     @RequestMapping(value = "createBusinessCode", method = RequestMethod.POST)
     @ResponseBody
-    public InvokeResult createBusinessCode(NextRobotSysMenuTable nextRobotSysMenuTable,
-                                     @RequestParam(value = "entityMode") String entityMode,
-                                     @RequestParam(value = "entityRow")String entityRow){
+    public InvokeResult createBusinessCode(NextRobotSysMenuEntity nextRobotSysMenuTable,
+                                           @RequestParam(value = "entityMode") String entityMode,
+                                           @RequestParam(value = "entityRow") String entityRow ){
         if(StringUtils.isEmpty(entityMode))
-            return InvokeResult.failure("请选择生成业务代码");
-        if(StringUtils.isEmpty(entityMode))
-            return InvokeResult.failure("请选择生成业务代码");
+            return InvokeResult.failure("请选择生成业务代码!");
+        if(StringUtils.isEmpty(entityRow))
+            return InvokeResult.failure("请添加实体属性!");
         try {
-            this.sysMenuService.createBusinessCode(nextRobotSysMenuTable, entityMode, entityRow);
+            ObjectMapper mapper = new ObjectMapper();
+            List<NextRobotEntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<NextRobotEntityProperty>>(){});
+            this.sysMenuService.createBusinessCode(nextRobotSysMenuTable, entityMode, nextRobotEntityProperties);
         } catch (Exception e) {
             e.printStackTrace();
             return InvokeResult.failure("操作失败，请联系管理员");
@@ -73,7 +78,7 @@ public class SysMenuController {
 
     @RequestMapping(value = "addEntity", method = RequestMethod.POST)
     @ResponseBody
-    public InvokeResult addEntity(NextRobotSysMenuTable sysMenuTable){
+    public InvokeResult addEntity(NextRobotSysMenuEntity sysMenuTable){
         try{
             if(StringUtils.isEmpty(sysMenuTable.getMenuId())){
                 return InvokeResult.failure("请选择对应菜单，再添加实体!");

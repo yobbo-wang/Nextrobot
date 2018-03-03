@@ -24,37 +24,6 @@
             {"value":"java.sql.Blob","text":"Blob"},
             {"value":"java.sql.Clob","text":"Clob"}
         ],
-        loadSuccessData : function(data){
-            if(data.rows.length > 0 && data.rows[0].name != undefined ){
-                var entity = data.rows[0];
-                $("#entityName").textbox("setValue",entity.name);
-                $("#remark").textbox("setValue",entity.comm);
-                $("#create").combobox("setValue",entity.create_flag);
-                $("#createtime").textbox("setValue",entity.createtime);
-                $("#datagrid-entity").datagrid("deleteRow",0);
-                $("#aem_entityId").val(entity.id);
-                var rows = $("#datagrid-entity").datagrid("getRows");
-                for(var i=0;i<rows.length;i++){
-                    if(rows[i].DATA_TYPE == '-4'){
-                        $("#datagrid-entity").datagrid("getRows")[i].SOURCE_DATA_TYPE = appEngine.dataType[20].type;
-                    }else if(rows[i].DATA_TYPE == '-5'){
-
-                    }else{
-                        $("#datagrid-entity").datagrid("getRows")[i].SOURCE_DATA_TYPE = appEngine.dataType[parseInt(rows[i].DATA_TYPE)].type;
-                    }
-                }
-                return;
-            }
-            if(data.rows[0].status !=undefined && data.rows[0].status == "false"){
-                $("#datagrid-entity").datagrid("deleteRow",0); //清空列表
-                $("#entityName").textbox("clear");
-                $("#remark").textbox("clear");
-                $("#create").combobox("clear");
-                $("#createtime").textbox("clear");
-                $("#aem_entityId").val("");
-                return;
-            }
-        },
         dialogId: new Array(),
         editMenu : function (menu) {
             switch(menu){
@@ -132,11 +101,13 @@
                         var h = "<a href='javascript:;' style='text-decoration: none;color:red;' data-id='"+value+"' onclick='appEngine.deleteEntity(this)'>删除</a>";
                         h += "<a href='javascript:;' style='text-decoration: none;margin-left: 5px;' onclick='appEngine.addEntity(\""+value+"\")'>修改</a>";
                         return h;
-                    }},
+                    }}
                 ]],
                 data: tables,
                 onSelect: function (index, row) {
                     $('#entityInfo').form('load', row);
+                    //查询实体属性信息
+                    $("#datagrid-entity").datagrid({data: row.entityProperties});
                 }
             });
             $(clazz).attr('status', 'opened');
@@ -254,7 +225,7 @@
         editEntity: function (type) {
             if(type == 'add'){
                 var counts = $('#datagrid-entity').datagrid('getRows').length;
-                $('#datagrid-entity').datagrid('appendRow',{ORDINAL_POSITION: counts + 1});
+                $('#datagrid-entity').datagrid('appendRow',{ordinal_position: counts + 1, entity_id: $('#sysMenuTableId').val()});
             }else if(type == "del"){
                 var row = $('#datagrid-entity').datagrid('getSelected');
                 var index = $('#datagrid-entity').datagrid('getRowIndex',row);

@@ -93,6 +93,8 @@
             <tx:method name="count*" propagation="REQUIRED" read-only="true" />
             <tx:method name="find*" propagation="REQUIRED" read-only="true" />
             <tx:method name="list*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="query*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="page*" propagation="REQUIRED" read-only="true" />
             <tx:method name="*" propagation="REQUIRED"/>
         </tx:attributes>
     </tx:advice>

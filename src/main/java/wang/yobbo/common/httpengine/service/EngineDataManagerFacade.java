@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
 import wang.yobbo.common.spring.SpringContextUtil;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
-import wang.yobbo.sys.entity.NextRobotSysMenuTable;
+import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
 import wang.yobbo.sys.service.SysMenuService;
 
 import java.util.Map;
@@ -68,7 +68,7 @@ public class EngineDataManagerFacade {
             String id = basicInfo.get("id") != null ? basicInfo.get("id").toString() : null;
             if(StringUtils.isNotEmpty(id)){
                 SysMenuService sysMenuService = SpringContextUtil.getBean(SysMenuService.class); //获取SysMenuService bean
-                NextRobotSysMenuTable sysMenuTable = sysMenuService.findSysMenuTableById(id);
+                NextRobotSysMenuEntity sysMenuTable = sysMenuService.findSysMenuTableById(id);
                 if(sysMenuTable != null){
                     sysMenuTable.setEntityName(sysMenuTable.getEntityName().replace(EngineViewServlet.getEntity_prefix_name(), ""));
                 }

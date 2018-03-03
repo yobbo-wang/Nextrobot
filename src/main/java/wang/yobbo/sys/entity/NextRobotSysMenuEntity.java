@@ -3,9 +3,9 @@ package wang.yobbo.sys.entity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import wang.yobbo.common.appengine.entity.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 菜单表信息
@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "NEXT_ROBOT_SYS_MENU_TABLES")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE) //读写
-public class NextRobotSysMenuTable extends BaseEntity<String> {
+public class NextRobotSysMenuEntity extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "ENTITY_NAME", length = 40, unique = true)
@@ -30,6 +30,10 @@ public class NextRobotSysMenuTable extends BaseEntity<String> {
 
     @Column(name = "BUSINESS_CLASSIFICATION", length = 30)
     private String businessClassification;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "ENTITY_ID")
+    private List<NextRobotEntityProperty> entityProperties = new ArrayList<NextRobotEntityProperty>();
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_ID")
@@ -74,6 +78,14 @@ public class NextRobotSysMenuTable extends BaseEntity<String> {
 
     public String getBusinessClassification() {
         return businessClassification;
+    }
+
+    public List<NextRobotEntityProperty> getEntityProperties() {
+        return entityProperties;
+    }
+
+    public void setEntityProperties(List<NextRobotEntityProperty> entityProperties) {
+        this.entityProperties = entityProperties;
     }
 
     public void setBusinessClassification(String businessClassification) {

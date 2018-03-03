@@ -1,6 +1,6 @@
 package wang.yobbo.sys.dao;
 
-import wang.yobbo.sys.entity.NextRobotSysMenuTable;
+import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
 
 public interface SysMenuTableDao {
     /**
@@ -8,9 +8,9 @@ public interface SysMenuTableDao {
      * @param sysMenuTable
      * @return
      */
-    NextRobotSysMenuTable addEntity(NextRobotSysMenuTable sysMenuTable);
+    NextRobotSysMenuEntity addEntity(NextRobotSysMenuEntity sysMenuTable);
 
     int deleteEntity(String id);
 
-    NextRobotSysMenuTable findSysMenuTableById(String id);
+    NextRobotSysMenuEntity findSysMenuTableById(String id);
 }

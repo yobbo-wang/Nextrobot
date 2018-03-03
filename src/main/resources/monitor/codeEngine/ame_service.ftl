@@ -17,7 +17,7 @@ import java.util.List;
 public interface ${engine.entityName ? cap_first}Service {
 
     /**功能：插入对象或更新对象
-    * @param ${ent.entityName?cap_first}
+    * @param ${engine.entityName?uncap_first}
     * @return ${engine.entityName ? cap_first} 返回 插入数据库后结果对象
     */
     ${engine.entityName ? cap_first} save(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first});
@@ -33,11 +33,11 @@ public interface ${engine.entityName ? cap_first}Service {
     * @param ids 主键ID数组
     * @return int 返回 删除记录数
     */
-    int delete(ID ... ids);
+    int delete(String ...ids);
 
     /**
     * 功能：根据实体对象删除
-    * @param entity 实体对象
+    * @param ${engine.entityName ? uncap_first} 实体对象
     */
     void delete(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first});
 
@@ -56,7 +56,7 @@ public interface ${engine.entityName ? cap_first}Service {
 
     /**
     * 功能：按分页、排序、自定义条件查询，返回不带count结果集
-    * @param Searchable 查询条件对象
+    * @param searchable 查询条件对象
     * @return List<${engine.entityName ? cap_first}> 返回 所有结果集
     */
     List<${engine.entityName ? cap_first}> findPageWithoutCount(Searchable searchable);
@@ -69,13 +69,13 @@ public interface ${engine.entityName ? cap_first}Service {
 
     /**
     * 功能：查询所有结果集
-    * @param ${engine.entityName ? cap_first} 实体对象
+    * @param ${engine.entityName ? uncap_first} 实体对象
     * @return List<${engine.entityName ? cap_first}> 返回 所有结果集
     */
     List<${engine.entityName ? cap_first}> findAll(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first});
 
     /**功能：分页、排序、自定义条件查询
-    * @param Searchable 查询条件对象
+    * @param searchable 查询条件对象
     * @return Page<${engine.entityName ? cap_first}> 返回带有分页结果集
     */
     Page<${engine.entityName ? cap_first}> getPage(Searchable searchable);

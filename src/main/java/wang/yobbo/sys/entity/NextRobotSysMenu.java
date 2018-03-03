@@ -44,7 +44,7 @@ public class NextRobotSysMenu extends BaseEntity<String> {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "MENU_ID")
-    private List<NextRobotSysMenuTable> tables = new ArrayList<NextRobotSysMenuTable>();
+    private List<NextRobotSysMenuEntity> tables = new ArrayList<NextRobotSysMenuEntity>();
 
     public String getText() {
         return text;
@@ -102,11 +102,11 @@ public class NextRobotSysMenu extends BaseEntity<String> {
         this.children = children;
     }
 
-    public List<NextRobotSysMenuTable> getTables() {
+    public List<NextRobotSysMenuEntity> getTables() {
         return tables;
     }
 
-    public void setTables(List<NextRobotSysMenuTable> tables) {
+    public void setTables(List<NextRobotSysMenuEntity> tables) {
         this.tables = tables;
     }
 
