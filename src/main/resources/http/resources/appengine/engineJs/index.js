@@ -71,7 +71,9 @@
             $("#"+options.id).dialog("open");
         },
         displayTable: function (clazz) {
-            var data = $(clazz).data('detail'), data = data.replace(new RegExp("'","gm"),'"'), data = JSON.parse(data);
+            var data = $(clazz).data('detail');
+            data = data.replace(new RegExp("'","gm"),'"');
+            data = JSON.parse(data);
             var state = $.data($('#menu-list')[0], 'datagrid');
             var tables = data.row.tables, id = data.row.id, length = tables.length;
             var status = $(clazz).attr('status');
@@ -104,7 +106,8 @@
                     }}
                 ]],
                 data: tables,
-                onSelect: function (index, row) {
+                onDblClickRow: function (index, row) {
+                    console.log(row);
                     $('#entityInfo').form('load', row);
                     //查询实体属性信息
                     $("#datagrid-entity").datagrid({data: row.entityProperties});
