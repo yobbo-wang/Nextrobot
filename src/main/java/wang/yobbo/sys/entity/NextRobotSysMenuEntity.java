@@ -11,7 +11,7 @@ import java.util.List;
  * 菜单表信息
  */
 @Entity
-@Table(name = "NEXT_ROBOT_SYS_MENU_TABLES")
+@Table(name = "NEXT_ROBOT_SYS_MENU_ENTITY")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE) //读写
 public class NextRobotSysMenuEntity extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
