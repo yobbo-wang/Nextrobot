@@ -38,7 +38,7 @@
 		</table>
 	</div>
     <div data-options="region:'center',title:'实体信息'">
-    	<form id="entityInfo" style="height:14%">
+    	<form id="entityInfo" style="height:12%">
 			<table>
 				<tbody>
 					<tr style="color:#444;">
@@ -59,21 +59,24 @@
 					</tr>
 					<tr>
 						<td rowspan="4">&nbsp;注&emsp;&emsp;释:</td>
-						<td><input class="easyui-textbox" name="remark" data-options="multiline:true"/></td>
+						<td><input class="easyui-textbox" name="remark"/></td>
 						<td colspan="2">
+							<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="appEngine.saveEntity()">保存</a>
 							<a class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="appEngine.createEntityCode()">生成代码</a>
+							<a class="easyui-linkbutton" data-options="iconCls:'icon-arrow-up'" onclick="appEngine.uploadTemplate()">上传模板</a>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</form>
 		
-		<div style="height:86%;padding: 0 5px;">
+		<div style="height:88%;padding: 0 5px;">
 			<table style="width: 100%;height:100%;border-left: 0;" id="datagrid-entity" class="easyui-datagrid" data-options="pagination:true,fitColumns:true,
 			fit:true,striped:true,singleSelect:true,toolbar:'#entityTool',onClickCell:appEngine.onClickCell">
 				<thead>   
 					<tr>
 						<th data-options="field:'entity_id',hidden:true"></th>
+						<th data-options="field:'id',hidden:true"></th>
 						<th data-options="field:'column_name',width:40,align:'center',editor:'text'">属性名称</th>
 						<th data-options="field:'type_name',width:65,align:'center',editor:{type:'combobox',options:{data:appEngine.dataType,panelHeight:160}}">属性类型</th>
 						<th data-options="field:'primary_key',width:50,align:'center',editor:{type:'combobox',options:{data:[{'value':'YES','text':'YES'},{'value':'NO','text':'NO'}],panelHeight:80}}">主键标记</th>

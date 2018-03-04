@@ -63,8 +63,4 @@ public class NextRobotHosts extends wang.yobbo.common.appengine.entity.BaseEntit
     public void setRemark(String remark) {
         this.remark = remark;
     }
-
-    public boolean isNew() {
-        return false;
-    }
 }

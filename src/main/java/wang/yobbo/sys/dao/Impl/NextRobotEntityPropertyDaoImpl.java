@@ -5,6 +5,7 @@ import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
 import wang.yobbo.sys.dao.NextRobotEntityPropertyDao;
 import wang.yobbo.sys.entity.NextRobotEntityProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,10 +14,11 @@ import java.util.List;
 @Component
 public class NextRobotEntityPropertyDaoImpl extends BaseDaoImpl<NextRobotEntityProperty, String> implements NextRobotEntityPropertyDao {
 
-    public boolean saveEntityProperty(List<NextRobotEntityProperty> nextRobotEntityProperties) {
+    public List<NextRobotEntityProperty> saveEntityProperty(List<NextRobotEntityProperty> nextRobotEntityProperties) {
+        List<NextRobotEntityProperty> newProperties = new ArrayList<NextRobotEntityProperty>();
         for(NextRobotEntityProperty nextRobotEntityProperty : nextRobotEntityProperties){
-            super.save(nextRobotEntityProperty);
+            newProperties.add(super.save(nextRobotEntityProperty));
         }
-        return true;
+        return newProperties;
     }
 }

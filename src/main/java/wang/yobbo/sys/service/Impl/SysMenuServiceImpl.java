@@ -127,6 +127,11 @@ public class SysMenuServiceImpl implements SysMenuService {
         return true;
     }
 
+    public List<NextRobotEntityProperty> saveEntityAndProperty(NextRobotSysMenuEntity nextRobotSysMenuTable, List<NextRobotEntityProperty> nextRobotEntityProperties) {
+        this.sysMenuTableDao.addEntity(nextRobotSysMenuTable); //保存
+        return this.nextRobotEntityPropertyDao.saveEntityProperty(nextRobotEntityProperties);
+    }
+
     //创建文件
     private synchronized void createCodeFile(String packagePath, String path, String content) throws IOException {
         File realDir = new File(packagePath);

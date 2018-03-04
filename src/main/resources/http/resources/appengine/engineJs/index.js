@@ -165,6 +165,28 @@
                 }
             });
         },
+        saveEntity: function () {
+            appEngine.endEditing();//结束所有编辑行
+            var result = $('#entityInfo').form('validate');
+            if(!result)return;
+            var entityRow = $('#datagrid-entity').datagrid("getRows");
+            if(entityRow.length == 0)return;
+            var entityInfo = $('#entityInfo').serializeArray();
+            entityInfo.push({name: "entityRow", value: JSON.stringify(entityRow)});
+            $.messager.progress({title : "温馨提示",msg : "请稍后，正在处理......"});
+            $.post(path + '/menu/saveEntity', entityInfo , function (result) {
+                $.messager.progress("close");
+                if (result.success) {
+                    $.messager.show({title:'温馨提示',msg:'保存成功!',timeout:3000,showType:'show'});
+                    $("#datagrid-entity").datagrid({data: result.data});
+                } else {
+                    $.messager.alert("操作提示", result.data,"question");
+                }
+            });
+        },
+        uploadTemplate: function () {
+            
+        },
         createEntityCode: function () {  //生成实体代码
             if($("#sysMenuTableId").val() == "") return;
             appEngine.endEditing();//结束所有编辑行
@@ -242,7 +264,7 @@
             }
         }
     };
-    
+
     function delMenu() {
         var rows = $("#menu-list").datagrid("getSelected");
         if(rows==null)

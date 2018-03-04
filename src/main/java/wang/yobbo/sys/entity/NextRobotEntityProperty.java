@@ -121,8 +121,4 @@ public class NextRobotEntityProperty extends BaseEntity<String> {
     public void setEntity_id(String entity_id) {
         this.entity_id = entity_id;
     }
-
-    public boolean isNew() {
-        return false;
-    }
 }

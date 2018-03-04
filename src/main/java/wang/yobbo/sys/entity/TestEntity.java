@@ -198,8 +198,4 @@ public class TestEntity extends BaseEntity<String> {
     public void setQ(Clob q) {
         this.q = q;
     }
-
-    public boolean isNew() {
-        return false;
-    }
 }

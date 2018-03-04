@@ -38,11 +38,11 @@ public class NextRobotSysMenu extends BaseEntity<String> {
     private String parentId;
 
     //下级菜单
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "PARENT_ID", insertable = false, updatable = false)
     private List<NextRobotSysMenu> children = new ArrayList<NextRobotSysMenu>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "MENU_ID")
     private List<NextRobotSysMenuEntity> tables = new ArrayList<NextRobotSysMenuEntity>();
 
@@ -108,10 +108,5 @@ public class NextRobotSysMenu extends BaseEntity<String> {
 
     public void setTables(List<NextRobotSysMenuEntity> tables) {
         this.tables = tables;
-    }
-
-    public boolean isNew() {
-        //TODO 待实现
-        return false;
     }
 }

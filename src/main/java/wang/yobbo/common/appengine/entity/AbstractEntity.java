@@ -1,5 +1,6 @@
 package wang.yobbo.common.appengine.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.domain.Persistable;
 import wang.yobbo.common.appengine.BaseDaoManager;
 
@@ -15,4 +16,8 @@ import java.io.Serializable;
 public abstract class AbstractEntity<ID extends Serializable> implements Persistable<ID> {
     public abstract ID getId();
     public abstract void setId(ID var1);
+    @JsonIgnore
+    public boolean isNew() {
+        return null == this.getId();
+    }
 }

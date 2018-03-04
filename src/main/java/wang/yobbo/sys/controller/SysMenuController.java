@@ -14,6 +14,7 @@ import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
 import wang.yobbo.sys.service.SysMenuService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -56,11 +57,31 @@ public class SysMenuController {
         }
     }
 
+    @RequestMapping(value = "saveEntity", method = RequestMethod.POST)
+    @ResponseBody
+    public InvokeResult saveEntity(NextRobotSysMenuEntity nextRobotSysMenuTable, @RequestParam(value = "entityRow") String entityRow){
+        if(StringUtils.isEmpty(entityRow))
+            return InvokeResult.failure("请添加实体属性!");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<NextRobotEntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<NextRobotEntityProperty>>(){});
+            List<NextRobotEntityProperty> newProperties = this.sysMenuService.saveEntityAndProperty(nextRobotSysMenuTable, nextRobotEntityProperties);
+            if(!newProperties.isEmpty() && newProperties.size() > 0){
+                return InvokeResult.success(newProperties);
+            }else{
+                return InvokeResult.failure("保存失败");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return InvokeResult.failure("保存失败");
+        }
+    }
+
     @RequestMapping(value = "createBusinessCode", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult createBusinessCode(NextRobotSysMenuEntity nextRobotSysMenuTable,
                                            @RequestParam(value = "entityMode") String entityMode,
-                                           @RequestParam(value = "entityRow") String entityRow ){
+                                           @RequestParam(value = "entityRow") String entityRow){
         if(StringUtils.isEmpty(entityMode))
             return InvokeResult.failure("请选择生成业务代码!");
         if(StringUtils.isEmpty(entityRow))
@@ -68,12 +89,16 @@ public class SysMenuController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             List<NextRobotEntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<NextRobotEntityProperty>>(){});
-            this.sysMenuService.createBusinessCode(nextRobotSysMenuTable, entityMode, nextRobotEntityProperties);
+            boolean businessCode = this.sysMenuService.createBusinessCode(nextRobotSysMenuTable, entityMode, nextRobotEntityProperties);
+            if(businessCode){
+                return InvokeResult.success("生成成功!");
+            }else{
+                return InvokeResult.failure("操作失败，请联系管理员");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return InvokeResult.failure("操作失败，请联系管理员");
         }
-        return null;
     }
 
     @RequestMapping(value = "addEntity", method = RequestMethod.POST)

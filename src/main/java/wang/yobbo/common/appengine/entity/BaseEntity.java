@@ -5,6 +5,7 @@ package wang.yobbo.common.appengine.entity;
  *
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -57,21 +58,4 @@ public abstract class BaseEntity<ID extends Serializable> extends AbstractEntity
         this.updateDate = updateDate;
     }
 
-    public String getCreateDateStr() {
-        if(this.createDate != null) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-            return simpleDateFormat.format(this.createDate);
-        } else {
-            return "";
-        }
-    }
-
-    public String getUpdateDateStr() {
-        if(this.updateDate != null) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-            return simpleDateFormat.format(this.updateDate);
-        } else {
-            return "";
-        }
-    }
 }

@@ -36,8 +36,4 @@ public class NextRobotHost extends BaseEntity<String> {
 	public void setIp(java.lang.String ip){
 		this.ip = ip;
 	}
-
-    public boolean isNew() {
-       return false;
-    }
 }

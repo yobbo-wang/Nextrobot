@@ -29,4 +29,5 @@ public interface SysMenuService {
 
     boolean createBusinessCode(NextRobotSysMenuEntity nextRobotSysMenuTable, String entityMode, List<NextRobotEntityProperty> nextRobotEntityProperties) throws Exception;
 
+    List<NextRobotEntityProperty> saveEntityAndProperty(NextRobotSysMenuEntity nextRobotSysMenuTable, List<NextRobotEntityProperty> nextRobotEntityProperties);
 }

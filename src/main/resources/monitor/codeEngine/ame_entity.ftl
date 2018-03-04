@@ -31,8 +31,4 @@ public class ${engine.entityName ? cap_first} extends BaseEntity<String> {
 		this.${field.column_name} = ${field.column_name};
 	}
 </#list>
-
-    public boolean isNew() {
-       return false;
-    }
 }

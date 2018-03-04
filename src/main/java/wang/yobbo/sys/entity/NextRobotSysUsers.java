@@ -35,10 +35,6 @@ public class NextRobotSysUsers extends BaseEntity<String>{
         this.name = name;
     }
 
-    public boolean isNew() {
-        return false;
-    }
-
     public String getPwd() {
         return pwd;
     }
