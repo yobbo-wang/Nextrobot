@@ -56,7 +56,7 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
 
     void delete(E entity);
 
-    E get(Serializable id);
+    E findById(Serializable id);
 
     /**
      * 根据hql语句查询记录

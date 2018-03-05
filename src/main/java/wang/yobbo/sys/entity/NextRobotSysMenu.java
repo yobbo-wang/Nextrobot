@@ -38,11 +38,11 @@ public class NextRobotSysMenu extends BaseEntity<String> {
     private String parentId;
 
     //下级菜单
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "PARENT_ID", insertable = false, updatable = false)
     private List<NextRobotSysMenu> children = new ArrayList<NextRobotSysMenu>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "MENU_ID")
     private List<NextRobotSysMenuEntity> tables = new ArrayList<NextRobotSysMenuEntity>();
 

@@ -24,7 +24,7 @@ public class NextRobotHostDaoImpl extends BaseDaoImpl<NextRobotHost, String> imp
     }
 
     public NextRobotHost findById(String id) {
-        return super.get(id);
+        return super.findById(id);
     }
 
     public int delete(String... ids) {

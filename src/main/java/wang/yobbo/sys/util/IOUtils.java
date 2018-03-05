@@ -4,7 +4,7 @@ import java.io.*;
 
 /**
  * IO工具类
- * @author zhaolong
+ * @author yangjian
  *
  */
 public class IOUtils {

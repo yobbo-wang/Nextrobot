@@ -2,6 +2,7 @@ package wang.yobbo.user.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.codec.Base64;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
@@ -17,14 +18,21 @@ import wang.yobbo.common.appengine.entity.Sortable;
 import wang.yobbo.common.appengine.plugin.SearchOperator;
 import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.common.spring.SpringContextUtil;
+import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
 import wang.yobbo.sys.entity.NextRobotSysUsers;
-import wang.yobbo.sys.service.SysMenuService;
+import wang.yobbo.sys.service.NextRobotSysMenuService;
 import wang.yobbo.sys.service.SysUserService;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,12 +86,29 @@ public class UserTest {
     @Autowired
     private SysUserService sysService;
 
-    @Autowired SysMenuService sysMenuService;
+    @Autowired
+    NextRobotSysMenuService sysMenuService;
 
     @Autowired
     private PropertyConfigurer propertyConfigurer;
 
     private short a;
+
+    @Test
+    public void testFindTemplate(){
+        NextRobotBusinessTemplate template = this.sysMenuService.findTemplate("402881c261f52fd00161f530a00d0000");
+        Clob content = template.getFileContent();
+        try {
+            Reader characterStream = content.getCharacterStream();
+            byte[] bytes = IOUtils.toByteArray(characterStream, Charset.forName("utf-8"));
+            System.out.println(new String(bytes));
+            characterStream.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testCount(){
@@ -155,7 +180,7 @@ public class UserTest {
 
     @Test
     public void testGetBean(){
-        SysMenuService sysMenuService = SpringContextUtil.getBean(SysMenuService.class);
+        NextRobotSysMenuService sysMenuService = SpringContextUtil.getBean(NextRobotSysMenuService.class);
         NextRobotSysMenu sysMenu = sysMenuService.findById("12345678");
         ObjectMapper mapper = new ObjectMapper();
         try {

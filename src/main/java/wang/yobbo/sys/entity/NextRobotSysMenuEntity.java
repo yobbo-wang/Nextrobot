@@ -31,14 +31,13 @@ public class NextRobotSysMenuEntity extends BaseEntity<String> {
     @Column(name = "BUSINESS_CLASSIFICATION", length = 30)
     private String businessClassification;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "ENTITY_ID")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ENTITY_ID", updatable = false)
     private List<NextRobotEntityProperty> entityProperties = new ArrayList<NextRobotEntityProperty>();
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_ID")
-    @JsonIgnore
-    private NextRobotSysMenu nextRobotSysMenu;*/
+    private transient  NextRobotSysMenu nextRobotSysMenu;*/
 
     public String getTableName() {
         return tableName;

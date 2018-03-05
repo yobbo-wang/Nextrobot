@@ -24,7 +24,7 @@ public class NextRobotIptablesDaoImpl extends BaseDaoImpl<NextRobotIptables, Str
     }
 
     public NextRobotIptables findById(String id) {
-        return super.get(id);
+        return super.findById(id);
     }
 
     public int delete(String... ids) {

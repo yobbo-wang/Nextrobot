@@ -16,6 +16,8 @@ public class HostTest {
     @Autowired
     private NextRobotHostService nextRobotHostService;
 
+
+
     @Test
     public void testCount(){
         this.nextRobotHostService.count();

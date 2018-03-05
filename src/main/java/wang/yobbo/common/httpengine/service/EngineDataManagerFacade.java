@@ -10,7 +10,7 @@ import wang.yobbo.common.httpengine.http.EngineViewServlet;
 import wang.yobbo.common.spring.SpringContextUtil;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
 import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
-import wang.yobbo.sys.service.SysMenuService;
+import wang.yobbo.sys.service.NextRobotSysMenuService;
 
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class EngineDataManagerFacade {
         try{
             String id = basicInfo.get("id") != null ? basicInfo.get("id").toString() : null;
             if(StringUtils.isNotEmpty(id)){
-                SysMenuService sysMenuService = SpringContextUtil.getBean(SysMenuService.class); //获取SysMenuService bean
+                NextRobotSysMenuService sysMenuService = SpringContextUtil.getBean(NextRobotSysMenuService.class); //获取SysMenuService bean
                 NextRobotSysMenu sysMenu = sysMenuService.findById(id);
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -67,7 +67,7 @@ public class EngineDataManagerFacade {
         try{
             String id = basicInfo.get("id") != null ? basicInfo.get("id").toString() : null;
             if(StringUtils.isNotEmpty(id)){
-                SysMenuService sysMenuService = SpringContextUtil.getBean(SysMenuService.class); //获取SysMenuService bean
+                NextRobotSysMenuService sysMenuService = SpringContextUtil.getBean(NextRobotSysMenuService.class); //获取SysMenuService bean
                 NextRobotSysMenuEntity sysMenuTable = sysMenuService.findSysMenuTableById(id);
                 if(sysMenuTable != null){
                     sysMenuTable.setEntityName(sysMenuTable.getEntityName().replace(EngineViewServlet.getEntity_prefix_name(), ""));

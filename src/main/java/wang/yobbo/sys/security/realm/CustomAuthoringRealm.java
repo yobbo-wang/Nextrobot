@@ -6,7 +6,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
 /**
- * Created by xiaoyang on 2017/12/30.
+ * shiro认证实现类
  *
  */
 public class CustomAuthoringRealm extends AuthorizingRealm{

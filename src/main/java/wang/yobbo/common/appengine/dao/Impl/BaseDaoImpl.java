@@ -128,7 +128,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
         this.getBaseDaoManager().delete(entity);
     }
 
-    public E get(Serializable id) {
+    public E findById(Serializable id) {
         E entity = this.getBaseDaoManager().find(this.getClassForStatic(), id);
         return entity;
     }
@@ -211,5 +211,17 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void flush() {
+        this.getBaseDaoManager().getEntityManager().flush();
+    }
+
+    public void clear() {
+        this.getBaseDaoManager().getEntityManager().clear();
+    }
+
+    public void refresh(AbstractEntity entity) {
+        this.getBaseDaoManager().getEntityManager().refresh(entity);
     }
 }

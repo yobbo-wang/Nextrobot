@@ -2,13 +2,14 @@ package wang.yobbo.sys.service;
 
 import org.springframework.data.domain.Page;
 import wang.yobbo.common.appengine.entity.Searchable;
+import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
 import wang.yobbo.sys.entity.NextRobotEntityProperty;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
 import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
 
 import java.util.List;
 
-public interface SysMenuService {
+public interface NextRobotSysMenuService {
     Page<NextRobotSysMenu> getPage(Searchable searchable);
 
     Long getCount(Searchable searchable);
@@ -29,5 +30,9 @@ public interface SysMenuService {
 
     boolean createBusinessCode(NextRobotSysMenuEntity nextRobotSysMenuTable, String entityMode, List<NextRobotEntityProperty> nextRobotEntityProperties) throws Exception;
 
-    List<NextRobotEntityProperty> saveEntityAndProperty(NextRobotSysMenuEntity nextRobotSysMenuTable, List<NextRobotEntityProperty> nextRobotEntityProperties);
+    List<NextRobotEntityProperty> saveEntityProperty(List<NextRobotEntityProperty> nextRobotEntityProperties);
+
+    NextRobotBusinessTemplate saveBusinessTemplate(NextRobotBusinessTemplate nextRobotBusinessTemplate);
+
+    NextRobotBusinessTemplate findTemplate(String id);
 }

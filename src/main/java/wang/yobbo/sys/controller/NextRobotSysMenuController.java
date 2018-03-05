@@ -2,27 +2,37 @@ package wang.yobbo.sys.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import wang.yobbo.common.appengine.InvokeResult;
 import wang.yobbo.common.spring.PropertyConfigurer;
+import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
 import wang.yobbo.sys.entity.NextRobotEntityProperty;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
 import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
-import wang.yobbo.sys.service.SysMenuService;
+import wang.yobbo.sys.service.NextRobotSysMenuService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/menu")
-public class SysMenuController {
+public class NextRobotSysMenuController {
 
     @Autowired private PropertyConfigurer propertyConfigurer;
-    @Autowired private SysMenuService sysMenuService;
+    @Autowired private NextRobotSysMenuService sysMenuService;
 
     @RequestMapping(value = "/getEntityProperty/{entityName}", method = RequestMethod.GET)
     @ResponseBody
@@ -57,15 +67,53 @@ public class SysMenuController {
         }
     }
 
+    @RequestMapping(value = "uploadTemplate", method = RequestMethod.POST)
+    @ResponseBody
+    public InvokeResult uploadTemplate(@RequestParam("templateFile")MultipartFile templateFile,
+                                       @RequestParam("templateJson")String templateJson){
+        ObjectMapper mapper = new ObjectMapper();
+        //序列化检查json格式
+        try {
+            mapper.readValue(templateJson, new TypeReference<List<Map>>() {});
+        } catch (IOException e) {
+            try {
+                mapper.readValue(templateJson, new TypeReference<Map>() {});
+            } catch (IOException e1) {
+                return InvokeResult.failure("请检查json格式");
+            }
+        }
+        NextRobotBusinessTemplate nextRobotBusinessTemplate = new NextRobotBusinessTemplate();
+        try {
+            String originalFilename = templateFile.getOriginalFilename();
+            int i = originalFilename.lastIndexOf(".");
+            InputStream stream = templateFile.getInputStream();
+            SerialClob clob = new SerialClob(IOUtils.toCharArray(stream, Charset.forName("utf-8"))); //实例化clob
+            nextRobotBusinessTemplate.setFileType(originalFilename.substring(i));
+            nextRobotBusinessTemplate.setName(originalFilename.substring(0, i));
+            nextRobotBusinessTemplate.setFileContent(clob);
+            nextRobotBusinessTemplate.setTemplate_json(templateJson);
+            stream.close();
+            this.sysMenuService.saveBusinessTemplate(nextRobotBusinessTemplate);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SerialException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return InvokeResult.success("上传成功");
+    }
+
     @RequestMapping(value = "saveEntity", method = RequestMethod.POST)
     @ResponseBody
-    public InvokeResult saveEntity(NextRobotSysMenuEntity nextRobotSysMenuTable, @RequestParam(value = "entityRow") String entityRow){
+    public InvokeResult saveEntity(NextRobotSysMenuEntity nextRobotSysMenuEntity, @RequestParam(value = "entityRow") String entityRow){
         if(StringUtils.isEmpty(entityRow))
             return InvokeResult.failure("请添加实体属性!");
         ObjectMapper mapper = new ObjectMapper();
         try {
+            this.sysMenuService.addEntity(nextRobotSysMenuEntity);
             List<NextRobotEntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<NextRobotEntityProperty>>(){});
-            List<NextRobotEntityProperty> newProperties = this.sysMenuService.saveEntityAndProperty(nextRobotSysMenuTable, nextRobotEntityProperties);
+            List<NextRobotEntityProperty> newProperties = this.sysMenuService.saveEntityProperty(nextRobotEntityProperties);
             if(!newProperties.isEmpty() && newProperties.size() > 0){
                 return InvokeResult.success(newProperties);
             }else{

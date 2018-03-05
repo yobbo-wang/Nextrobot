@@ -1,6 +1,20 @@
-;
-(function ($) {
-    window.appEngine = {
+;(function ($) {
+        Date.prototype.Format = function (fmt) {
+            var o = {
+                "M+": this.getMonth() + 1, //月份
+                "d+": this.getDate(), //日
+                "H+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        };
+        window.appEngine = {
         dataType: [
             {"value":"short","text":"short"},
             {"value":"int","text":"int"},
@@ -90,7 +104,8 @@
             var h2 = '<tr class="treegrid-tr-tree" id="tr-h2-'+id+'" style="height:'+ (length+1)*28 +'px">';
                 h2 += '<td colspan="6"><table id="entity-'+id+'"></table></td>';
             $('#' + state.rowIdPrefix + '-1-' + id).after(h1);
-            $('#' + state.rowIdPrefix + '-2-' + id).after(h2);
+            var tr = $('#' + state.rowIdPrefix + '-2-' + id);
+            tr.after(h2);
             $('#entity-'+id).datagrid({
                 singleSelect: true,
                 rownumbers: true,
@@ -98,7 +113,9 @@
                 columns:[[
                     {field:'entityName',title:'实体名',width:'20%'},
                     {field:'remark',title:'备注',width:'30%'},
-                    {field:'createDateStr',title:'创建时间',width:'30%'},
+                    {field:'createDate',title:'创建时间',width:'30%', formatter: function (value,row,index) {
+                        return new Date(value).Format("yyyy-MM-dd HH:mm:ss");
+                    }},
                     {field:'id',align:'center',title:'操作',width:'20%',formatter:function(value,row,index){
                         var h = "<a href='javascript:;' style='text-decoration: none;color:red;' data-id='"+value+"' onclick='appEngine.deleteEntity(this)'>删除</a>";
                         h += "<a href='javascript:;' style='text-decoration: none;margin-left: 5px;' onclick='appEngine.addEntity(\""+value+"\")'>修改</a>";
@@ -107,12 +124,13 @@
                 ]],
                 data: tables,
                 onDblClickRow: function (index, row) {
-                    console.log(row);
                     $('#entityInfo').form('load', row);
                     //查询实体属性信息
                     $("#datagrid-entity").datagrid({data: row.entityProperties});
                 }
             });
+            var height = -($('#tr-h2-'+ id + ' .datagrid').offset().top - tr.offset().top - tr.height()) * 2;
+            $('#tr-h2-'+ id + ' .datagrid').css('margin-top', height + 'px');
             $(clazz).attr('status', 'opened');
         },
         deleteEntity: function (clazz) {
@@ -125,7 +143,7 @@
                     $.messager.show({title:'温馨提示',msg:result.data,timeout:3000,showType:'show'});
                     $('#menu-list').treegrid("reload");
                 } else {
-                    alert(result.data);
+                    $.messager.alert("操作提示", result.errorMessage,"question");
                 }
             });
         },
@@ -161,7 +179,7 @@
                                 $('#addEntity').dialog("close");
                                 $('#menu-list').treegrid("reload");
                             } else {
-                                $('#errorMsg').html("<span style='color:Red'>错误提示:" + result.data + "</span>");
+                                $('#errorMsg').html("<span style='color:Red'>错误提示:" + result.errorMessage + "</span>");
                             }
                         }
                     });
@@ -183,12 +201,24 @@
                     $.messager.show({title:'温馨提示',msg:'保存成功!',timeout:3000,showType:'show'});
                     $("#datagrid-entity").datagrid({data: result.data});
                 } else {
-                    $.messager.alert("操作提示", result.data,"question");
+                    $.messager.alert("操作提示", result.errorMessage,"question");
                 }
             });
         },
         uploadTemplate: function () {
-            
+            $("#uploadTemlate").remove();
+            $(document.body).append("<div id='uploadTemlate' class='easyui-window'></div>");
+            $('#uploadTemlate').window({
+                width:400,
+                height:200,
+                title:'选择模板',
+                closed:true,
+                collapsible:false,
+                content:appEngine.uploadFileForm({id:'uploadTemlate',uploadMethodName:'appEngine.uploadFileClick()',fileChangeMethod:'appEngine.fileUploadChange()'}),
+                minimizable:false,
+                maximizable:false
+            });
+            $('#uploadTemlate').window('open');
         },
         createEntityCode: function () {  //生成实体代码
             if($("#sysMenuTableId").val() == "") return;
@@ -222,7 +252,7 @@
                             $.messager.show({title:'温馨提示',msg:result.data,timeout:3000,showType:'show'});
                             $('#createEntityMode').dialog("close");
                         } else {
-                            $('#errorMsg').html("<span style='color:Red'>错误提示:" + result.data + "</span>");
+                            $('#errorMsg').html("<span style='color:Red'>错误提示:" + result.errorMessage + "</span>");
                         }
                     });
                 }
@@ -235,6 +265,88 @@
             html += '<div><label id="errorMsg" /></div>';
             html += '</from></div>';
             $('#createEntityMode').html(html);
+        },
+        uploadFileForm: function(options){
+            var html = "<form id=\"importFileForm\" enctype=\"multipart/form-data\">";
+            html += "<table style=\"margin:5px;height:70px;\">";
+            html += "<tr>";
+            html += "<td>模板JSON数据:</td>";
+            html += "<td><input name='templateJson' class='easyui-textbox' data-options='multiline:true' style='width:260px;'/></td>";
+            html += "</tr>";
+            html += "<tr>";
+            html += "<td>请选择模板文件:</td>";
+            html += "<td><input class=\"easyui-filebox\" data-options=\"prompt:'点击选择模板文件...',buttonText:'点击上传',onChange:function(){"+options.fileChangeMethod+";}\" id=\"templateFile\" name=\"templateFile\" style=\"width:260px;\"></td>";
+            html += "</tr>";
+            html += "<tr>";
+            html += "<td colspan=\"4\"><label id=\"fileName\" isCanUpolad='false' /></td>";
+            html += "</tr>";
+            html += "<tr>";
+            html += "<td colspan=\"4\">";
+            html += "<label id=\"uploadInfo\" />";
+            html += "</td>";
+            html += "</tr>";
+            html += "</table><div style=\"text-align:center;clear:both;margin:5px;\">";
+            html += "<a id=\"uploadFile\" style=\"margin-left:5px;\" class=\"easyui-linkbutton\" data-options=\"iconCls:'icon-ok'\" onclick=\"javascript:"+options.uploadMethodName+";\" >上传</a>";
+            html += "<a class=\"easyui-linkbutton\" style=\"margin-left:5px;\" data-options=\"iconCls:'icon-cancel'\" onclick=\"javascript:$('#"+options.id+"').window('close');\" >关闭</a>";
+            html += "</div>"
+            html += "</form>";
+            return html;
+        },
+        fileUploadChange: function(){
+            var file = document.getElementsByName("templateFile")[0].files[0];
+            if(file == null ) {
+                document.getElementById('fileName').innerHTML = "<span style='color:Red'>错误提示:错误，请上传文件!</span>";
+                return;
+            }
+            var fileName = file.name;
+            var file_typename = fileName.substring(fileName.lastIndexOf('.'),fileName.length);
+            if(file_typename == ".ftl"){
+                var fileSize = 0;
+                //计算文件的大小
+                if(file.size > 1024*1024){
+                    fileSize = Math.round(file.size * 100 / (1024 * 1024)) / 100;
+                    if(fileSize > 10 ){ //大于10M，禁止上传
+                        document.getElementById('fileName').setAttribute("isCanUpolad","false");
+                        document.getElementById('fileName').innerHTML = "<span style='color:Red'>错误提示:错误，文件超过10M，不能上传!</span>";
+                        return;
+                    }
+                    fileSize = fileSize.toString() + 'MB';
+                }else{
+                    fileSize = Math.round(file.size * 100 / (1024)) / 100 + 'KB';
+                }
+                document.getElementById('fileName').setAttribute("isCanUpolad","true");
+                document.getElementById('fileName').innerHTML = "<span style='color:blue;'>文件名: " + file.name + ',大小: ' + fileSize + "</span>";
+            }else{
+                document.getElementById('fileName').setAttribute("isCanUpolad","false");
+                document.getElementById('fileName').innerHTML = "<span style='color:Red'>错误提示：当前文件格式为"+file_typename+"，请上传.ftl后缀文件</span>";
+            }
+        },
+        uploadFileClick: function () {
+            if(document.getElementById('fileName').getAttribute("isCanUpolad") == "false") {
+                document.getElementById('fileName').innerHTML = "<span style='color:Red'>错误提示:错误，请上传文件!</span>";
+                return;
+            }
+            var formData = new FormData($("#importFileForm")[0]);
+            $.ajax({
+                url: path + '/menu/uploadTemplate',
+                type: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    if(result.success){
+                        $.messager.show({title:'温馨提示',msg:result.data,timeout:3000,showType:'show'});
+                        $('#uploadTemlate').window('close');
+                    }else{
+                        document.getElementById('uploadInfo').innerHTML = "<span style='color:Red'>错误提示:" + result.errorMessage + "</span>";
+                    }
+                },
+                error: function (result) {
+                    document.getElementById('uploadInfo').innerHTML = "<span style='color:Red'>错误提示:" + result.errorMessage + "</span>";
+                }
+            });
         },
         endEditing:function(index, field){
             if (appEngine.endIndex == undefined){return true}
@@ -282,7 +394,7 @@
                         $.messager.show({title:'温馨提示',msg:result.data,timeout:3000,showType:'show'});
                         $('#menu-list').treegrid("reload");
                     } else {
-                        alert(result.data);
+                        $.messager.alert("操作提示", result.errorMessage,"question");
                     }
                 });
             }
@@ -320,7 +432,7 @@
                             $('#editMenu').dialog("close");
                             $('#menu-list').treegrid("reload");
                         } else {
-                            $('#errorMsg').html("<span style='color:Red'>错误提示:" + result.data + "</span>");
+                            $('#errorMsg').html("<span style='color:Red'>错误提示:" + result.errorMessage + "</span>");
                         }
                     }
                 });

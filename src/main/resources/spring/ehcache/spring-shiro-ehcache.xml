@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <bean id="ehcacheSessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+
+    <bean id="ehcacheManagerFactoryBean" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:spring/ehcache/ehcache_shiro_spring.xml"/>
+    </bean>
+
+    <!-- shiro cache -->
+    <bean id="ehcacheShiroCacheManager" class="wang.yobbo.common.appengine.ehcache.EhCacheShiroCacheManagerImpl">
+        <property name="cacheManager" ref="ehcacheManagerFactoryBean" />
+    </bean>
+
+
+    <bean id="ehcacheShiroSessionDAO"
+          class="wang.yobbo.common.appengine.ehcache.EhCacheShiroSessionDAO">
+        <property name="sessionIdGenerator" ref="ehcacheSessionIdGenerator" />
+        <property name="activeSessionsCacheName" value="${shiro.active.session.cacheName}" />
+    </bean>
+
+
+    <!-- Spring ehcache -->
+    <bean id="ehcacheSpringCacheManager" class="wang.yobbo.common.appengine.ehcache.EhCacheSpringCacheManagerImpl">
+        <property name="cacheManager" ref="ehcacheManagerFactoryBean"/>
+    </bean>
+
+    <cache:annotation-driven cache-manager="ehcacheSpringCacheManager" mode="aspectj"/>
+
+    <!--<bean id="nxCacheManager" class="cn.com.enersun.nx.infra.cache.NXCacheManagerImpl">-->
+    <!--<constructor-arg value="defaultEhCacheCache"/>-->
+    <!--<property name="shiroCacheManager" ref="ehcacheShiroCacheManager"/>-->
+    <!--<property name="springCacheManager" ref="ehcacheSpringCacheManager"/>-->
+    <!--</bean>-->
+</beans>

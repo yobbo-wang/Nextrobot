@@ -36,10 +36,7 @@ public class NextRobotEntityProperty extends BaseEntity<String> {
     @Column(name = "REMARKS", length = 200)
     private String remarks;
 
-    @Column(name = "COLUMN_DEF", length = 50)
-    private String column_def;
-
-    @Column(name = "ENTITY_ID", length = 32)
+    @Column(name = "ENTITY_ID", length = 32, updatable = false)
     private String entity_id;
 
     public String getColumn_name() {
@@ -104,14 +101,6 @@ public class NextRobotEntityProperty extends BaseEntity<String> {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
-    }
-
-    public String getColumn_def() {
-        return column_def;
-    }
-
-    public void setColumn_def(String column_def) {
-        this.column_def = column_def;
     }
 
     public String getEntity_id() {

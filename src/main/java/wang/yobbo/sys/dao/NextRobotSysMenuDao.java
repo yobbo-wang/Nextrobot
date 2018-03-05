@@ -6,7 +6,7 @@ import wang.yobbo.sys.entity.NextRobotSysMenu;
 
 import java.util.List;
 
-public interface SysMenuDao {
+public interface NextRobotSysMenuDao {
     List<NextRobotSysMenu> findByPId(String pid);
 
     NextRobotSysMenu findById(String id);

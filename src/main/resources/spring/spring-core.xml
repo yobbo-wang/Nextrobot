@@ -11,7 +11,10 @@
         <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
     </context:component-scan>
 
+    <!-- 用户获取spring bean -->
     <bean id="applicationContext" class="wang.yobbo.common.spring.SpringContextUtil"/>
+
+    <import resource="classpath*:spring/${cacheManagerTpye}/spring-shiro-${cacheManagerTpye}.xml"/>
 
     <!-- shiro相关 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
@@ -94,10 +97,7 @@
             <bean class="wang.yobbo.sys.security.shiro.filter.CustomSessionListenerAdapter"></bean>
         </property>
         <property name="globalSessionTimeout" value="${shiro.session.globalSessionTimeout}"></property>
-        <!--<property name="sessionDAO" ref="${cacheManagerTpye}ShiroSessionDAO" />-->
-        <property name="sessionDAO" >
-            <bean class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO"></bean>
-        </property>
+        <property name="sessionDAO" ref="${cacheManagerTpye}ShiroSessionDAO" />
         <property name="deleteInvalidSessions" value="false" />
         <property name="sessionValidationInterval" value="${shiro.session.validation.interval}" />
         <property name="sessionValidationSchedulerEnabled" value="true" />
@@ -108,10 +108,7 @@
                 <property name="sessionManager" ref="sessionManager" />
             </bean>
         </property>
-        <!--<property name="cacheManager" ref="${cacheManagerTpye}ShiroCacheManager"/>-->
-        <property name="cacheManager">
-            <bean class="org.apache.shiro.cache.ehcache.EhCacheManager"></bean>
-        </property>
+        <property name="cacheManager" ref="${cacheManagerTpye}ShiroCacheManager"/>
         <property name="sessionIdCookieEnabled" value="true" />
         <property name="sessionIdCookie">
             <!-- 设置cookie uid -->

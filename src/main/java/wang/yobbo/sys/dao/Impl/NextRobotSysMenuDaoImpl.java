@@ -4,13 +4,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
 import wang.yobbo.common.appengine.entity.Searchable;
-import wang.yobbo.sys.dao.SysMenuDao;
+import wang.yobbo.sys.dao.NextRobotSysMenuDao;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
 
 import java.util.List;
 
 @Component
-public class SysMenuDaoImpl extends BaseDaoImpl<NextRobotSysMenu, String> implements SysMenuDao{
+public class NextRobotSysMenuDaoImpl extends BaseDaoImpl<NextRobotSysMenu, String> implements NextRobotSysMenuDao {
     public List<NextRobotSysMenu> findByPId(String pid) {
         String hql = (pid != null && pid.length() > 0) ?
                 "select nextRobotSysMenu from NextRobotSysMenu nextRobotSysMenu where nextRobotSysMenu.parentId=:pid" :
@@ -25,7 +25,7 @@ public class SysMenuDaoImpl extends BaseDaoImpl<NextRobotSysMenu, String> implem
     }
 
     public NextRobotSysMenu findById(String id) {
-        return super.get(id);
+        return super.findById(id);
     }
 
     public NextRobotSysMenu save(NextRobotSysMenu sysMenu) {

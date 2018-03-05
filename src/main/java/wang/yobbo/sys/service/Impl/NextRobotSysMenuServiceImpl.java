@@ -10,13 +10,15 @@ import org.springframework.stereotype.Service;
 import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
 import wang.yobbo.common.spring.PropertyConfigurer;
+import wang.yobbo.sys.dao.NextRobotBussisTemplateDao;
 import wang.yobbo.sys.dao.NextRobotEntityPropertyDao;
-import wang.yobbo.sys.dao.SysMenuDao;
-import wang.yobbo.sys.dao.SysMenuTableDao;
+import wang.yobbo.sys.dao.NextRobotSysMenuDao;
+import wang.yobbo.sys.dao.NextRobotSysMenuTableDao;
+import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
 import wang.yobbo.sys.entity.NextRobotEntityProperty;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
 import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
-import wang.yobbo.sys.service.SysMenuService;
+import wang.yobbo.sys.service.NextRobotSysMenuService;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -24,10 +26,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class SysMenuServiceImpl implements SysMenuService {
-    @Autowired private SysMenuDao sysMenuDao;
-    @Autowired private SysMenuTableDao sysMenuTableDao;
+public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
+    @Autowired private NextRobotSysMenuDao sysMenuDao;
+    @Autowired private NextRobotSysMenuTableDao sysMenuTableDao;
     @Autowired private PropertyConfigurer propertyConfigurer;
+    @Autowired private NextRobotBussisTemplateDao nextRobotBussisTemplateDao;
     @Autowired private NextRobotEntityPropertyDao nextRobotEntityPropertyDao;
 
     public Page<NextRobotSysMenu> getPage(Searchable searchable) {
@@ -56,8 +59,8 @@ public class SysMenuServiceImpl implements SysMenuService {
         return this.sysMenuDao.delete(id);
     }
 
-    public NextRobotSysMenuEntity addEntity(NextRobotSysMenuEntity sysMenuTable) {
-        return this.sysMenuTableDao.addEntity(sysMenuTable);
+    public NextRobotSysMenuEntity addEntity(NextRobotSysMenuEntity nextRobotSysMenuEntity) {
+        return this.sysMenuTableDao.addEntity(nextRobotSysMenuEntity);
     }
 
     public int deleteEntity(String id) {
@@ -127,9 +130,16 @@ public class SysMenuServiceImpl implements SysMenuService {
         return true;
     }
 
-    public List<NextRobotEntityProperty> saveEntityAndProperty(NextRobotSysMenuEntity nextRobotSysMenuTable, List<NextRobotEntityProperty> nextRobotEntityProperties) {
-        this.sysMenuTableDao.addEntity(nextRobotSysMenuTable); //保存
+    public List<NextRobotEntityProperty> saveEntityProperty(List<NextRobotEntityProperty> nextRobotEntityProperties) {
         return this.nextRobotEntityPropertyDao.saveEntityProperty(nextRobotEntityProperties);
+    }
+
+    public NextRobotBusinessTemplate saveBusinessTemplate(NextRobotBusinessTemplate nextRobotBusinessTemplate) {
+        return this.nextRobotBussisTemplateDao.saveBusinessTemplate(nextRobotBusinessTemplate);
+    }
+
+    public NextRobotBusinessTemplate findTemplate(String id) {
+        return this.nextRobotBussisTemplateDao.findTemplate(id);
     }
 
     //创建文件
