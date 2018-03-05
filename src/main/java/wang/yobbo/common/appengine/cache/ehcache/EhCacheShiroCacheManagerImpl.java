@@ -1,4 +1,4 @@
-package wang.yobbo.common.appengine.ehcache;
+package wang.yobbo.common.appengine.cache.ehcache;
 
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;

@@ -12,20 +12,20 @@
     </bean>
 
     <!-- shiro cache -->
-    <bean id="ehcacheShiroCacheManager" class="wang.yobbo.common.appengine.ehcache.EhCacheShiroCacheManagerImpl">
+    <bean id="ehcacheShiroCacheManager" class="wang.yobbo.common.appengine.cache.ehcache.EhCacheShiroCacheManagerImpl">
         <property name="cacheManager" ref="ehcacheManagerFactoryBean" />
     </bean>
 
 
     <bean id="ehcacheShiroSessionDAO"
-          class="wang.yobbo.common.appengine.ehcache.EhCacheShiroSessionDAO">
+          class="wang.yobbo.common.appengine.cache.ehcache.EhCacheShiroSessionDAO">
         <property name="sessionIdGenerator" ref="ehcacheSessionIdGenerator" />
         <property name="activeSessionsCacheName" value="${shiro.active.session.cacheName}" />
     </bean>
 
 
     <!-- Spring ehcache -->
-    <bean id="ehcacheSpringCacheManager" class="wang.yobbo.common.appengine.ehcache.EhCacheSpringCacheManagerImpl">
+    <bean id="ehcacheSpringCacheManager" class="wang.yobbo.common.appengine.cache.ehcache.EhCacheSpringCacheManagerImpl">
         <property name="cacheManager" ref="ehcacheManagerFactoryBean"/>
     </bean>
 

@@ -16,6 +16,12 @@
 
     <import resource="classpath*:spring/${cacheManagerTpye}/spring-shiro-${cacheManagerTpye}.xml"/>
 
+    <bean id="nextRobotCacheManager" class="wang.yobbo.common.appengine.cache.NextRobotCacheManagerImpl">
+        <constructor-arg value="default${cacheManagerTpye}Cache"/>
+        <property name="shiroCacheManager" ref="${cacheManagerTpye}ShiroCacheManager"/>
+        <property name="springCacheManager" ref="${cacheManagerTpye}SpringCacheManager"/>
+    </bean>
+
     <!-- shiro相关 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="userRealm"></property>

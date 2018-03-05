@@ -59,30 +59,6 @@ public class UserTest {
 
     }
 
-    /**
-     * 自定义生成表
-     */
-//    @Test
-    public void createTable(){
-        org.hibernate.cfg.Configuration configuration = new Configuration();
-        configuration.addAnnotatedClass(NextRobotSysMenu.class);
-        configuration.setProperty("hibernate.dialect", propertyConfigurer.getProperty("jpa.databasePlatform")); //设置数据库方言
-        configuration.setProperty("hibernate.hbm2ddl.auto", "create");
-        configuration.setProperty("showSql", "true");
-
-        SchemaExport schemaExport = new SchemaExport(configuration);
-        boolean script = true;
-        boolean export = true;
-        /**
-         * 创建表结构
-         * 第一个参数script的作用：print the DDL to the console
-         * 第二个参数export的作用：export the script to the database
-         */
-        schemaExport.create(script, export);
-        // drop 表结构
-        // schemaExport.drop(script, export);
-    }
-
     @Autowired
     private SysUserService sysService;
 

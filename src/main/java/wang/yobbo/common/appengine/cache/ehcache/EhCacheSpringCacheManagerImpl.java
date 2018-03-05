@@ -1,4 +1,4 @@
-package wang.yobbo.common.appengine.ehcache;
+package wang.yobbo.common.appengine.cache.ehcache;
 
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 
