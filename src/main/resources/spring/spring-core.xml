@@ -3,16 +3,26 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <aop:config proxy-target-class="true"/>
+    <!-- 开启AOP监听 -->
+    <aop:aspectj-autoproxy expose-proxy="true"/>
+    <!-- 用户获取spring bean -->
+    <bean id="applicationContext" class="wang.yobbo.common.spring.SpringContextUtil"/>
 
     <!-- 扫描注解Bean -->
     <context:component-scan base-package="wang.yobbo.**">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
         <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
     </context:component-scan>
-
-    <!-- 用户获取spring bean -->
-    <bean id="applicationContext" class="wang.yobbo.common.spring.SpringContextUtil"/>
 
     <import resource="classpath*:spring/${cacheManagerTpye}/spring-shiro-${cacheManagerTpye}.xml"/>
 
@@ -24,7 +34,11 @@
 
     <!-- shiro相关 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-        <property name="realm" ref="userRealm"></property>
+        <property name="realms">
+            <list>
+                <ref bean="userRealm"/>
+            </list>
+        </property>
         <property name="sessionManager" ref="sessionManager"></property>
         <property name="rememberMeManager" ref="rememberMeManager"></property>
     </bean>
@@ -57,16 +71,42 @@
         <property name="rememberMeParam" value="rememberMe"/>
     </bean>
 
+    <!-- 退出登录过滤器 -->
+    <bean id="logoutFilter" class="wang.yobbo.sys.security.shiro.filter.CustomLogoutFilter">
+        <property name="redirectUrl" value="${shiro.logout.success.url}" />
+        <property name="sessionDAO" ref="${cacheManagerTpye}ShiroSessionDAO" />
+        <property name="ssoRedirectUrl" value="${shiro.logout.success.url}" />
+    </bean>
+
+    <!-- 限制同时登录人数 -->
+    <bean id="kickoutSessionControlFilter" class="wang.yobbo.sys.security.shiro.filter.KickoutSessionControlFilter">
+        <property name="sessionDAO" ref="${cacheManagerTpye}ShiroSessionDAO" />
+        <property name="sessionManager" ref="sessionManager" />
+        <property name="kickoutAfter" value="true"/>
+        <property name="maxSession" value="${shiro.maxSession}"/>
+        <property name="kickoutUrl" value="${shiro.kickoutUrl}"/>
+    </bean>
+
+    <!--提取系统用户（User） 验证用户是否合法的过滤器（是否删除状态，是否被锁定状态） -->
+    <bean id="sysUserFilter" class="wang.yobbo.sys.security.shiro.filter.SysUserFilter">
+        <property name="userDisabledUrl" value="${shiro.user.disabled.url}" />
+        <property name="userNotfoundUrl" value="${shiro.user.notfound.url}" />
+        <property name="userUnknownErrorUrl" value="${shiro.user.unknown.error.url}" />
+    </bean>
+
+    <!-- 重写角色授权过滤器 -->
+    <bean id="anyRoleFilter" class="wang.yobbo.sys.security.shiro.filter.AnyRoleAuthorizationFilter"></bean>
+
     <bean id="filterChainManager" class="wang.yobbo.sys.security.shiro.extend.CustomDefaultFilterChainManager">
         <property name="loginUrl" value="${shiro.login.url}" />
         <property name="successUrl" value="${shiro.default.success.url}"/>
         <property name="customFilters">
             <util:map>
                 <entry key="authc" value-ref="formAuthenticationFilter" />
-                <!--<entry key="anyRole" value-ref="anyRoleFilter" />-->
-                <!--<entry key="logout" value-ref="logoutFilter" />-->
-                <!--<entry key="sysUser" value-ref="sysUserFilter" />-->
-                <!--<entry key="kickout" value-ref="kickoutSessionControlFilter"/>-->
+                <entry key="anyRole" value-ref="anyRoleFilter" />
+                <entry key="logout" value-ref="logoutFilter" />
+                <entry key="sysUser" value-ref="sysUserFilter" />
+                <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
             </util:map>
         </property>
         <property name="defaultFilterChainDefinitions">
@@ -126,6 +166,12 @@
                 <property name="maxAge" value="${shiro.uid.cookie.maxAge}" />
             </bean>
         </property>
+    </bean>
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
     </bean>
 
 </beans>

@@ -16,13 +16,10 @@
         <property name="cacheManager" ref="ehcacheManagerFactoryBean" />
     </bean>
 
-
-    <bean id="ehcacheShiroSessionDAO"
-          class="wang.yobbo.common.appengine.cache.ehcache.EhCacheShiroSessionDAO">
+    <bean id="ehcacheShiroSessionDAO" class="wang.yobbo.common.appengine.cache.ehcache.EhCacheShiroSessionDAO">
         <property name="sessionIdGenerator" ref="ehcacheSessionIdGenerator" />
         <property name="activeSessionsCacheName" value="${shiro.active.session.cacheName}" />
     </bean>
-
 
     <!-- Spring ehcache -->
     <bean id="ehcacheSpringCacheManager" class="wang.yobbo.common.appengine.cache.ehcache.EhCacheSpringCacheManagerImpl">
@@ -31,9 +28,4 @@
 
     <cache:annotation-driven cache-manager="ehcacheSpringCacheManager" mode="aspectj"/>
 
-    <!--<bean id="nxCacheManager" class="cn.com.enersun.nx.infra.cache.NXCacheManagerImpl">-->
-    <!--<constructor-arg value="defaultEhCacheCache"/>-->
-    <!--<property name="shiroCacheManager" ref="ehcacheShiroCacheManager"/>-->
-    <!--<property name="springCacheManager" ref="ehcacheSpringCacheManager"/>-->
-    <!--</bean>-->
 </beans>

@@ -4,9 +4,8 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!-- dataSource -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
@@ -112,8 +111,5 @@
         <property name="staticMethod" value="wang.yobbo.common.appengine.BaseDaoManager.setEntityManagerFactory" />
         <property name="arguments" ref="ehcacheEntityManagerFactory" />
     </bean>
-
-    <!--<jpa:repositories base-package="wang.yobbo.**.dao" entity-manager-factory-ref="ehcacheEntityManagerFactory"
-                      transaction-manager-ref="transactionManager"/>-->
 
 </beans>
