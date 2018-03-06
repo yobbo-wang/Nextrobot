@@ -79,9 +79,13 @@ public final class BaseDaoManager {
         return entityManager;
     }
 
+    //TODO
     @Nullable
     @Contract(pure = true)
     public <T>List<T> findAll(T t){
+        List<T> entities = this.findAll();
+        List<T> dtos = new ArrayList();
+
         return null;
     }
 
