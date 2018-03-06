@@ -2,19 +2,19 @@ package wang.yobbo.sys.service;
 
 import org.springframework.data.domain.Page;
 import wang.yobbo.common.appengine.entity.Searchable;
-import wang.yobbo.sys.entity.NextRobotSysUsers;
+import wang.yobbo.sys.entity.NextRobotSysUser;
 
 import java.util.List;
 
 public interface SysUserService{
 
-    Page<NextRobotSysUsers> getPage(Searchable searchable);
+    Page<NextRobotSysUser> getPage(Searchable searchable);
     /**
      * 根据自定义sql查询数据结果集
      * @param sql 自定sql
      * @param params 参数数组
      */
-    NextRobotSysUsers findBySqlOne(String sql, Object...params);
+    NextRobotSysUser findBySqlOne(String sql, Object...params);
 
     /**
      * 根据自定义sql查询数据结果集
@@ -22,7 +22,7 @@ public interface SysUserService{
      * @param params
      * @return
      */
-    List<NextRobotSysUsers> findAllBySql(String sql, Object...params);
+    List<NextRobotSysUser> findAllBySql(String sql, Object...params);
 
     /**
      * 根据自定义sql查询数据结果集记录数
@@ -42,14 +42,14 @@ public interface SysUserService{
      * 获取所有实体所有结果集
      * @return
      */
-    List<NextRobotSysUsers> findUserAll();
+    List<NextRobotSysUser> findUserAll();
 
     /**
      * 根据实体值，获取所有结果集
      * @param SysUser
      * @return
      */
-    List<NextRobotSysUsers> findUserAll(NextRobotSysUsers SysUser);
+    List<NextRobotSysUser> findUserAll(NextRobotSysUser SysUser);
 
     /**
      * 根据主键ID批量删除
@@ -58,9 +58,17 @@ public interface SysUserService{
      */
     int deleteByPrimaryKeys(String ... primaryKey);
 
-    void deleteForUser(NextRobotSysUsers SysUser);
+    void deleteForUser(NextRobotSysUser SysUser);
 
-    NextRobotSysUsers update(NextRobotSysUsers SysUser);
+    NextRobotSysUser update(NextRobotSysUser SysUser);
 
-    NextRobotSysUsers save(NextRobotSysUsers SysUser);
+    NextRobotSysUser save(NextRobotSysUser SysUser);
+
+    NextRobotSysUser findByEmail(String email);
+
+    NextRobotSysUser findByMobilePhoneNumber(String mobilePhone);
+
+    NextRobotSysUser findByUserName(String userName);
+
+    NextRobotSysUser login(String username, String password);
 }

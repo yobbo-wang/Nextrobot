@@ -13,16 +13,4 @@
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </logger>
-    <!--<logger name="wang.yobbo" level="DEBUG"  additivity="true">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </logger>
-    <logger name="com.alibaba" level="DEBUG"  additivity="true">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </logger>
-    <logger name="com.activiti" level="DEBUG"  additivity="true">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </logger>-->
 </configuration>

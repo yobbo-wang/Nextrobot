@@ -3,6 +3,6 @@
 var ACTIVITI = ACTIVITI || {};
 
 ACTIVITI.CONFIG = {
-	'contextRoot' :  path + '/activity',
+	'contextRoot' :  path,
 };
 

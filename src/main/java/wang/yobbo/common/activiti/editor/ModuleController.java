@@ -58,8 +58,9 @@ public class ModuleController {
             repositoryService.saveModel(modelData);
             repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
 
-            response.sendRedirect(request.getContextPath() + "/activiti-app/index.jsp?modelId=" + modelData.getId());
+            response.sendRedirect(request.getContextPath() + "/engine/activiti-app/index.html?modelId=" + modelData.getId());
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("创建模型失败：", e);
         }
     }

@@ -13,13 +13,13 @@ import java.util.List;
 public class NextRobotSysMenuDaoImpl extends BaseDaoImpl<NextRobotSysMenu, String> implements NextRobotSysMenuDao {
     public List<NextRobotSysMenu> findByPId(String pid) {
         String hql = (pid != null && pid.length() > 0) ?
-                "select nextRobotSysMenu from NextRobotSysMenu nextRobotSysMenu where nextRobotSysMenu.parentId=:pid" :
+                "select nextRobotSysMenu from NextRobotSysMenu nextRobotSysMenu where nextRobotSysMenu.parentId = ?1" :
                 "select nextRobotSysMenu from NextRobotSysMenu nextRobotSysMenu where nextRobotSysMenu.parentId is null";
         List<NextRobotSysMenu> list = null;
         if(pid != null && pid.length() > 0){
-            list = this.queryByHQL(hql, NextRobotSysMenu.class, pid);
+            list = this.findByHQL(hql, NextRobotSysMenu.class, pid);
         }else{
-            list = this.queryByHQL(hql, NextRobotSysMenu.class);
+            list = this.findByHQL(hql, NextRobotSysMenu.class);
         }
         return list;
     }

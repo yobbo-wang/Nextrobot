@@ -11,15 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "sys")
+@RequestMapping(value = "/sys")
 public class SysController {
-    @RequestMapping(value = "index", method = RequestMethod.GET)
+    @RequestMapping(value = "/index", method = RequestMethod.GET)
     public ModelAndView toIndex(){
         ModelAndView modelAndView = new ModelAndView("index");
         return modelAndView;
     }
 
-    @RequestMapping(value = "setting", method = RequestMethod.GET)
+    @RequestMapping(value = "/setting", method = RequestMethod.GET)
     public ModelAndView toSetting(){
         ModelAndView modelAndView = new ModelAndView("setting/index");
         return modelAndView;

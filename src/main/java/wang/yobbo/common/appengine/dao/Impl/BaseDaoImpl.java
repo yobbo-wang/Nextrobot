@@ -140,7 +140,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param params 参数数组
      * @return
      */
-    public <T> List<T> queryByHQL(String hql,  Class<T> entityBean, Object ...params){
+    public <T> List<T> findByHQL(String hql,  Class<T> entityBean, Object ...params){
         Query query = this.getBaseDaoManager().getEntityManager().createQuery(hql, entityBean);
         this.getBaseDaoManager().setParameter(query, params);
         try{

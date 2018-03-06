@@ -3,10 +3,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-  <display-name>JAP</display-name>
-  <welcome-file-list>
-    <welcome-file>login.jsp</welcome-file>
-  </welcome-file-list>
+  <display-name>NextRobot</display-name>
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
@@ -106,10 +103,10 @@
     <servlet-name>springMVC</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>springMVC</servlet-name>
-    <url-pattern>/activity/*</url-pattern>
-  </servlet-mapping>
+  <!--<servlet-mapping>-->
+    <!--<servlet-name>springMVC</servlet-name>-->
+    <!--<url-pattern>/activity/*</url-pattern>-->
+  <!--</servlet-mapping>-->
 
   <!-- DWR消息推送 -->
   <servlet>

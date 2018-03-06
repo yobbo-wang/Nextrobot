@@ -25,7 +25,7 @@
     <servelt.version>3.1.0</servelt.version>
     <commonsNet.version>3.6</commonsNet.version>
     <springDataJpa.version>1.7.1.RELEASE</springDataJpa.version>
-    <hibernate.version>5.2.12.Final</hibernate.version>
+    <hibernate.version>5.1.0.Final</hibernate.version>
     <junit.version>4.12</junit.version>
     <slf4j-api.version>1.7.25</slf4j-api.version>
     <logback-core.version>1.1.1</logback-core.version>

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class StencilsetRestResource {
-  private static final String ACTIVITIINFONAME = "stencilset.json";
+  private static final String ACTIVITIINFONAME = "activiti/stencilset.json";
 
   /**
    * 获取Activiti配置信息

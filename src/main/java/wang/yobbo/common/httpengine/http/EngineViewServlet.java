@@ -120,18 +120,17 @@ public class EngineViewServlet extends HttpServlet {
         // 这种情况 跳转freeMark模板
         if ("".equals(path)) {
             if (contextPath.equals("") || contextPath.equals("/")) {
-                response.sendRedirect(servletPath+"/index.html"); //转发到service中的.html中
+                response.sendRedirect(servletPath+"/sys/login"); //转发到service中的.html中
             } else {
-                response.sendRedirect(servletPath.substring(1)+"/index.html");
+                response.sendRedirect(servletPath.substring(1)+"/sys/login");
             }
             return;
         }
         // 这种情况，跳转freeMark模板
         if ("/".equals(path)) {
-            response.sendRedirect("index.html");
+            response.sendRedirect("/sys/login");
             return;
         }
-
         if(path.endsWith(".html")){
             String fullUrl = path;
             if (request.getQueryString() != null && request.getQueryString().length() > 0) {

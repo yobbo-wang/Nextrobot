@@ -11,7 +11,7 @@ import java.util.Map;
  * version v1.0
  */
 @Controller
-@RequestMapping(value = "/api/v1.0")
+@RequestMapping(value = "/api/v1")
 public class APIController {
 
     @RequestMapping(value = "/result", method = RequestMethod.POST)

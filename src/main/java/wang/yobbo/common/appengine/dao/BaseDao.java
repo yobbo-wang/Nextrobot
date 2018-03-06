@@ -66,7 +66,7 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
      * @param <T>
      * @return
      */
-    <T> List<T> queryByHQL(String hql,  Class<T> entityType, Object ...params);
+    <T> List<T> findByHQL(String hql,  Class<T> entityType, Object ...params);
 
     /**
      * 根据自定义sql执行

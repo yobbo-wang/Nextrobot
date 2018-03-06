@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.codec.Base64;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +18,13 @@ import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.common.spring.SpringContextUtil;
 import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
 import wang.yobbo.sys.entity.NextRobotSysMenu;
-import wang.yobbo.sys.entity.NextRobotSysUsers;
+import wang.yobbo.sys.entity.NextRobotSysUser;
 import wang.yobbo.sys.service.NextRobotSysMenuService;
 import wang.yobbo.sys.service.SysUserService;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
@@ -173,7 +170,7 @@ public class UserTest {
         String sql = " SELECT * FROM act_re_model where ID_ = ?1 and CREATE_TIME_ >= ?2 and CREATE_TIME_ <= ?3";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            NextRobotSysUsers nextRobotSysUsers = this.sysService.findBySqlOne(sql, 1, sdf.parse("2017-1-1").getTime(),
+            NextRobotSysUser nextRobotSysUsers = this.sysService.findBySqlOne(sql, 1, sdf.parse("2017-1-1").getTime(),
                     new Timestamp(System.currentTimeMillis()));
             System.out.println(nextRobotSysUsers);
         } catch (ParseException e) {
@@ -189,13 +186,13 @@ public class UserTest {
 
     @Test
     public void testFindAllBySql(){
-        List<NextRobotSysUsers> sss = this.sysService.findAllBySql("SELECT * FROM NEXT_ROBOT_SYS_USERS");
+        List<NextRobotSysUser> sss = this.sysService.findAllBySql("SELECT * FROM NEXT_ROBOT_SYS_USERS");
         System.out.println(sss);
     }
 
     @Test
     public void testOne(){
-        NextRobotSysUsers nextRobotSysUsers = this.sysService.findBySqlOne("SELECT * FROM NEXT_ROBOT_SYS_USERS");
+        NextRobotSysUser nextRobotSysUsers = this.sysService.findBySqlOne("SELECT * FROM NEXT_ROBOT_SYS_USERS");
         System.out.println(nextRobotSysUsers);
     }
 
@@ -206,8 +203,8 @@ public class UserTest {
 
     @Test
     public void findAll(){
-        List<NextRobotSysUsers> all = this.sysService.findUserAll();
-        for (NextRobotSysUsers user : all){
+        List<NextRobotSysUser> all = this.sysService.findUserAll();
+        for (NextRobotSysUser user : all){
             System.out.println(user.getName());
         }
     }
@@ -228,7 +225,7 @@ public class UserTest {
 
     @Test
     public void deleteByEntity(){
-        NextRobotSysUsers user = new NextRobotSysUsers();
+        NextRobotSysUser user = new NextRobotSysUser();
         user.setId("2c9f8c0b614183c201614183cbfe0000");
         this.sysService.deleteForUser(user);
     }

@@ -59,7 +59,7 @@ public final class BaseDaoManager {
         if(!StringUtils.equals(clazz.getName(), BaseDaoImpl.class.getName())){
             this.searchCallback = SearchCallback.DEFAULT; //实例化
             this.entityClass = clazz;
-            //新版Spring jpa可能把JpaEntityInformationSupport.getEntityInformation替换成JpaEntityInformationSupport.getMetadata了。
+//            this.jpaEntityInformation = JpaEntityInformationSupport.getEntityInformation(entityClass, entityManager);
             this.jpaEntityInformation = JpaEntityInformationSupport.getMetadata(entityClass, entityManager);
             this.entityName = this.jpaEntityInformation.getEntityName(); //获取实体名称
             this.IDName = (String)this.jpaEntityInformation.getIdAttributeNames().iterator().next(); //获取主键ID名称
@@ -291,7 +291,7 @@ public final class BaseDaoManager {
         Query query = entityManager.createQuery(hql + this.prepareOrder(pageable != null ? pageable.getSort() : null));
         this.setParameter(query, params);
         if(pageable != null) {
-            query.setFirstResult(pageable.getOffset());
+            query.setFirstResult((int)pageable.getOffset());
             query.setMaxResults(pageable.getPageSize());
         }
         return query.getResultList();
@@ -359,17 +359,7 @@ public final class BaseDaoManager {
             throw new RuntimeException("参数个数与设值个数不相等。");
         }
         for(int i=0;i<var0.length;i++){
-            int index = i + 1;
-            Object param = var0[i];
-            if(param instanceof Date){
-                query.setParameter(index, (Date) param, TemporalType.DATE); //转换成日期格式Date.from(Instant.parse(param.toString()))
-            }
-            else if(param instanceof Calendar){
-                query.setParameter(index, (Calendar)param, TemporalType.DATE);
-            }
-            else{
-                query.setParameter(index, param);
-            }
+            query.setParameter(i+1, var0[i]);
         }
     }
 }

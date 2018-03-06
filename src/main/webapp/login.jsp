@@ -27,11 +27,11 @@
                 <form class="layui-form" id="login">
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"><i class="fa fa-user"></i></label>
-                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="用户名:demo" class="layui-input" >
+                        <input type="text" name="userName" lay-verify="required" autocomplete="off" placeholder="用户名:demo" class="layui-input" >
                     </div>
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"><i class="fa fa-unlock-alt"></i></label>
-                        <input type="password" name="password" lay-verify="required" autocomplete="off" placeholder="密码:tplay" class="layui-input">
+                        <input type="password" name="userCode" lay-verify="required" autocomplete="off" placeholder="密码:tplay" class="layui-input">
                     </div>
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"><i class="fa fa-code"></i></label>
@@ -40,25 +40,24 @@
                         <%--<img src="/tplay/public/captcha.shtml" alt="captcha" onclick="this.src='/tplay/public/captcha.shtml?seed='+Math.random()" height="36" id="captcha" style="margin-top: 1px" />--%>
                     </div>
                     <div class="layui-form-item">
-                        <input type="checkbox" lay-skin="primary" title="记住账号" name="remember" value="1" ><div class="layui-unselect layui-form-checkbox" lay-skin="primary"><span>记住账号?</span><i class="layui-icon"></i></div>
+                        <input type="checkbox" lay-skin="primary" title="记住账号" name="remember" value="1" >
+                        <div class="layui-unselect layui-form-checkbox" lay-skin="primary">
+                            <span>记住账号?</span><i class="layui-icon"></i>
+                        </div>
                     </div>
                     <div class="layui-form-item">
                         <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="login">登 入</button>
                     </div>
-                    <input type="hidden" name="__token__" value="261bb41130d0791893522d783e9e0522804050f1" />
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 <script src="<%=path %>/resources/layui/layui.js"></script>
 <script>
     layui.use(['layer', 'form'], function() {
-        var layer = layui.layer,
-            $ = layui.jquery,
-            form = layui.form;
-        $(window).on('load', function() {
+        var layer = layui.layer, $ = layui.jquery, form = layui.form;
+        $(function(){
             form.on('submit(login)', function(data) {
                 $.ajax({
                     url: "<%=path%>/sys/login",
@@ -66,10 +65,10 @@
                     type: 'post',
                     async: false,
                     success: function(res) {
-                        layer.msg(res.data.msg,{offset: '50px',anim: 0.3});
+                        layer.msg('登录成功，正在跳转...',{offset: '50px',anim: 0.3});
                         if(res.success) {
                             setTimeout(function() {
-                                location.href = res.data.url;
+                                location.href = "<%=path%>"+ res.data;
                             }, 1000);
                         } else {
                             $('#captcha').click();
