@@ -6,5 +6,4 @@ git add ./commit.bat
 git add ./bootstrap-alert.zip
 git add ./lib.zip
 git commit -m 'update'
-echo git remote add origin https://github.com/yobbo-wang/Nextrobot.git
 git push origin -u master
