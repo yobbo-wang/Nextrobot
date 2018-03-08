@@ -60,8 +60,8 @@ public class ${engine.entityName ? cap_first}ServiceImpl implements ${engine.ent
         return this.${engine.entityName ? uncap_first}Dao.findAll(${engine.entityName ? uncap_first});
     }
 
-    public Page<${engine.entityName ? cap_first}> getPage(Searchable searchable) {
-        return this.${engine.entityName ? uncap_first}Dao.getPage(searchable);
+    public Page<${engine.entityName ? cap_first}> findPage(Searchable searchable) {
+        return this.${engine.entityName ? uncap_first}Dao.findPage(searchable);
     }
 
 }

@@ -68,7 +68,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param searchable
      * @return
      */
-    public Page<E> find(Searchable searchable) {
+    public Page<E> findPage(Searchable searchable) {
         return this.getBaseDaoManager().findAll(searchable);
     }
 
@@ -158,7 +158,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param params 参数数组
      * @return 返回影响行数
      */
-    public int updateBysql(String sql, Object ...params){
+    public int updateBySql(String sql, Object ...params){
         Assert.notNull(sql, "sql must not null.");
         Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql);
         this.getBaseDaoManager().setParameter(query, params);

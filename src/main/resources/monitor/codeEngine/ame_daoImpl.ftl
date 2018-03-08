@@ -55,8 +55,8 @@ public class ${engine.entityName ? cap_first}DaoImpl extends BaseDaoImpl<${engin
         return super.findAll(${engine.entityName ? uncap_first});
     }
 
-    public Page<${engine.entityName ? cap_first}> getPage(Searchable searchable) {
-        return super.find(searchable);
+    public Page<${engine.entityName ? cap_first}> findPage(Searchable searchable) {
+        return super.findPage(searchable);
     }
 
 }

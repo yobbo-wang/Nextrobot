@@ -77,6 +77,6 @@ public interface ${engine.entityName ? cap_first}Dao {
     * @param searchable 查询条件对象
     * @return Page<${engine.entityName ? cap_first}> 返回带有分页结果集
     */
-    Page<${engine.entityName ? cap_first}> getPage(Searchable searchable);
+    Page<${engine.entityName ? cap_first}> findPage(Searchable searchable);
 
 }

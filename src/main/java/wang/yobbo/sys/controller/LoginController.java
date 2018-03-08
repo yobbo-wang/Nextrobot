@@ -58,11 +58,13 @@ public class LoginController {
                 nextRobotSysUser = this.sysUserService.findByEmail(userName);
             }else if(Pattern.matches(MOBILE_PHONE_NUMBER_PATTERN, userName)){ //用手机查找用户
                 nextRobotSysUser = this.sysUserService.findByMobilePhoneNumber(userName);
-            }else if(Pattern.matches(USERNAME_PATTERN, userName)){ //用用户查找用户
+            }else if(Pattern.matches(USERNAME_PATTERN, userName)){ //用账号查找用户
                 nextRobotSysUser = this.sysUserService.findByUserName(userName);
             }else{
                 return InvokeResult.failure("请输入合法账号!");
             }
+            if(nextRobotSysUser == null)
+                return InvokeResult.failure("账号或密码错误!");
             if(nextRobotSysUser != null){
                 //查找角色
             }

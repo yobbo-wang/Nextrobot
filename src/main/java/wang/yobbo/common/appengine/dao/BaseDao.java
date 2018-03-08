@@ -27,7 +27,7 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
      * @param searchable
      * @return
      */
-    Page<E> find(Searchable searchable);
+    Page<E> findPage(Searchable searchable);
 
     /**
      * 查询分页
@@ -74,7 +74,7 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
      * @param params
      * @return
      */
-    int updateBysql(String sql, Object ...params);
+    int updateBySql(String sql, Object ...params);
 
     /**
      * 根据自定义sql查询全部
