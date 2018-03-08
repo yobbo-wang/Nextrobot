@@ -57,7 +57,7 @@ public class NextRobotHostDaoImpl extends BaseDaoImpl<NextRobotHost, String> imp
     }
 
     public Page<NextRobotHost> getPage(Searchable searchable) {
-        return super.find(searchable);
+        return super.findPage(searchable);
     }
 
     public List<NextRobotBusinessTemplate> findTemplateByHql(String hql, Object[] params) {

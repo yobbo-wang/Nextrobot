@@ -2,12 +2,24 @@ package wang.yobbo.sys.security.shiro.extend;
 
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.util.CollectionUtils;
+import org.apache.shiro.util.Nameable;
+import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.config.IniFilterChainResolverFactory;
+import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.filter.authc.AuthenticationFilter;
+import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
+import org.apache.shiro.web.filter.mgt.NamedFilterList;
+import org.apache.shiro.web.filter.mgt.SimpleNamedFilterList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CustomDefaultFilterChainManager extends DefaultFilterChainManager {
@@ -17,6 +29,17 @@ public class CustomDefaultFilterChainManager extends DefaultFilterChainManager {
     private String successUrl;
     private String unauthorizedUrl;
     private Map<String, String> filterChainDefinitionMap = null;
+    @Inject
+    private ShiroFilterChainManager shiroFilterChainManager;
+
+    /**
+     * 初始化默认的拦截器
+     */
+    public CustomDefaultFilterChainManager() {
+        setFilters(new LinkedHashMap<String, Filter>());
+        setFilterChains(new LinkedHashMap<String, NamedFilterList>());
+        addDefaultFilters(false);
+    }
 
     /**
      * 设定自定义拦截器
@@ -48,8 +71,95 @@ public class CustomDefaultFilterChainManager extends DefaultFilterChainManager {
         setFilterChainDefinitionMap(section);
     }
 
+    //初始化
+    @PostConstruct
+    public void init() {
+        Map<String, Filter> filters = getFilters();
+        if (!CollectionUtils.isEmpty(filters)) {
+            for (Map.Entry<String, Filter> entry : filters.entrySet()) {
+                String name = entry.getKey();
+                Filter filter = entry.getValue();
+                applyGlobalPropertiesIfNecessary(filter);
+                if (filter instanceof Nameable) {
+                    ((Nameable) filter).setName(name);
+                }
+                addFilter(name, filter, false);
+            }
+        }
+
+        Map<String, String> chains = getFilterChainDefinitionMap();
+        if (!CollectionUtils.isEmpty(chains)) {
+            for (Map.Entry<String, String> entry : chains.entrySet()) {
+                String url = entry.getKey();
+                String chainDefinition = entry.getValue();
+                createChain(url, chainDefinition);
+            }
+        }
+    }
+
+    /**
+     * 组合多个拦截器链为一个生成一个新的 FilterChain 代理
+     * @param original
+     * @param chainNames
+     * @return
+     */
+    public FilterChain proxy(FilterChain original, List<String> chainNames) {
+        NamedFilterList configured = new SimpleNamedFilterList(chainNames.toString());
+        for (String chainName : chainNames) {
+            LOGGER.info("chain:{}", getChain(chainName));
+            configured.addAll(getChain(chainName));
+        }
+        return configured.proxy(original);
+    }
+
+    private void applyGlobalPropertiesIfNecessary(Filter filter) {
+        applyLoginUrlIfNecessary(filter);
+        applySuccessUrlIfNecessary(filter);
+        applyUnauthorizedUrlIfNecessary(filter);
+    }
+
+    //设置默认登录地址
+    private void applyLoginUrlIfNecessary(Filter filter) {
+        String loginUrl = getLoginUrl();
+        if (StringUtils.hasText(loginUrl) && (filter instanceof AccessControlFilter)) {
+            AccessControlFilter acFilter = (AccessControlFilter) filter;
+            String existingLoginUrl = acFilter.getLoginUrl();
+            if (AccessControlFilter.DEFAULT_LOGIN_URL.equals(existingLoginUrl)) {
+                acFilter.setLoginUrl(loginUrl);
+            }
+        }
+    }
+
+    //设置登录成功后地址
+    private void applySuccessUrlIfNecessary(Filter filter) {
+        String successUrl = getSuccessUrl();
+        if (StringUtils.hasText(successUrl) && (filter instanceof AuthenticationFilter)) {
+            AuthenticationFilter authcFilter = (AuthenticationFilter) filter;
+            String existingSuccessUrl = authcFilter.getSuccessUrl();
+            if (AuthenticationFilter.DEFAULT_SUCCESS_URL.equals(existingSuccessUrl)) {
+                authcFilter.setSuccessUrl(successUrl);
+            }
+        }
+    }
+
+    private void applyUnauthorizedUrlIfNecessary(Filter filter) {
+        String unauthorizedUrl = getUnauthorizedUrl();
+        if (StringUtils.hasText(unauthorizedUrl) && (filter instanceof AuthorizationFilter)) {
+            AuthorizationFilter authzFilter = (AuthorizationFilter) filter;
+            String existingUnauthorizedUrl = authzFilter.getUnauthorizedUrl();
+            if (existingUnauthorizedUrl == null) {
+                authzFilter.setUnauthorizedUrl(unauthorizedUrl);
+            }
+        }
+    }
+
     public String getLoginUrl() {
         return loginUrl;
+    }
+
+    @Override
+    public FilterChain proxy(FilterChain original, String chainName) {
+        return super.proxy(original, chainName);
     }
 
     public void setLoginUrl(String loginUrl) {
@@ -78,5 +188,15 @@ public class CustomDefaultFilterChainManager extends DefaultFilterChainManager {
 
     public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
         this.filterChainDefinitionMap = filterChainDefinitionMap;
+    }
+
+    @Override
+    public NamedFilterList getChain(String chainName) {
+        NamedFilterList result = super.getChain(chainName);
+        if(result == null){
+            this.shiroFilterChainManager.initAnyRoleFilter(chainName);
+            result = super.getChain(chainName);
+        }
+        return result;
     }
 }

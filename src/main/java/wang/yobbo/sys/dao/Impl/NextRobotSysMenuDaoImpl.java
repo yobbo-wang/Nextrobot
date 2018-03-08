@@ -37,7 +37,7 @@ public class NextRobotSysMenuDaoImpl extends BaseDaoImpl<NextRobotSysMenu, Strin
     }
 
     public Page<NextRobotSysMenu> getPage(Searchable searchable) {
-        return super.find(searchable);
+        return super.findPage(searchable);
     }
 
     public Long getCount(Searchable searchable) {

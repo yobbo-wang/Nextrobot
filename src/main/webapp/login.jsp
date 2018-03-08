@@ -27,11 +27,11 @@
                 <form class="layui-form" id="login">
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"><i class="fa fa-user"></i></label>
-                        <input type="text" name="userName" lay-verify="required" autocomplete="off" placeholder="用户名:demo" class="layui-input" >
+                        <input type="text" name="userName" lay-verify="required" autocomplete="off" value="yobbo_wang@163.com" placeholder="用户名:yobbo_wang@163.com" class="layui-input" >
                     </div>
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"><i class="fa fa-unlock-alt"></i></label>
-                        <input type="password" name="userCode" lay-verify="required" autocomplete="off" placeholder="密码:tplay" class="layui-input">
+                        <input type="password" name="userCode" lay-verify="required" autocomplete="off" value="123456" placeholder="密码:123456" class="layui-input">
                     </div>
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"><i class="fa fa-code"></i></label>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="login">登 入</button>
+                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="login" id="login-submit">登 入</button>
                     </div>
                 </form>
             </div>
@@ -54,10 +54,13 @@
     </div>
 </div>
 <script src="<%=path %>/resources/layui/layui.js"></script>
+<script src="<%=path %>/resources/jquery/jquery.min.js"></script>
 <script>
     layui.use(['layer', 'form'], function() {
-        var layer = layui.layer, $ = layui.jquery, form = layui.form;
-        $(function(){
+        var layer = layui.layer,
+            $ = layui.jquery,
+            form = layui.form;
+        $(window).on('load', function() {
             form.on('submit(login)', function(data) {
                 $.ajax({
                     url: "<%=path%>/sys/login",
@@ -65,12 +68,11 @@
                     type: 'post',
                     async: false,
                     success: function(res) {
-                        layer.msg('登录成功，正在跳转...',{offset: '50px',anim: 0.3});
-                        if(res.success) {
-                            setTimeout(function() {
-                                location.href = "<%=path%>"+ res.data;
-                            }, 1000);
-                        } else {
+                        if(res.success){
+                            layer.msg('登录成功,正在跳转...',{offset: '50px',anim: 0.3});
+                            setTimeout(function(){location.href = "<%=path%>" + res.data;}, 1000);
+                        }else{
+                            layer.msg(res.errorMessage,{offset: '50px',anim: 0.3});
                             $('#captcha').click();
                         }
                     }

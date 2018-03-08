@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.util.*;
 
 @Service
 public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
+    private static final Logger LOG = LoggerFactory.getLogger(NextRobotSysMenuServiceImpl.class);
     @Autowired private NextRobotSysMenuDao sysMenuDao;
     @Autowired private NextRobotSysMenuTableDao sysMenuTableDao;
     @Autowired private PropertyConfigurer propertyConfigurer;
@@ -162,6 +165,7 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
         writer.flush();
         out.close();
         writer.close();
+        LOG.info("应用引擎已生成文件：" + file);
     }
 
     //生成entity

@@ -74,7 +74,7 @@
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" class="kit-target" data-options="url:'<%= path%>/login.jsp',icon:'fa-share-alt',title:'修改密码',id:'update-pwd'">修改信息</a></dd>
                         <dd><a href="javascript:;" class="kit-target" data-options="url:'<%= path%>/login.jsp',icon:'fa-share-alt',title:'安全管理',id:'security-manager'">安全管理</a></dd><hr>
-                        <dd><a href="<%=path%>/sys/logout" >退出系统</a></dd>
+                        <dd><a href="<%=path%>/logout" >退出系统</a></dd>
                     </dl>
                 </li>
             </ul>
