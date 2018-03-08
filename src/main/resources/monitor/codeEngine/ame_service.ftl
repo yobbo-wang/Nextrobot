@@ -13,7 +13,6 @@ import java.util.List;
 * @date ${nowDate}
 *
 */
-
 public interface ${engine.entityName ? cap_first}Service {
 
     /**功能：插入对象或更新对象
@@ -55,7 +54,7 @@ public interface ${engine.entityName ? cap_first}Service {
     long count();
 
     /**
-    * 功能：按分页、排序、自定义条件查询，返回不带count结果集
+    * 功能：按分页、排序、自定义条件查询，返回不带分页信息的结果集
     * @param searchable 查询条件对象
     * @return List<${engine.entityName ? cap_first}> 返回 所有结果集
     */

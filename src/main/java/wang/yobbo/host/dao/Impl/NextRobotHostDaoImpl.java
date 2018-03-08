@@ -6,6 +6,7 @@ import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
 import wang.yobbo.host.dao.NextRobotHostDao;
 import wang.yobbo.host.entity.NextRobotHost;
+import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
 
 import java.util.List;
 /**
@@ -57,6 +58,10 @@ public class NextRobotHostDaoImpl extends BaseDaoImpl<NextRobotHost, String> imp
 
     public Page<NextRobotHost> getPage(Searchable searchable) {
         return super.find(searchable);
+    }
+
+    public List<NextRobotBusinessTemplate> findTemplateByHql(String hql, Object[] params) {
+        return super.findByHQL(hql, NextRobotBusinessTemplate.class, params);
     }
 
 }

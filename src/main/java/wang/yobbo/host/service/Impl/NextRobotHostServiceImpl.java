@@ -7,6 +7,7 @@ import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.host.dao.NextRobotHostDao;
 import wang.yobbo.host.entity.NextRobotHost;
 import wang.yobbo.host.service.NextRobotHostService;
+import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
 
 
 import java.util.List;
@@ -62,6 +63,10 @@ public class NextRobotHostServiceImpl implements NextRobotHostService{
 
     public Page<NextRobotHost> getPage(Searchable searchable) {
         return this.nextRobotHostDao.getPage(searchable);
+    }
+
+    public List<NextRobotBusinessTemplate> findTemplateByHql(String sql, Object... params) {
+        return this.nextRobotHostDao.findTemplateByHql(sql, params);
     }
 
 }

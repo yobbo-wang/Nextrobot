@@ -3,6 +3,8 @@ package wang.yobbo.host.dao;
 import org.springframework.data.domain.Page;
 import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.host.entity.NextRobotHost;
+import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
+
 import java.util.List;
 
 /**
@@ -79,4 +81,5 @@ public interface NextRobotHostDao {
     */
     Page<NextRobotHost> getPage(Searchable searchable);
 
+    List<NextRobotBusinessTemplate> findTemplateByHql(String sql, Object[] params);
 }

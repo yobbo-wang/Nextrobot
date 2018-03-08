@@ -92,6 +92,11 @@ public class HostTest {
         printJson(this.nextRobotHostService.findPageWithoutCount(searchable));
     }
 
+    @Test
+    public void Test_8(){
+        System.out.println(this.nextRobotHostService.findTemplateByHql("select nextRobotBusinessTemplate from NextRobotBusinessTemplate nextRobotBusinessTemplate"));
+    }
+
     private void printJson(Object value){
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -101,5 +106,7 @@ public class HostTest {
             e.printStackTrace();
         }
     }
+
+
 
 }
