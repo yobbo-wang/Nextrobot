@@ -113,7 +113,7 @@ public class ShiroFilterChainManager {
     public void initAnyRoleFilter(String chainName) {
         if(nextRobotCacheManager != null){
             Map<String,String> urlAndRoles= (Map<String, String>) nextRobotCacheManager.get(NtCacheConstants.CACHE_URL_ROLE,"urlAndRoles",LinkedHashMap.class);
-            if(urlAndRoles!=null && urlAndRoles.containsKey(chainName)){
+            if(urlAndRoles != null && urlAndRoles.containsKey(chainName)){
                 String roleNames=urlAndRoles.get(chainName);
 
                 Filter filter = this.defaultFilterChainManager.getFilter("anyRole");
