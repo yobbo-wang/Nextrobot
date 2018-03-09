@@ -37,16 +37,7 @@ public class ShiroFilterChainManager {
     }
 
     public void initFilterChains() {
-        UrlAccessResource urlAccessResource = new UrlAccessResource();
-        urlAccessResource.setUrl("/sys/login");
-        HashSet<String> roles = new HashSet<String>();
-        roles.add("authc");
-        urlAccessResource.setRoles(roles);
-        HashSet<String> permissions = new HashSet<String>();
-        permissions.add("anyRole");
-        urlAccessResource.setPermissions(permissions);
         List<UrlAccessResource> urlAccessResources = new ArrayList<UrlAccessResource>();
-//        urlAccessResources.add(urlAccessResource);
         initFilterChains(urlAccessResources);
     }
 
