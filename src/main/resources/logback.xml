@@ -13,4 +13,14 @@
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </logger>
+    <logger name="wang.yobbo" level="ERROR" additivity="true">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </logger>
+    <root level="error"/>
+    <!--系统关键日志-->
+    <logger name="wang.yobbo.sys" level="INFO" additivity="true">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE_INFO" />
+    </logger>
 </configuration>

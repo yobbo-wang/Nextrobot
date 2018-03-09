@@ -29,8 +29,7 @@ public class CustomDefaultFilterChainManager extends DefaultFilterChainManager {
     private String successUrl;
     private String unauthorizedUrl;
     private Map<String, String> filterChainDefinitionMap = null;
-    @Inject
-    private ShiroFilterChainManager shiroFilterChainManager;
+    @Inject private ShiroFilterChainManager shiroFilterChainManager;
 
     /**
      * 初始化默认的拦截器

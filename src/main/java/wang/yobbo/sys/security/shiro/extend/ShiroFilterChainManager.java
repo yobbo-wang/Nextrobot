@@ -23,7 +23,7 @@ import java.util.*;
 public class ShiroFilterChainManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShiroFilterChainManager.class);
 
-    private static final String REGEX="\\{.*?\\}";
+    private static final String REGEX = "\\{.*?\\}";
     //private static final Pattern PATTERN=Pattern.compile(REGEX);
     private Map<String, NamedFilterList> defaultFilterChains;
     @Autowired private DefaultFilterChainManager defaultFilterChainManager;
@@ -37,7 +37,16 @@ public class ShiroFilterChainManager {
     }
 
     public void initFilterChains() {
+        UrlAccessResource urlAccessResource = new UrlAccessResource();
+        urlAccessResource.setUrl("/sys/login");
+        HashSet<String> roles = new HashSet<String>();
+        roles.add("authc");
+        urlAccessResource.setRoles(roles);
+        HashSet<String> permissions = new HashSet<String>();
+        permissions.add("anyRole");
+        urlAccessResource.setPermissions(permissions);
         List<UrlAccessResource> urlAccessResources = new ArrayList<UrlAccessResource>();
+//        urlAccessResources.add(urlAccessResource);
         initFilterChains(urlAccessResources);
     }
 
@@ -112,9 +121,9 @@ public class ShiroFilterChainManager {
      */
     public void initAnyRoleFilter(String chainName) {
         if(nextRobotCacheManager != null){
-            Map<String,String> urlAndRoles= (Map<String, String>) nextRobotCacheManager.get(NtCacheConstants.CACHE_URL_ROLE,"urlAndRoles",LinkedHashMap.class);
+            Map<String,String> urlAndRoles = (Map<String, String>) nextRobotCacheManager.get(NtCacheConstants.CACHE_URL_ROLE,"urlAndRoles",LinkedHashMap.class);
             if(urlAndRoles != null && urlAndRoles.containsKey(chainName)){
-                String roleNames=urlAndRoles.get(chainName);
+                String roleNames = urlAndRoles.get(chainName);
 
                 Filter filter = this.defaultFilterChainManager.getFilter("anyRole");
                 if(filter == null) {

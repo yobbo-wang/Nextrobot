@@ -12,17 +12,18 @@
        http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <aop:config proxy-target-class="true"/>
-    <!-- 开启AOP监听 -->
-    <aop:aspectj-autoproxy expose-proxy="true"/>
     <!-- 用户获取spring bean -->
     <bean id="applicationContext" class="wang.yobbo.common.spring.SpringContextUtil"/>
 
     <!-- 扫描注解Bean -->
     <context:component-scan base-package="wang.yobbo.**">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <!--<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />-->
         <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
     </context:component-scan>
+
+    <aop:config proxy-target-class="true"/>
+    <!-- 开启AOP监听 -->
+    <aop:aspectj-autoproxy expose-proxy="true"/>
 
     <import resource="classpath*:spring/${cacheManagerTpye}/spring-shiro-${cacheManagerTpye}.xml"/>
 
@@ -97,45 +98,8 @@
     <!-- 重写角色授权过滤器 -->
     <bean id="anyRoleFilter" class="wang.yobbo.sys.security.shiro.filter.AnyRoleAuthorizationFilter"></bean>
 
-    <bean id="filterChainManager" class="wang.yobbo.sys.security.shiro.extend.CustomDefaultFilterChainManager">
-        <property name="loginUrl" value="${shiro.login.url}" />
-        <property name="successUrl" value="${shiro.default.success.url}"/>
-        <property name="customFilters">
-            <util:map>
-                <entry key="authc" value-ref="formAuthenticationFilter" />
-                <entry key="anyRole" value-ref="anyRoleFilter" />
-                <entry key="logout" value-ref="logoutFilter" />
-                <entry key="sysUser" value-ref="sysUserFilter" />
-                <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
-            </util:map>
-        </property>
-        <property name="defaultFilterChainDefinitions">
-            <value>
-                /api/** = anon
-                /static*/** = anon
-                /resources*/** = anon
-                /front/cardinfor/** = anon
-                /sys/login = authc
-                /sys/unauthorized = authc
-                /logout = logout
-                /** =kickout,authc
-            </value>
-        </property>
-    </bean>
-
     <bean id="filterChainResolver" class="wang.yobbo.sys.security.shiro.extend.CustomPathMatchingFilterChainResolver">
         <property name="customDefaultFilterChainManager" ref="filterChainManager"/>
-    </bean>
-
-    <!-- Shiro的Web过滤器 -->
-    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-        <property name="securityManager" ref="securityManager"/>
-    </bean>
-
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="targetObject" ref="shiroFilter"/>
-        <property name="targetMethod" value="setFilterChainResolver"/>
-        <property name="arguments" ref="filterChainResolver"/>
     </bean>
 
     <!-- session 管理 -->
@@ -167,6 +131,43 @@
                 <property name="maxAge" value="${shiro.uid.cookie.maxAge}" />
             </bean>
         </property>
+    </bean>
+
+    <bean id="filterChainManager" class="wang.yobbo.sys.security.shiro.extend.CustomDefaultFilterChainManager">
+        <property name="loginUrl" value="${shiro.login.url}" />
+        <property name="successUrl" value="${shiro.default.success.url}"/>
+        <property name="customFilters">
+            <util:map>
+                <entry key="authc" value-ref="formAuthenticationFilter" />
+                <entry key="anyRole" value-ref="anyRoleFilter" />
+                <entry key="logout" value-ref="logoutFilter" />
+                <entry key="sysUser" value-ref="sysUserFilter" />
+                <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
+            </util:map>
+        </property>
+        <property name="defaultFilterChainDefinitions">
+            <value>
+                /api/** = anon
+                /static*/** = anon
+                /resources*/** = anon
+                /front/cardinfor/** = anon
+                /sys/login = authc
+                /sys/unauthorized = authc
+                /logout = logout
+                /** =kickout,authc
+            </value>
+        </property>
+    </bean>
+
+    <!-- Shiro的Web过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="shiroFilter"/>
+        <property name="targetMethod" value="setFilterChainResolver"/>
+        <property name="arguments" ref="filterChainResolver"/>
     </bean>
 
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
