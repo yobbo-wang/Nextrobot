@@ -44,6 +44,11 @@
         <property name="rememberMeManager" ref="rememberMeManager"></property>
     </bean>
 
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager" />
+        <property name="arguments" ref="securityManager" />
+    </bean>
+
     <!-- 用户认证 -->
     <bean id="userRealm" class="wang.yobbo.sys.security.realm.CustomAuthoringRealm">
         <property name="authenticationCachingEnabled" value="false" />
