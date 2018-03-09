@@ -1,4 +1,4 @@
-package wang.yobbo.sys.security.filter;
+package wang.yobbo.sys.security.shiro.filter;
 
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.Subject;
@@ -12,11 +12,9 @@ public class CustomFormAuthenticationFilter extends FormAuthenticationFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-
         if (request.getAttribute(getFailureKeyAttribute()) != null) {
             return true;
         }
-
         return super.onAccessDenied(request, response);
     }
 
