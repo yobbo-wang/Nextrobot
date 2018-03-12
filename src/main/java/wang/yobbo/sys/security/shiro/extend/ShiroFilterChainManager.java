@@ -9,6 +9,7 @@ import org.apache.shiro.web.filter.mgt.SimpleNamedFilterList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wang.yobbo.common.appengine.cache.NextRobotCacheManager;
@@ -26,8 +27,10 @@ public class ShiroFilterChainManager {
     private static final String REGEX = "\\{.*?\\}";
     //private static final Pattern PATTERN=Pattern.compile(REGEX);
     private Map<String, NamedFilterList> defaultFilterChains;
-    @Autowired private DefaultFilterChainManager defaultFilterChainManager;
-    @Autowired private NextRobotCacheManager nextRobotCacheManager;
+    @Autowired
+    private DefaultFilterChainManager defaultFilterChainManager;
+    @Autowired
+    private NextRobotCacheManager nextRobotCacheManager;
 
     @PostConstruct
     public void init() {

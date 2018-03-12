@@ -1,11 +1,15 @@
 package wang.yobbo.sys.security.shiro.filter;
 
 import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wang.yobbo.common.appengine.plugin.NtConstants;
+import wang.yobbo.sys.entity.NextRobotSysUser;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import java.io.IOException;
 
 public class SysUserFilter extends AccessControlFilter {
     private static final Logger LOG = LoggerFactory.getLogger(CustomLogoutFilter.class);
@@ -14,11 +18,37 @@ public class SysUserFilter extends AccessControlFilter {
     private String userUnknownErrorUrl;
 
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
-        return false;
+        NextRobotSysUser user = (NextRobotSysUser) request.getAttribute(NtConstants.CURRENT_USER);
+        if (user == null) {
+            return true;
+        }
+        if (Boolean.TRUE.equals(user.getDeleted()) ||  "enabled".equals(user.getStatus())) {
+            getSubject(request, response).logout();
+            saveRequestAndRedirectToLogin(request, response);
+            return false;
+        }
+        return true;
     }
 
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        return false;
+        getSubject(request, response).logout();
+        saveRequestAndRedirectToLogin(request, response);
+        return true;
+    }
+
+    @Override
+    protected void redirectToLogin(ServletRequest request,
+                                   ServletResponse response) throws IOException {
+        NextRobotSysUser user = (NextRobotSysUser) request.getAttribute(NtConstants.CURRENT_USER);
+        String url = null;
+        if (Boolean.TRUE.equals(user.getDeleted())) {
+            url = getUserNotfoundUrl();
+        } else if ("disabled".equals(user.getStatus())) {
+            url = getUserDisabledUrl();
+        } else {
+            url = getUserUnknownErrorUrl();
+        }
+        WebUtils.issueRedirect(request, response, url);
     }
 
     public String getUserDisabledUrl() {

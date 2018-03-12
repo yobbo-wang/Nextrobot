@@ -13,6 +13,7 @@ import org.apache.shiro.web.filter.mgt.NamedFilterList;
 import org.apache.shiro.web.filter.mgt.SimpleNamedFilterList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -29,7 +30,8 @@ public class CustomDefaultFilterChainManager extends DefaultFilterChainManager {
     private String successUrl;
     private String unauthorizedUrl;
     private Map<String, String> filterChainDefinitionMap = null;
-    @Inject private ShiroFilterChainManager shiroFilterChainManager;
+    @Autowired
+    private ShiroFilterChainManager shiroFilterChainManager;
 
     /**
      * 初始化默认的拦截器

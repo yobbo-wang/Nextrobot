@@ -159,7 +159,8 @@
                 /sys/login = authc
                 /sys/unauthorized = authc
                 /logout = logout
-                /** =kickout,authc
+                /** = kickout,authc
+                /engine/** = authc
             </value>
         </property>
     </bean>

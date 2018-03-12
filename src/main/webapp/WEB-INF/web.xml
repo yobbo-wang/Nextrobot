@@ -9,8 +9,14 @@
     <param-name>contextConfigLocation</param-name>
     <param-value>classpath:spring/spring-root.xml</param-value>
   </context-param>
+
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener
+    </listener-class>
   </listener>
 
   <filter>
@@ -79,8 +85,7 @@
 
   <filter>
     <filter-name>openEntityManagerInViewFilter</filter-name>
-    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
-    </filter-class>
+    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>openEntityManagerInViewFilter</filter-name>

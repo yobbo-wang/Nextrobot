@@ -2,13 +2,19 @@ package wang.yobbo.sys.security.realm;
 
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import wang.yobbo.common.appengine.cache.NextRobotCacheManager;
+import wang.yobbo.sys.entity.NextRobotSysRole;
 import wang.yobbo.sys.entity.NextRobotSysUser;
+import wang.yobbo.sys.security.ShiroUser;
 import wang.yobbo.sys.service.SysUserService;
+
+import java.util.*;
 
 /**
  * 自定义Realm 放入用户以及角色和权限
@@ -18,11 +24,25 @@ import wang.yobbo.sys.service.SysUserService;
 public class CustomAuthoringRealm extends AuthorizingRealm{
     private static final Logger LOG = LoggerFactory.getLogger(CustomAuthoringRealm.class);
     @Autowired private SysUserService sysUserService;
+    @Autowired private NextRobotCacheManager nextRobotCacheManager;
 
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        principalCollection.getPrimaryPrincipal();  //获取用户session
+        ShiroUser shiroUser = (ShiroUser) principalCollection.getPrimaryPrincipal();
+        String userId = shiroUser.getUserID();
 
-        return null;
+        List<NextRobotSysRole> roles = (List<NextRobotSysRole>) nextRobotCacheManager.get("userRecordCache", userId, NextRobotSysRole.class);
+        Set<String> roleNameSet = new HashSet<String>();
+        Set<String> permissionSet = new HashSet<String>();
+        for (NextRobotSysRole role : roles) {
+            roleNameSet.add(role.getId() + "-" + role.getRoleName());
+            Map map = (Map) nextRobotCacheManager.get("roleRecordCache", role.getId(), HashMap.class);
+            permissionSet.addAll(map.keySet());
+        }
+
+        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        authorizationInfo.setRoles(roleNameSet);
+        authorizationInfo.setStringPermissions(permissionSet);
+        return authorizationInfo;
     }
 
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {

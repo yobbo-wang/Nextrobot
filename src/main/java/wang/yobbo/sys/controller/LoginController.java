@@ -81,4 +81,9 @@ public class LoginController {
             return InvokeResult.failure("账号或密码错误!");
         }
     }
+
+    @RequestMapping(value = "/unauthorized", method = RequestMethod.GET)
+    public String unauthorized() {
+        return "/unauthorized";
+    }
 }

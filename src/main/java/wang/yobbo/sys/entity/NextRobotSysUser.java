@@ -2,6 +2,7 @@ package wang.yobbo.sys.entity;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 import wang.yobbo.common.appengine.entity.BaseEntity;
 
 import javax.persistence.Column;
@@ -41,6 +42,11 @@ public class NextRobotSysUser extends BaseEntity<String>{
     //用户状态
     @Column(name = "STATUS", length = 1, nullable = false)
     private String status;
+
+    // 删除
+    @Column(name = "DELETED")
+    @Type(type = "yes_no")
+    private Boolean deleted = Boolean.FALSE;
 
     public String getUserName() {
         return userName;
@@ -88,5 +94,13 @@ public class NextRobotSysUser extends BaseEntity<String>{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }
