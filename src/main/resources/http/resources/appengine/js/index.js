@@ -97,11 +97,11 @@
                 $(clazz).attr('status', 'close');
                 return;
             }
-            var h1 = '<tr class="treegrid-tr-tree" id="tr-h1-'+id+'" style="height:'+ (length+1)*28 +'px">';
+            var h1 = '<tr class="treegrid-tr-tree" id="tr-h1-'+id+'" style="height:'+ (length+1)*32 +'px">';
                 h1 += '<td colspan="1" style="border-right:0">';
                 h1 += '<div class="datagrid-row-detail">&nbsp;</div>';
                 h1 += '</td></tr>';
-            var h2 = '<tr class="treegrid-tr-tree" id="tr-h2-'+id+'" style="height:'+ (length+1)*28 +'px">';
+            var h2 = '<tr class="treegrid-tr-tree" id="tr-h2-'+id+'" style="height:'+ (length+1)*32 +'px">';
                 h2 += '<td colspan="6"><table id="entity-'+id+'"></table></td>';
             $('#' + state.rowIdPrefix + '-1-' + id).after(h1);
             var tr = $('#' + state.rowIdPrefix + '-2-' + id);
@@ -123,7 +123,7 @@
                     }}
                 ]],
                 data: tables,
-                onDblClickRow: function (index, row) {
+                onClickRow: function (index, row) {
                     $('#entityInfo').form('load', row);
                     //查询实体属性信息
                     $("#datagrid-entity").datagrid({data: row.entityProperties});

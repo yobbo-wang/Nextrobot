@@ -1,0 +1,191 @@
+@charset "utf-8";
+/*框架头部*/
+.esc-header-bg{background:#33AECD;}
+.esc-header-bg .nav-menu li{border-left:1px solid #D96300;}
+.esc-header-bg .nav-menu li:last-child{border-right:1px solid #D96300;}
+.esc-header-bg .nav-menu li a{color:#fff;}
+.esc-header-bg .nav-menu li a.active,
+.esc-header-bg .nav-menu li a:hover{
+	background-color:rgba(0,0,0,0.2);
+	border-color:#ffaa05;
+}
+.topinfo_Div .otherType,.aiMessage a{color: #ffffff;}
+.topinfo_Div:hover .otherType,.aiMessage a:hover{
+	background-color:rgba(0,0,0,0.2);
+}
+.other-dropdown{background-color:#ffffff;border-color:#33AECD;}
+.other-dropdown li{border-color: #DDDDDD;}
+.other-dropdown li i.fa{color:#33AECD;}
+.other-dropdown li a{color:#333;}
+.other-dropdown li a:hover{background-color:#33AECD;font-weight:bold;}
+.other-dropdown li a:hover i.fa{color:#fff;}
+.other-dropdown li.skin{border-bottom:1px solid #e6e6e6;}
+.other-dropdown li.skin span.sk-orange .fa{color:#FF7400}/*橘黄色板*/
+.other-dropdown li.skin span.sk-blue .fa{color:#00A2E9}/*蓝色色板*/
+.other-dropdown li.skin span.sk-fresh .fa{color:#33AECD}/*清新板*/
+.other-dropdown li.skin span.sk-green .fa{color:#48D83F}/*绿色板*/
+.other-dropdown li.skin span.sk-golden .fa{color:#E6971B}/*金色板*/
+.other-dropdown li.skin:hover{background:none;}
+.other-dropdown li.skin:hover .fa{color:inherit;}
+.other-dropdown li.skin span.sk-orange:hover .fa,
+.other-dropdown li.skin span.sk-blue:hover .fa,
+.other-dropdown li.skin span.sk-fresh:hover .fa,
+.other-dropdown li.skin span.sk-green:hover .fa,
+.other-dropdown li.skin span.sk-golden:hover .fa{color:#333333;font-size:18px}
+/*// ----*/
+/*leftMenu*/
+.b_left{border-right:1px solid #E3E3E3;}
+.b_left .leftMenuTitle{background:#E3E3E3;border-color:#eeeeee;filter:none;}
+.leftMenu .easyui-fluid .panel .accordion-header{background:#f8f8f8;border-color:#e5e5e5;}
+.leftMenu .panel .panel-header:hover,
+.leftMenu .panel .panel-header:hover .panel-icon{background-color:#E65E18;color:#ffffff;}
+.leftMenu .easyui-fluid .panel .accordion-header-selected{background:#33AECD;border-bottom-color:#e5e5e5;border-left-color:#1DA02B;}
+.leftMenu .panel .panel-header.accordion-header-selected .panel-icon{color:#ffffff;}
+.leftMenu .panel .accordion-body{border-color:#eeeeee}
+.leftMenu .panel .accordion-body ul li{border-color:#e4e4e4;}
+.leftMenu .panel .accordion-body ul li a:hover{background-color:#FFD9B9;}
+.leftMenu .panel .accordion-body ul li a .nav{color: #616161;}
+.leftMenu .panel .accordion-body ul li a.selected{background-color:#B3C1D9;}
+.leftMenu .panel .accordion-body ul li .threeMenu{border-color: #e4e4e4;}
+.leftMenu .panel .accordion-body ul li a .fa{color:#33AECD;}
+.leftMenu .panel .panel-header .panel-title{color:#333;}
+.leftMenu .panel .panel-header .panel-icon{color:#33AECD;}
+.leftMenu .panel .accordion-body .menud3none .parentUl li:first-child{border-top:1px dotted #e4e4e4;}
+.b_left{border-right:1px solid #E3E3E3;}
+.b_left .leftMenuTitle{background-color:#E3E3E3;border-color:#eeeeee;}
+.b_left .leftMenuTitle .panel-title, .b_left .leftMenuTitle .panel-tool a{color:#333;}
+.b_left .leftMenuTitle .panel-tool a:hover{color:#6181BC;}
+/*// ----*/
+
+/*快速关闭tabs选项卡 开始*/
+.shortcutMenuClose{background-color:#fff;border-color:#33AECD;}
+.shortcutMenuClose li{color:#333;}
+.shortcutMenuClose li i.fa{color:#EE6817;}
+.shortcutMenuClose li:hover{background-color:#EE6817;}
+.shortcutMenuClose li:hover i.fa{color:#fff;}
+/*// ----*/
+/*dateView*/
+.dateView .tabs-header{background-color:#E3E3E3;}
+.dateView .tabs-header .tabs-wrap .tabs,
+.dateView .tabs-header .tabs-wrap .tabs li a.tabs-inner{border-color:#BDBDBD;background:none;filter:none;}
+.dateView .tabs-header .tabs-wrap .tabs li.tabs-selected .tabs-inner,
+.dateView .tabs-header .tabs-wrap .tabs li a.tabs-inner:hover{border-top-color:#33AECD;background:#FFF;}
+.dateView .tabs-header .tabs-wrap .tabs li a.tabs-inner .tabs-title{color:#333;}
+.dateView .tabs-header .tabs-tool{background:none;border-color:#BDBDBD; }
+.dateView .tabs-header .tabs-tool .l-btn-plain{background:#33AECD;color:#ffffff}
+.dateView .tabs-header .tabs-wrap .tabs li a.tabs-close{color:#33AECD;}
+/*// ----*/
+/*copyright*/
+.copyright{border-top-color:#aaaaaa;border-bottom-color:#33AECD;}
+.copyright .footer,.copyright .footer p{color:#333333}
+/*// ----*/
+/*条件查询工具栏*/
+.search_bar {border-color:#95B8E7;background: #f7f7f7;}
+.search_bar ul li a.btnSearch{background-color:#33AECD;border-color:#E86800;}
+.search_bar ul li a.btnSearch:hover{
+    background-color:#ffffff;
+    border-color:#33AECD;
+    color:#33AECD;
+    
+}
+
+/*// ----*/
+
+/*按钮工具栏*/
+#toolbar_div #span_sbtn_{background-color:#F3F3F3;border-color:#e4e4e4;}
+#toolbar_div #span_sbtn_ a{color:#333;background:none;filter:none;}
+#toolbar_div #span_sbtn_ a:hover{color:#333;border-color:#33AECD;background:#ffffff;}
+#toolbar_div #span_sbtn_ a .fa-plus-square{color:#27c24c;}
+#toolbar_div #span_sbtn_ a .fa-close,
+#toolbar_div #span_sbtn_ a .fa-times-rectangle{color:#f05050;}
+#toolbar_div #span_sbtn_ a .fa-pencil-square{color:#33AECD;}
+#toolbar_div #span_sbtn_ a .fa-check-square-o{color:#fad732;}
+#toolbar_div #span_sbtn_ a .fa-rotate-left,
+#toolbar_div #span_sbtn_ a .fa-repeat{color:#7266ba;}
+#toolbar_div #span_sbtn_ a .fa-user-secret{color:#ff4500;}
+#toolbar_div #span_sbtn_ a .fa-tags{color:#65c294;}
+#toolbar_div #span_sbtn_ a .fa-save{color:#333333;}
+#toolbar_div #span_sbtn_ a .fa-th-large{color:#0099FF;}
+#toolbar_div #span_sbtn_ a .fa-exchange{color:#06AEFF;}
+#toolbar_div #span_sbtn_ a .fa-address-book{color:#004040;}
+#toolbar_div #span_sbtn_ a .fa-wrench{color:#495A80;}
+
+/*// ----*/
+
+/*按钮组*/
+.bg-primary{color: #ffffff;border-color:transparent;background:#33AECD;}
+.bg-primary:hover{border-color:#33AECD;color:#33AECD;background:#ffffff;}
+/*// ----*/
+
+/*EasyUI表格*/
+.datagrid-header, .datagrid-td-rownumber{background:#efefef;filter:none;}
+.datagrid-header-row, .datagrid-row{height:30px;}
+.datagrid-btable tr{ background:#F9F9F9;} 
+.datagrid-btable tr:nth-child(2n){background:#f5fcfc;}
+.datagrid-btable tr.datagrid-row-selected{background: #d7d7d7;}
+.datagrid-row-over,.datagrid-header td.datagrid-header-over {background: #dbdbdb;color: #333333; cursor: default;}
+/*// ----*/
+/*EasyUi分页组件*/
+.pagination-prev,.pagination-first,
+.pagination-next,.pagination-last,
+.pagination-load,.pagination-loading{background:none;color:#33AECD;}
+
+/*// ----*/
+/*EasyUi图标*/
+.tree-file,.datagrid-row-collapse,.datagrid-row-expand{background:none;color:#33AECD;}
+.tree-file:hover,.datagrid-row-collapse:hover,.datagrid-row-expand:hover{color:#333333;}
+.tree-file{color:#F17C67}
+.tree-folder,.tree-folder-open{background:none;color:#33AECD;}
+.tree-folder:hover,.tree-folder-open:hover{color:#CC5D00;}
+/*.combo-arrow,.datebox .combo-arrow{background:#aaaaaa;}*/
+/*// ----*/
+
+/*input、textarea、下拉*/
+.formtable tbody tr td .textbox{background-color: #fff;border: 1px solid #aaaaaa;}
+/*//  -------*/
+
+/*大屏展示模块*/
+.easyui-tabs.command .tabs-header-noborder .tabs-wrap{background:#FAD0B8;}
+
+.easyui-tabs.command .tabs-header-noborder .tabs-wrap ul.tabs-justified li a{
+ background:none;
+ filter:none;
+}
+.easyui-tabs.command .tabs-header-noborder .tabs-wrap ul.tabs-justified li a:hover{
+  border-color:#33AECD !important; 
+  background:#ffffff !important;
+  color:#33AECD !important;
+}
+.easyui-tabs.command .tabs-header-noborder .tabs-wrap ul.tabs-justified .tabs-selected a{
+  border-color:#33AECD !important; 
+  background:#ffffff !important;
+  color:#33AECD !important;
+}
+/*// ----*/
+
+/*EasyUi日历*/
+.calendar-header{background:#FCE3D3}
+.calendar-selected{background-color:#33AECD;}
+.calendar-prevmonth, .calendar-nextmonth, .calendar-prevyear, .calendar-nextyear,
+.calendar-menu-prev, .calendar-menu-next{background:none;color:#33AECD;}
+.spinner-arrow-up, .spinner-arrow-down, .spinner-button-up, .spinner-button-down{background:none;
+  color:#33AECD;}
+
+.calendar-hover,
+.calendar-nav-hover,
+.calendar-menu-hover{background-color: #ff8000;}
+
+.calendar-text.calendar-nav-hover,
+.calendar-nextmonth.calendar-nav-hover,
+.calendar-nextyear.calendar-nav-hover,
+.calendar-prevmonth.calendar-nav-hover,
+.calendar-prevyear.calendar-nav-hover{background-color:#33AECD; color:#ffffff;}
+
+.calendar-hover {border: 1px solid #b7d2ff; color:#ffffff;}
+/*// ----*/
+/*通知通告消息发送*/
+input.labelauty + label,
+input.labelauty:checked + label{background-color:#33AECD;color:#FFFFFF;border-color:#F26D00;}
+
+/*// ----*/
+
