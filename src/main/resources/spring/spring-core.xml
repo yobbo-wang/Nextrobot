@@ -75,6 +75,7 @@
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/>
+        <property name="loginUrl" value="${shiro.login.url}"/>
     </bean>
 
     <!-- 退出登录过滤器 -->
@@ -159,11 +160,12 @@
                 /sys/login = authc
                 /sys/unauthorized = authc
                 /logout = logout
-                /** = kickout,authc
                 /engine/** = authc
             </value>
         </property>
     </bean>
+
+    <!-- /** = kickout,authc -->
 
     <!-- Shiro的Web过滤器 -->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
