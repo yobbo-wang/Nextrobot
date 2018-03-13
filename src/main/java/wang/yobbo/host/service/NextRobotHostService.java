@@ -2,10 +2,11 @@ package wang.yobbo.host.service;
 
 import org.springframework.data.domain.Page;
 import wang.yobbo.common.appengine.entity.Searchable;
-import wang.yobbo.host.entity.NextRobotHost;
-import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
+import wang.yobbo.host.entity.Host;
+import wang.yobbo.sys.entity.BusinessTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * 此文件由应用引擎生成，严禁修改，如重复生成时，该文件将被覆盖。
@@ -22,13 +23,13 @@ public interface NextRobotHostService {
     * @param nextRobotHost
     * @return NextRobotHost 返回 插入数据库后结果对象
     */
-    NextRobotHost save(NextRobotHost nextRobotHost);
+    Host save(Host nextRobotHost) throws Exception;
 
     /**功能：根据主键id查询对象
     * @param id 主键id
     * @return NextRobotHost 返回 对象
     */
-    NextRobotHost findById(String id);
+    Host findById(String id);
 
     /**
     * 功能：根据实体id，批量删除
@@ -41,7 +42,7 @@ public interface NextRobotHostService {
     * 功能：根据实体对象删除
     * @param nextRobotHost 实体对象
     */
-    void delete(NextRobotHost nextRobotHost);
+    void delete(Host nextRobotHost);
 
     /**
     * 功能：分页、排序、自定义条件查询结果集记录数
@@ -61,27 +62,27 @@ public interface NextRobotHostService {
     * @param searchable 查询条件对象
     * @return List<NextRobotHost> 返回 所有结果集
     */
-    List<NextRobotHost> findPageWithoutCount(Searchable searchable);
+    List<Host> findPageWithoutCount(Searchable searchable);
 
     /**
     * 功能：查询所有结果集
     * @return List<NextRobotHost> 返回 所有结果集
     */
-    List<NextRobotHost> findAll();
+    List<Host> findAll();
 
     /**
     * 功能：查询所有结果集
     * @param nextRobotHost 实体对象
     * @return List<NextRobotHost> 返回 所有结果集
     */
-    List<NextRobotHost> findAll(NextRobotHost nextRobotHost);
+    List<Host> findAll(Host nextRobotHost);
 
     /**功能：分页、排序、自定义条件查询
     * @param searchable 查询条件对象
     * @return Page<NextRobotHost> 返回带有分页结果集
     */
-    Page<NextRobotHost> getPage(Searchable searchable);
+    Page<Host> getPage(Searchable searchable);
 
-    List<NextRobotBusinessTemplate> findTemplateByHql(String sql, Object ... params);
+    List<BusinessTemplate> findTemplateByHql(String sql, Map<String, Object> params);
 
 }

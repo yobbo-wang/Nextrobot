@@ -24,10 +24,7 @@ import wang.yobbo.common.appengine.plugin.EntityUtils;
 import wang.yobbo.common.appengine.plugin.LogicDeleteable;
 import wang.yobbo.common.appengine.plugin.SearchCallback;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -364,6 +361,26 @@ public final class BaseDaoManager {
         }
         for(int i=0;i<var0.length;i++){
             query.setParameter(i+1, var0[i]);
+        }
+    }
+
+    /**
+     * 设置sql参数公共处理方法
+     * @param query
+     * @param var0
+     */
+    public void setParameter(Query query, Map<String, Object> var0){
+        if(var0 == null || var0.isEmpty()) return;
+        if(query.getParameters().size() != var0.size()) {
+            throw new RuntimeException("参数个数与设值个数不相等。");
+        }
+        Set<Parameter<?>> parameters = query.getParameters();
+        Iterator<Parameter<?>> iterator = parameters.iterator();
+        while (iterator.hasNext()){
+            Parameter<?> next = iterator.next();
+            String key = next.getName();
+            Object value = var0.get(key);
+            query.setParameter(key, value);
         }
     }
 }

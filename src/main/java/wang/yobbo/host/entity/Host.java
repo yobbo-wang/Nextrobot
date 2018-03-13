@@ -13,8 +13,8 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "NEXT_ROBOT_Host")
-public class NextRobotHost extends BaseEntity<String> {
+@Table(name = "NR_HOST_TEST")
+public class Host extends BaseEntity<String> {
 	private static final long serialVersionUID = 1L;
 
     

@@ -5,7 +5,9 @@ import wang.yobbo.common.appengine.entity.AbstractEntity;
 import wang.yobbo.common.appengine.entity.Searchable;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xiaoyang on 2017/12/28.
@@ -50,7 +52,7 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
      */
     List<E> findAll(E entity);
 
-    E save(E entity);
+    E save(E entity) throws Exception;
 
     int delete(ID... ids);
 
@@ -66,7 +68,17 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
      * @param <T>
      * @return
      */
-    <T> List<T> findByHQL(String hql,  Class<T> entityType, Object ...params);
+    <T> List<T> findByHQL(String hql, Map<String, Object> params, Class<T> entityType);
+
+    /**
+     * 根据hql语句查询单条记录
+     * @param hql
+     * @param entityType 实体类型
+     * @param params
+     * @param <T>
+     * @return
+     */
+    <T> T findOneByHQL(String hql, Map<String, Object> params, Class<T> entityType);
 
     /**
      * 根据自定义sql执行
@@ -84,9 +96,9 @@ public interface BaseDao<E extends AbstractEntity, ID extends Serializable> {
      * @param <T>
      * @return
      */
-    <T> List<T> fingAllBySql(String sql,Class<T> entityType, Object ...params);
+    <T> List<T> findAllBySql(String sql, Map<String, Object> params, Class<T> entityType);
 
     Long findBySqlCount(String sql, Object ...params);
 
-    <T> T findBySqlOne(String sql,Class<T> entityType, Object...params);
+    <T> T findOneBySql(String sql, Map<String, Object> params, Class<T> entityType);
 }

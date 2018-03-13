@@ -278,6 +278,14 @@
             html += "<td><input class=\"easyui-filebox\" data-options=\"prompt:'点击选择模板文件...',buttonText:'点击上传',onChange:function(){"+options.fileChangeMethod+";}\" id=\"templateFile\" name=\"templateFile\" style=\"width:260px;\"></td>";
             html += "</tr>";
             html += "<tr>";
+            html += "<td>模板内容类型:</td>";
+            html += "<td><select class='easyui-combobox' name='fileType' data-options='required:true' style='width:200px;'>";
+            html += "<option value='.jsp'>jsp</option><option value='.html'>html</option><option value='.java'>java</option>" ;
+            html +=  "<option value='.sql'>sql</option><option value='.properties'>properties</option><option value='.xml'>xml</option>";
+            html +=  "<option value='.js'>js</option><option value='.css'>css</option><option value='.ftl'>ftl</option>";
+            html +=  "</select></td>";
+            html += "</tr>";
+            html += "<tr>";
             html += "<td colspan=\"4\"><label id=\"fileName\" isCanUpolad='false' /></td>";
             html += "</tr>";
             html += "<tr>";
@@ -291,6 +299,21 @@
             html += "</div>"
             html += "</form>";
             return html;
+        },
+        createTemplate: function () {
+            appEngine.openDialog({
+                width: 600,
+                height: 400,
+                modal: true,
+                maximizable: false,
+                title: '选择生成模板',
+                closed: true,
+                id: "createTemplate",
+                url: path + '/engine/appengine/menu/template.html',
+                save:function(){
+
+                }
+            });
         },
         fileUploadChange: function(){
             var file = document.getElementsByName("templateFile")[0].files[0];

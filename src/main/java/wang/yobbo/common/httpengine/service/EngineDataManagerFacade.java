@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
 import wang.yobbo.common.spring.SpringContextUtil;
-import wang.yobbo.sys.entity.NextRobotSysMenu;
-import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
-import wang.yobbo.sys.service.NextRobotSysMenuService;
+import wang.yobbo.sys.entity.SysMenu;
+import wang.yobbo.sys.entity.SysMenuEntity;
+import wang.yobbo.sys.service.SysMenuService;
 
 import java.util.Map;
 
@@ -41,8 +41,8 @@ public class EngineDataManagerFacade {
         try{
             String id = basicInfo.get("id") != null ? basicInfo.get("id").toString() : null;
             if(StringUtils.isNotEmpty(id)){
-                NextRobotSysMenuService sysMenuService = SpringContextUtil.getBean(NextRobotSysMenuService.class); //获取SysMenuService bean
-                NextRobotSysMenu sysMenu = sysMenuService.findById(id);
+                SysMenuService sysMenuService = SpringContextUtil.getBean(SysMenuService.class); //获取SysMenuService bean
+                SysMenu sysMenu = sysMenuService.findById(id);
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     String json = mapper.writeValueAsString(sysMenu);
@@ -67,8 +67,8 @@ public class EngineDataManagerFacade {
         try{
             String id = basicInfo.get("id") != null ? basicInfo.get("id").toString() : null;
             if(StringUtils.isNotEmpty(id)){
-                NextRobotSysMenuService sysMenuService = SpringContextUtil.getBean(NextRobotSysMenuService.class); //获取SysMenuService bean
-                NextRobotSysMenuEntity sysMenuTable = sysMenuService.findSysMenuTableById(id);
+                SysMenuService sysMenuService = SpringContextUtil.getBean(SysMenuService.class); //获取SysMenuService bean
+                SysMenuEntity sysMenuTable = sysMenuService.findSysMenuTableById(id);
                 if(sysMenuTable != null){
                     sysMenuTable.setEntityName(sysMenuTable.getEntityName().replace(EngineViewServlet.getEntity_prefix_name(), ""));
                 }

@@ -103,6 +103,7 @@
 
     <!-- 重写角色授权过滤器 -->
     <bean id="anyRoleFilter" class="wang.yobbo.sys.security.shiro.filter.AnyRoleAuthorizationFilter"></bean>
+    <bean id="sessionListeners" class="wang.yobbo.sys.security.shiro.filter.CustomSessionListenerAdapter"></bean>
 
     <bean id="filterChainResolver" class="wang.yobbo.sys.security.shiro.extend.CustomPathMatchingFilterChainResolver">
         <property name="customDefaultFilterChainManager" ref="filterChainManager"/>
@@ -110,9 +111,7 @@
 
     <!-- session 管理 -->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-        <property name="sessionListeners">
-            <bean class="wang.yobbo.sys.security.shiro.filter.CustomSessionListenerAdapter"></bean>
-        </property>
+        <property name="sessionListeners" ref="sessionListeners"></property>
         <property name="globalSessionTimeout" value="${shiro.session.globalSessionTimeout}"></property>
         <property name="sessionDAO" ref="${cacheManagerTpye}ShiroSessionDAO" />
         <property name="deleteInvalidSessions" value="false" />
@@ -158,6 +157,7 @@
                 /resources*/** = anon
                 /front/cardinfor/** = anon
                 /sys/login = authc
+                /sys/index = authc
                 /sys/unauthorized = authc
                 /logout = logout
                 /engine/** = authc

@@ -5,10 +5,12 @@ import org.springframework.stereotype.Component;
 import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
 import wang.yobbo.host.dao.NextRobotHostDao;
-import wang.yobbo.host.entity.NextRobotHost;
-import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
+import wang.yobbo.host.entity.Host;
+import wang.yobbo.sys.entity.BusinessTemplate;
 
 import java.util.List;
+import java.util.Map;
+
 /**
 * 此文件由应用引擎生成，严禁修改，如重复生成时，该文件将被覆盖。
 * NextRobotHostDaoImpl
@@ -18,13 +20,13 @@ import java.util.List;
 *
 */
 @Component
-public class NextRobotHostDaoImpl extends BaseDaoImpl<NextRobotHost, String> implements NextRobotHostDao{
+public class NextRobotHostDaoImpl extends BaseDaoImpl<Host, String> implements NextRobotHostDao{
 
-    public NextRobotHost save(NextRobotHost nextRobotHost) {
+    public Host save(Host nextRobotHost) throws Exception {
         return super.save(nextRobotHost);
     }
 
-    public NextRobotHost findById(String id) {
+    public Host findById(String id) {
         return super.findById(id);
     }
 
@@ -32,7 +34,7 @@ public class NextRobotHostDaoImpl extends BaseDaoImpl<NextRobotHost, String> imp
         return super.delete(ids);
     }
 
-    public void delete(NextRobotHost nextRobotHost) {
+    public void delete(Host nextRobotHost) {
         super.delete(nextRobotHost);
     }
 
@@ -44,24 +46,24 @@ public class NextRobotHostDaoImpl extends BaseDaoImpl<NextRobotHost, String> imp
         return super.count();
     }
 
-    public List<NextRobotHost> findPageWithoutCount(Searchable searchable) {
+    public List<Host> findPageWithoutCount(Searchable searchable) {
         return super.findPageWithoutCount(searchable);
     }
 
-    public List<NextRobotHost> findAll() {
+    public List<Host> findAll() {
         return super.findAll();
     }
 
-    public List<NextRobotHost> findAll(NextRobotHost nextRobotHost) {
+    public List<Host> findAll(Host nextRobotHost) {
         return super.findAll(nextRobotHost);
     }
 
-    public Page<NextRobotHost> getPage(Searchable searchable) {
+    public Page<Host> getPage(Searchable searchable) {
         return super.findPage(searchable);
     }
 
-    public List<NextRobotBusinessTemplate> findTemplateByHql(String hql, Object[] params) {
-        return super.findByHQL(hql, NextRobotBusinessTemplate.class, params);
+    public List<BusinessTemplate> findTemplateByHql(String hql, Map<String, Object> params) {
+        return super.findByHQL(hql,params, BusinessTemplate.class);
     }
 
 }

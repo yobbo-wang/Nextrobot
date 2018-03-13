@@ -4,18 +4,20 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import wang.yobbo.common.appengine.InvokeResult;
 import wang.yobbo.common.spring.PropertyConfigurer;
-import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
-import wang.yobbo.sys.entity.NextRobotEntityProperty;
-import wang.yobbo.sys.entity.NextRobotSysMenu;
-import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
-import wang.yobbo.sys.service.NextRobotSysMenuService;
+import wang.yobbo.sys.entity.BusinessTemplate;
+import wang.yobbo.sys.entity.EntityProperty;
+import wang.yobbo.sys.entity.SysMenu;
+import wang.yobbo.sys.entity.SysMenuEntity;
+import wang.yobbo.sys.service.SysMenuService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.rowset.serial.SerialClob;
@@ -29,32 +31,36 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/menu")
-public class NextRobotSysMenuController {
+public class SysMenuController {
 
     @Autowired private PropertyConfigurer propertyConfigurer;
-    @Autowired private NextRobotSysMenuService sysMenuService;
+    @Autowired private SysMenuService sysMenuService;
 
-    @RequestMapping(value = "/getEntityProperty/{entityName}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getTemplates", method = RequestMethod.GET)
     @ResponseBody
-    public String getEntityProperty(@PathVariable(value = "entityName") String entityName){
-
-        return null;
+    public List<BusinessTemplate> getTemplates(){
+        try{
+            return this.sysMenuService.findTemplateAll();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @RequestMapping(value = "findByPId", method = RequestMethod.POST)
     @ResponseBody
-    public List<NextRobotSysMenu> findByPId(HttpServletRequest request){
+    public List<SysMenu> findByPId(HttpServletRequest request){
         String pid = new String();
         if(request.getParameter("PID") != null || StringUtils.isNotEmpty(request.getParameter("PID"))){
             pid = request.getParameter("PID");
         }
-        List<NextRobotSysMenu> menus = this.sysMenuService.findByPId(pid);
+        List<SysMenu> menus = this.sysMenuService.findByPId(pid);
         return menus;
     }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     @ResponseBody
-    public InvokeResult save(NextRobotSysMenu sysMenu){
+    public InvokeResult save(SysMenu sysMenu){
         try{
             if(StringUtils.isEmpty(sysMenu.getParentId())){
                 sysMenu.setParentId(null);
@@ -70,56 +76,66 @@ public class NextRobotSysMenuController {
     @RequestMapping(value = "uploadTemplate", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult uploadTemplate(@RequestParam("templateFile")MultipartFile templateFile,
-                                       @RequestParam("templateJson")String templateJson){
+                                       @RequestParam("templateJson")String templateJson,
+                                       @RequestParam("fileType")String fileType) {
         ObjectMapper mapper = new ObjectMapper();
+        BusinessTemplate nextRobotBusinessTemplate = new BusinessTemplate();
         //序列化检查json格式
-        try {
-            mapper.readValue(templateJson, new TypeReference<List<Map>>() {});
-        } catch (IOException e) {
+        if(templateJson != null && !templateJson.isEmpty()){
             try {
-                mapper.readValue(templateJson, new TypeReference<Map>() {});
-            } catch (IOException e1) {
-                return InvokeResult.failure("请检查json格式");
+                mapper.readValue(templateJson, new TypeReference<List<Map>>() {});
+            } catch (IOException e) {
+                try {
+                    mapper.readValue(templateJson, new TypeReference<Map>() {});
+                } catch (IOException e1) {
+                    return InvokeResult.failure("请检查json数据");
+                }
             }
+            nextRobotBusinessTemplate.setTemplate_json(templateJson);
         }
-        NextRobotBusinessTemplate nextRobotBusinessTemplate = new NextRobotBusinessTemplate();
+
         try {
             String originalFilename = templateFile.getOriginalFilename();
             int i = originalFilename.lastIndexOf(".");
             InputStream stream = templateFile.getInputStream();
             SerialClob clob = new SerialClob(IOUtils.toCharArray(stream, Charset.forName("utf-8"))); //实例化clob
-            nextRobotBusinessTemplate.setFileType(originalFilename.substring(i));
+            nextRobotBusinessTemplate.setFileType(fileType);
             nextRobotBusinessTemplate.setName(originalFilename.substring(0, i));
             nextRobotBusinessTemplate.setFileContent(clob);
-            nextRobotBusinessTemplate.setTemplate_json(templateJson);
             stream.close();
             this.sysMenuService.saveBusinessTemplate(nextRobotBusinessTemplate);
         } catch (IOException e) {
             e.printStackTrace();
+            return InvokeResult.failure("上传失败");
         } catch (SerialException e) {
             e.printStackTrace();
+            return InvokeResult.failure("上传失败");
         } catch (SQLException e) {
             e.printStackTrace();
+            return InvokeResult.failure("上传失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return InvokeResult.failure("上传失败");
         }
         return InvokeResult.success("上传成功");
     }
 
     @RequestMapping(value = "saveEntity", method = RequestMethod.POST)
     @ResponseBody
-    public InvokeResult saveEntity(NextRobotSysMenuEntity nextRobotSysMenuEntity, @RequestParam(value = "entityRow") String entityRow){
+    public InvokeResult saveEntity(SysMenuEntity nextRobotSysMenuEntity, @RequestParam(value = "entityRow") String entityRow){
         if(StringUtils.isEmpty(entityRow))
             return InvokeResult.failure("请添加实体属性!");
         ObjectMapper mapper = new ObjectMapper();
         try {
             this.sysMenuService.addEntity(nextRobotSysMenuEntity);
-            List<NextRobotEntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<NextRobotEntityProperty>>(){});
-            List<NextRobotEntityProperty> newProperties = this.sysMenuService.saveEntityProperty(nextRobotEntityProperties);
+            List<EntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<EntityProperty>>(){});
+            List<EntityProperty> newProperties = this.sysMenuService.saveEntityProperty(nextRobotEntityProperties);
             if(!newProperties.isEmpty() && newProperties.size() > 0){
                 return InvokeResult.success(newProperties);
             }else{
                 return InvokeResult.failure("保存失败");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return InvokeResult.failure("保存失败");
         }
@@ -127,7 +143,7 @@ public class NextRobotSysMenuController {
 
     @RequestMapping(value = "createBusinessCode", method = RequestMethod.POST)
     @ResponseBody
-    public InvokeResult createBusinessCode(NextRobotSysMenuEntity nextRobotSysMenuTable,
+    public InvokeResult createBusinessCode(SysMenuEntity nextRobotSysMenuTable,
                                            @RequestParam(value = "entityMode") String entityMode,
                                            @RequestParam(value = "entityRow") String entityRow){
         if(StringUtils.isEmpty(entityMode))
@@ -136,7 +152,7 @@ public class NextRobotSysMenuController {
             return InvokeResult.failure("请添加实体属性!");
         try {
             ObjectMapper mapper = new ObjectMapper();
-            List<NextRobotEntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<NextRobotEntityProperty>>(){});
+            List<EntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<EntityProperty>>(){});
             boolean businessCode = this.sysMenuService.createBusinessCode(nextRobotSysMenuTable, entityMode, nextRobotEntityProperties);
             if(businessCode){
                 return InvokeResult.success("生成成功!");
@@ -151,7 +167,7 @@ public class NextRobotSysMenuController {
 
     @RequestMapping(value = "addEntity", method = RequestMethod.POST)
     @ResponseBody
-    public InvokeResult addEntity(NextRobotSysMenuEntity sysMenuTable){
+    public InvokeResult addEntity(SysMenuEntity sysMenuTable){
         try{
             if(StringUtils.isEmpty(sysMenuTable.getMenuId())){
                 return InvokeResult.failure("请选择对应菜单，再添加实体!");

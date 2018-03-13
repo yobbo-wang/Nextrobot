@@ -1,0 +1,13 @@
+<!-- html块 -->
+<table class="easyui-datagrid"
+       data-options="singleSelect:true,border:false,url: '<#if contextPath ??>${contextPath}</#if>/menu/getTemplates',method:'get'">
+    <thead>
+    <tr>
+        <th data-options="field:'name',width:'25%'">名称</th>
+        <th data-options="field:'fileType',width:'10%'">文件类型</th>
+        <th data-options="field:'template_json',width:'35%'">模块数据</th>
+        <th data-options="field:'createDate',width:'25%',formatter:function (value,row,index){return new Date(value).Format('yyyy-MM-dd HH:mm:ss');}">创建时间</th>
+        <th data-options="field:'de',width:'7%',formatter:function(value,row,index){return '<a >删除</a>';}">操作</th>
+    </tr>
+    </thead>
+</table>

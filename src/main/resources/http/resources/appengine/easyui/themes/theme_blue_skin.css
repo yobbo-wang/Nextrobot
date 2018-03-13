@@ -403,6 +403,7 @@ opacity:0.5;}
 .ui_title_bar,.ui_title{border-bottom-color:#4492d0 !important;}
 .window{background-color: #F8F8F8 !important; background: #f8f8f8f8 !important;filter:none !important;}
 .window, .window .window-body{border-color: #d4d4d4 !important;}
+.window-header{border-bottom: 1px solid #d4d4d4 !important;}
 .dialog-button{border-color: #d4d4d4 !important;}
 .ui_title,.ui_state_drag .ui_title{background:#4492d0 !important;background-color:#4492d0 !important;filter:none !important;}
 .ui_title{border-radius:0px !important;}

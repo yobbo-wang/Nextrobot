@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "NEXT_ROBOT_SYS_ROLE")
-public class NextRobotSysRole extends BaseEntity<String> {
+@Table(name = "NR_SYS_ROLE")
+public class SysRole extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
 
     //业务角色名称
@@ -16,7 +16,7 @@ public class NextRobotSysRole extends BaseEntity<String> {
 
     @OneToMany
     @JoinColumn(name = "USER_ID")
-    private transient Set<NextRobotSysUser> user_roleSet;
+    private transient Set<SysUser> user_roleSet;
 
     public String getRoleName() {
         return roleName;
@@ -26,11 +26,11 @@ public class NextRobotSysRole extends BaseEntity<String> {
         this.roleName = roleName;
     }
 
-    public Set<NextRobotSysUser> getUser_roleSet() {
+    public Set<SysUser> getUser_roleSet() {
         return user_roleSet;
     }
 
-    public void setUser_roleSet(Set<NextRobotSysUser> user_roleSet) {
+    public void setUser_roleSet(Set<SysUser> user_roleSet) {
         this.user_roleSet = user_roleSet;
     }
 }

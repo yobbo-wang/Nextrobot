@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import wang.yobbo.common.appengine.cache.NextRobotCacheManager;
-import wang.yobbo.sys.entity.NextRobotSysRole;
-import wang.yobbo.sys.entity.NextRobotSysUser;
+import wang.yobbo.sys.entity.SysRole;
+import wang.yobbo.sys.entity.SysUser;
 import wang.yobbo.sys.security.ShiroUser;
 import wang.yobbo.sys.service.SysUserService;
 
@@ -30,10 +30,10 @@ public class CustomAuthoringRealm extends AuthorizingRealm{
         ShiroUser shiroUser = (ShiroUser) principalCollection.getPrimaryPrincipal();
         String userId = shiroUser.getUserID();
 
-        List<NextRobotSysRole> roles = (List<NextRobotSysRole>) nextRobotCacheManager.get("userRecordCache", userId, NextRobotSysRole.class);
+        List<SysRole> roles = (List<SysRole>) nextRobotCacheManager.get("userRecordCache", userId, SysRole.class);
         Set<String> roleNameSet = new HashSet<String>();
         Set<String> permissionSet = new HashSet<String>();
-        for (NextRobotSysRole role : roles) {
+        for (SysRole role : roles) {
             roleNameSet.add(role.getId() + "-" + role.getRoleName());
             Map map = (Map) nextRobotCacheManager.get("roleRecordCache", role.getId(), HashMap.class);
             permissionSet.addAll(map.keySet());
@@ -53,10 +53,10 @@ public class CustomAuthoringRealm extends AuthorizingRealm{
             password = new String(upToken.getPassword());
         }
         SimpleAuthenticationInfo result = null;
-        NextRobotSysUser nextRobotSysUser = null;
+        SysUser nextRobotSysUser = null;
         try{
             nextRobotSysUser = this.sysUserService.login(username, password);
-            if(nextRobotSysUser == null) throw new RuntimeException();
+            if(nextRobotSysUser == null) throw new RuntimeException("没有用户.");
             result = new SimpleAuthenticationInfo(nextRobotSysUser, password.toCharArray(),
                     getName());
             return result;

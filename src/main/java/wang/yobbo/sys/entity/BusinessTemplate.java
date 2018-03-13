@@ -1,15 +1,17 @@
 package wang.yobbo.sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import wang.yobbo.common.appengine.entity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.sql.Clob;
+import java.util.Date;
 
 @Entity
-@Table(name = "NEXT_ROBOT_BUSINESS_TEMPLATE")
-public class NextRobotBusinessTemplate extends BaseEntity<String> {
+@Table(name = "NR_BUSINESS_TEMPLATE")
+public class BusinessTemplate extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "NAME", length = 50, unique = true, nullable = false)
@@ -21,10 +23,22 @@ public class NextRobotBusinessTemplate extends BaseEntity<String> {
     //Clob 写入方法：用Clob实现类 SerialClob(char[])
     // 读取方法：Clob.getCharacterStream() 流传给 org.apache.commons.io.IOUtils.toByteArray(inputStream, Charset.forName("utf-8"))
     @Column(name = "FILE_CONTENT")
+    @JsonIgnore
     private Clob fileContent;
 
     @Column(name = "TEMPLATE_JSON")
     private String template_json;
+
+    public BusinessTemplate(String name, String fileType, String template_json, String id,Date createDate,Date updateDate ) {
+        this.name = name;
+        this.fileType = fileType;
+        this.template_json = template_json;
+        super.setId(id);
+        super.setCreateDate(createDate);
+        super.setUpdateDate(updateDate);
+    }
+
+    public BusinessTemplate(){}
 
     public String getName() {
         return name;

@@ -2,19 +2,20 @@ package wang.yobbo.sys.service;
 
 import org.springframework.data.domain.Page;
 import wang.yobbo.common.appengine.entity.Searchable;
-import wang.yobbo.sys.entity.NextRobotSysUser;
+import wang.yobbo.sys.entity.SysUser;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SysUserService{
 
-    Page<NextRobotSysUser> getPage(Searchable searchable);
+    Page<SysUser> getPage(Searchable searchable);
     /**
      * 根据自定义sql查询数据结果集
      * @param sql 自定sql
      * @param params 参数数组
      */
-    NextRobotSysUser findBySqlOne(String sql, Object...params);
+    SysUser findBySqlOne(String sql, Map<String, Object> params);
 
     /**
      * 根据自定义sql查询数据结果集
@@ -22,7 +23,7 @@ public interface SysUserService{
      * @param params
      * @return
      */
-    List<NextRobotSysUser> findAllBySql(String sql, Object...params);
+    List<SysUser> findAllBySql(String sql, Map<String, Object> params);
 
     /**
      * 根据自定义sql查询数据结果集记录数
@@ -42,14 +43,14 @@ public interface SysUserService{
      * 获取所有实体所有结果集
      * @return
      */
-    List<NextRobotSysUser> findUserAll();
+    List<SysUser> findUserAll();
 
     /**
      * 根据实体值，获取所有结果集
      * @param SysUser
      * @return
      */
-    List<NextRobotSysUser> findUserAll(NextRobotSysUser SysUser);
+    List<SysUser> findUserAll(SysUser SysUser);
 
     /**
      * 根据主键ID批量删除
@@ -58,17 +59,17 @@ public interface SysUserService{
      */
     int deleteByPrimaryKeys(String ... primaryKey);
 
-    void deleteForUser(NextRobotSysUser SysUser);
+    void deleteForUser(SysUser SysUser);
 
-    NextRobotSysUser update(NextRobotSysUser SysUser);
+    SysUser update(SysUser SysUser) throws Exception;
 
-    NextRobotSysUser save(NextRobotSysUser SysUser);
+    SysUser save(SysUser SysUser) throws Exception;
 
-    NextRobotSysUser findByEmail(String email);
+    SysUser findByEmail(String email);
 
-    NextRobotSysUser findByMobilePhoneNumber(String mobilePhone);
+    SysUser findByMobilePhoneNumber(String mobilePhone);
 
-    NextRobotSysUser findByUserName(String userName);
+    SysUser findByUserName(String userName);
 
-    NextRobotSysUser login(String username, String password);
+    SysUser login(String username, String password);
 }

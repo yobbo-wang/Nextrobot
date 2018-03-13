@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service;
 import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
 import wang.yobbo.common.spring.PropertyConfigurer;
-import wang.yobbo.sys.dao.NextRobotBussisTemplateDao;
-import wang.yobbo.sys.dao.NextRobotEntityPropertyDao;
-import wang.yobbo.sys.dao.NextRobotSysMenuDao;
-import wang.yobbo.sys.dao.NextRobotSysMenuTableDao;
-import wang.yobbo.sys.entity.NextRobotBusinessTemplate;
-import wang.yobbo.sys.entity.NextRobotEntityProperty;
-import wang.yobbo.sys.entity.NextRobotSysMenu;
-import wang.yobbo.sys.entity.NextRobotSysMenuEntity;
-import wang.yobbo.sys.service.NextRobotSysMenuService;
+import wang.yobbo.sys.dao.BussisTemplateDao;
+import wang.yobbo.sys.dao.EntityPropertyDao;
+import wang.yobbo.sys.dao.SysMenuDao;
+import wang.yobbo.sys.dao.SysMenuTableDao;
+import wang.yobbo.sys.entity.BusinessTemplate;
+import wang.yobbo.sys.entity.EntityProperty;
+import wang.yobbo.sys.entity.SysMenu;
+import wang.yobbo.sys.entity.SysMenuEntity;
+import wang.yobbo.sys.service.SysMenuService;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -28,15 +28,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
-    private static final Logger LOG = LoggerFactory.getLogger(NextRobotSysMenuServiceImpl.class);
-    @Autowired private NextRobotSysMenuDao sysMenuDao;
-    @Autowired private NextRobotSysMenuTableDao sysMenuTableDao;
+public class SysMenuServiceImpl implements SysMenuService {
+    private static final Logger LOG = LoggerFactory.getLogger(SysMenuServiceImpl.class);
+    @Autowired private SysMenuDao sysMenuDao;
+    @Autowired private SysMenuTableDao sysMenuTableDao;
     @Autowired private PropertyConfigurer propertyConfigurer;
-    @Autowired private NextRobotBussisTemplateDao nextRobotBussisTemplateDao;
-    @Autowired private NextRobotEntityPropertyDao nextRobotEntityPropertyDao;
+    @Autowired private BussisTemplateDao nextRobotBussisTemplateDao;
+    @Autowired private EntityPropertyDao nextRobotEntityPropertyDao;
 
-    public Page<NextRobotSysMenu> getPage(Searchable searchable) {
+    public Page<SysMenu> getPage(Searchable searchable) {
         return this.sysMenuDao.getPage(searchable);
     }
 
@@ -45,16 +45,16 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
     }
 
     //使用懒加载
-    public List<NextRobotSysMenu> findByPId(String pid) {
-        List<NextRobotSysMenu> menus = this.sysMenuDao.findByPId(pid);
+    public List<SysMenu> findByPId(String pid) {
+        List<SysMenu> menus = this.sysMenuDao.findByPId(pid);
         return menus;
     }
 
-    public NextRobotSysMenu findById(String id) {
+    public SysMenu findById(String id) {
         return this.sysMenuDao.findById(id);
     }
 
-    public NextRobotSysMenu save(NextRobotSysMenu sysMenu) {
+    public SysMenu save(SysMenu sysMenu) throws Exception{
         return this.sysMenuDao.save(sysMenu);
     }
 
@@ -62,7 +62,7 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
         return this.sysMenuDao.delete(id);
     }
 
-    public NextRobotSysMenuEntity addEntity(NextRobotSysMenuEntity nextRobotSysMenuEntity) {
+    public SysMenuEntity addEntity(SysMenuEntity nextRobotSysMenuEntity) throws Exception{
         return this.sysMenuTableDao.addEntity(nextRobotSysMenuEntity);
     }
 
@@ -70,7 +70,7 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
         return this.sysMenuTableDao.deleteEntity(id);
     }
 
-    public NextRobotSysMenuEntity findSysMenuTableById(String id) {
+    public SysMenuEntity findSysMenuTableById(String id) {
         return this.sysMenuTableDao.findSysMenuTableById(id);
     }
 
@@ -91,13 +91,15 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
             return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
     }
 
-    public boolean createBusinessCode(NextRobotSysMenuEntity nextRobotSysMenuTable, String entityMode, List<NextRobotEntityProperty> nextRobotEntityProperties) throws Exception {
+    public boolean createBusinessCode(SysMenuEntity nextRobotSysMenuTable, String entityMode, List<EntityProperty> nextRobotEntityProperties) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         try {
             this.sysMenuTableDao.addEntity(nextRobotSysMenuTable); //保存
             this.nextRobotEntityPropertyDao.saveEntityProperty(nextRobotEntityProperties);
             //业务分类首字母设置为小写
             nextRobotSysMenuTable.setBusinessClassification(this.toLowerCaseFirstOne(nextRobotSysMenuTable.getBusinessClassification()));
+            //将实体首字母设置为大写
+            nextRobotSysMenuTable.setEntityName(this.toUpperCaseFirstOne(nextRobotSysMenuTable.getEntityName()));
             List<String> entityModeBean = mapper.readValue(entityMode, new TypeReference<List<String>>() {});
             //获取应用引擎信息
             String basePath = EngineViewServlet.getBase_path();
@@ -133,16 +135,21 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
         return true;
     }
 
-    public List<NextRobotEntityProperty> saveEntityProperty(List<NextRobotEntityProperty> nextRobotEntityProperties) {
+    public List<EntityProperty> saveEntityProperty(List<EntityProperty> nextRobotEntityProperties) throws Exception {
         return this.nextRobotEntityPropertyDao.saveEntityProperty(nextRobotEntityProperties);
     }
 
-    public NextRobotBusinessTemplate saveBusinessTemplate(NextRobotBusinessTemplate nextRobotBusinessTemplate) {
+    public BusinessTemplate saveBusinessTemplate(BusinessTemplate nextRobotBusinessTemplate) throws Exception{
         return this.nextRobotBussisTemplateDao.saveBusinessTemplate(nextRobotBusinessTemplate);
     }
 
-    public NextRobotBusinessTemplate findTemplate(String id) {
+    public BusinessTemplate findTemplate(String id) {
         return this.nextRobotBussisTemplateDao.findTemplate(id);
+    }
+
+    @Override
+    public List<BusinessTemplate> findTemplateAll() {
+        return this.nextRobotBussisTemplateDao.findTemplateAll();
     }
 
     //创建文件
@@ -169,7 +176,7 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
     }
 
     //生成entity
-    private Map createEntity(String path, NextRobotSysMenuEntity nextRobotSysMenuTable, List<NextRobotEntityProperty> nextRobotEntityProperties) throws Exception{
+    private Map createEntity(String path, SysMenuEntity nextRobotSysMenuTable, List<EntityProperty> nextRobotEntityProperties) throws Exception{
         Map<String,Object> dataMap = new HashMap<String, Object>();
         dataMap.put("nowDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         Map<String,Object> engine = new HashMap<String, Object>();
@@ -197,7 +204,7 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
     }
 
     //生成dao
-    private List<Map<String, String>> createDao(String path, NextRobotSysMenuEntity nextRobotSysMenuTable) throws Exception{
+    private List<Map<String, String>> createDao(String path, SysMenuEntity nextRobotSysMenuTable) throws Exception{
         Map<String,Object> dataMap = new HashMap<String, Object>();
         dataMap.put("nowDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         Map<String,Object> engine = new HashMap<String, Object>();
@@ -241,7 +248,7 @@ public class NextRobotSysMenuServiceImpl implements NextRobotSysMenuService {
     }
 
     //生成service
-    private List<Map<String, String>> createService(String path, NextRobotSysMenuEntity nextRobotSysMenuTable) throws Exception{
+    private List<Map<String, String>> createService(String path, SysMenuEntity nextRobotSysMenuTable) throws Exception{
         Map<String,Object> dataMap = new HashMap<String, Object>();
         dataMap.put("nowDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         Map<String,Object> engine = new HashMap<String, Object>();

@@ -1,9 +1,10 @@
 package wang.yobbo.sys.dao;
 
 import net.sf.ehcache.config.Searchable;
-import wang.yobbo.sys.entity.NextRobotSysUser;
+import wang.yobbo.sys.entity.SysUser;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SysUsersDao {
     /**
@@ -11,7 +12,7 @@ public interface SysUsersDao {
      * @param sql 自定sql
      * @param params 参数数组
      */
-    NextRobotSysUser findBySqlOne(String sql, Object...params);
+    SysUser findBySqlOne(String sql, Map<String, Object> params);
 
     /**
      * 根据自定义sql查询数据结果集记录数
@@ -31,14 +32,14 @@ public interface SysUsersDao {
      * 获取所有实体所有结果集
      * @return
      */
-    List<NextRobotSysUser> findUserAll();
+    List<SysUser> findUserAll();
 
     /**
      * 根据实体值，获取所有结果集
      * @param user
      * @return
      */
-    List<NextRobotSysUser> findUserAll(NextRobotSysUser user);
+    List<SysUser> findUserAll(SysUser user);
 
     /**
      * 根据主键ID批量删除
@@ -47,19 +48,19 @@ public interface SysUsersDao {
      */
     int deleteByPrimaryKeys(String ... primaryKey);
 
-    void deleteForSysUser(NextRobotSysUser user);
+    void deleteForSysUser(SysUser user);
 
-    NextRobotSysUser updateUser(NextRobotSysUser user);
+    SysUser updateUser(SysUser user) throws Exception;
 
-    NextRobotSysUser save(NextRobotSysUser user);
+    SysUser save(SysUser user) throws Exception;
 
-    List<NextRobotSysUser> findAllBySql(String sql, Object[] params);
+    List<SysUser> findAllBySql(String sql, Map<String, Object> params);
 
-    NextRobotSysUser findByEmail(String email);
+    SysUser findByEmail(String email);
 
-    NextRobotSysUser findByMobilePhoneNumber(String mobilePhone);
+    SysUser findByMobilePhoneNumber(String mobilePhone);
 
-    NextRobotSysUser findByUserName(String userName);
+    SysUser findByUserName(String userName);
 
-    NextRobotSysUser login(String field, String username, String password);
+    SysUser login(String field, String username, String password);
 }

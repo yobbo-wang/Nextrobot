@@ -11,9 +11,9 @@ import java.util.List;
  * 菜单表信息
  */
 @Entity
-@Table(name = "NEXT_ROBOT_SYS_MENU_ENTITY")
+@Table(name = "NR_SYS_MENU_ENTITY")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE) //读写
-public class NextRobotSysMenuEntity extends BaseEntity<String> {
+public class SysMenuEntity extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "ENTITY_NAME", length = 40, unique = true)
@@ -33,7 +33,7 @@ public class NextRobotSysMenuEntity extends BaseEntity<String> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ENTITY_ID", updatable = false)
-    private List<NextRobotEntityProperty> entityProperties = new ArrayList<NextRobotEntityProperty>();
+    private List<EntityProperty> entityProperties = new ArrayList<EntityProperty>();
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_ID")
@@ -75,11 +75,11 @@ public class NextRobotSysMenuEntity extends BaseEntity<String> {
         return businessClassification;
     }
 
-    public List<NextRobotEntityProperty> getEntityProperties() {
+    public List<EntityProperty> getEntityProperties() {
         return entityProperties;
     }
 
-    public void setEntityProperties(List<NextRobotEntityProperty> entityProperties) {
+    public void setEntityProperties(List<EntityProperty> entityProperties) {
         this.entityProperties = entityProperties;
     }
 

@@ -11,9 +11,9 @@ import java.util.List;
  * 菜单配置
  */
 @Entity
-@Table(name = "NEXT_ROBOT_SYS_MENU")
+@Table(name = "NR_SYS_MENU")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE) //读写
-public class NextRobotSysMenu extends BaseEntity<String> {
+public class SysMenu extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -40,11 +40,11 @@ public class NextRobotSysMenu extends BaseEntity<String> {
     //下级菜单
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "PARENT_ID", insertable = false, updatable = false)
-    private List<NextRobotSysMenu> children = new ArrayList<NextRobotSysMenu>();
+    private List<SysMenu> children = new ArrayList<SysMenu>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "MENU_ID")
-    private List<NextRobotSysMenuEntity> tables = new ArrayList<NextRobotSysMenuEntity>();
+    private List<SysMenuEntity> tables = new ArrayList<SysMenuEntity>();
 
     public String getText() {
         return text;
@@ -94,19 +94,19 @@ public class NextRobotSysMenu extends BaseEntity<String> {
         this.parentId = parentId;
     }
 
-    public List<NextRobotSysMenu> getChildren() {
+    public List<SysMenu> getChildren() {
         return children;
     }
 
-    public void setChildren(List<NextRobotSysMenu> children) {
+    public void setChildren(List<SysMenu> children) {
         this.children = children;
     }
 
-    public List<NextRobotSysMenuEntity> getTables() {
+    public List<SysMenuEntity> getTables() {
         return tables;
     }
 
-    public void setTables(List<NextRobotSysMenuEntity> tables) {
+    public void setTables(List<SysMenuEntity> tables) {
         this.tables = tables;
     }
 }

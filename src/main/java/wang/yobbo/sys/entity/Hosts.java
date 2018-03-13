@@ -6,8 +6,8 @@ import javax.persistence.Column;
  * 主机信息
  */
 @javax.persistence.Entity
-@javax.persistence.Table(name = "NEXT_ROBOT_HOSTS")
-public class NextRobotHosts extends wang.yobbo.common.appengine.entity.BaseEntity<String> {
+@javax.persistence.Table(name = "NR_HOSTS")
+public class Hosts extends wang.yobbo.common.appengine.entity.BaseEntity<String> {
     private static final long serialVersionUID = 1L;
     @Column(name = "IP", length = 18, unique = true, nullable = false)
     private String ip;

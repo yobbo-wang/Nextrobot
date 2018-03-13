@@ -4,19 +4,21 @@ import net.sf.ehcache.config.Searchable;
 import org.springframework.stereotype.Service;
 import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
 import wang.yobbo.sys.dao.SysUsersDao;
-import wang.yobbo.sys.entity.NextRobotSysUser;
+import wang.yobbo.sys.entity.SysUser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xiaoyang on 2017/12/28.
  *
  */
 @Service
-public class UsersDaoImpl extends BaseDaoImpl<NextRobotSysUser, String> implements SysUsersDao {
+public class UsersDaoImpl extends BaseDaoImpl<SysUser, String> implements SysUsersDao {
 
-    public NextRobotSysUser findBySqlOne(String sql, Object...params) {
-        return super.findBySqlOne(sql, NextRobotSysUser.class, params);
+    public SysUser findBySqlOne(String sql, Map<String, Object> params) {
+        return super.findOneBySql(sql,  params, SysUser.class);
     }
     @Override
     public Long findBySqlCount(String sql, Object... params) {
@@ -27,11 +29,11 @@ public class UsersDaoImpl extends BaseDaoImpl<NextRobotSysUser, String> implemen
         return 0;
     }
 
-    public List<NextRobotSysUser> findUserAll() {
+    public List<SysUser> findUserAll() {
         return super.findAll();
     }
 
-    public List<NextRobotSysUser> findUserAll(NextRobotSysUser user){
+    public List<SysUser> findUserAll(SysUser user){
         return super.findAll(user);
     }
 
@@ -39,61 +41,58 @@ public class UsersDaoImpl extends BaseDaoImpl<NextRobotSysUser, String> implemen
         return super.delete(primaryKey);
     }
 
-    public void deleteForSysUser(NextRobotSysUser user) {
+    public void deleteForSysUser(SysUser user) {
         super.delete(user);
     }
 
-    public NextRobotSysUser updateUser(NextRobotSysUser user) {
+    public SysUser updateUser(SysUser user) throws Exception{
+        return super.save(user) ;
+    }
+
+    public SysUser save(SysUser user) throws Exception{
         return super.save(user);
     }
 
-    public NextRobotSysUser save(NextRobotSysUser user){
-        return super.save(user);
-    }
-
-    public List<NextRobotSysUser> findAllBySql(String sql, Object[] params) {
-        return super.fingAllBySql(sql, NextRobotSysUser.class, params);
+    public List<SysUser> findAllBySql(String sql, Map<String, Object> params) {
+        return super.findAllBySql(sql, params, SysUser.class);
     }
 
     @Override
-    public NextRobotSysUser findByEmail(String email) {
-        String hql = "select nextRobotSysUser from NextRobotSysUser nextRobotSysUser where nextRobotSysUser.email=?1";
-        List<NextRobotSysUser> result = super.findByHQL(hql, NextRobotSysUser.class, email);
-        if(result != null && result.size() == 1){
-            return result.get(0);
-        }
-        return null;
+    public SysUser findByEmail(String email) {
+        String hql = "select sysUser from SysUser sysUser where sysUser.email= :email";
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", email);
+        SysUser result = super.findOneByHQL(hql,params, SysUser.class);
+        return result;
     }
 
     @Override
-    public NextRobotSysUser findByMobilePhoneNumber(String mobilePhoneNumber) {
-        String hql = "select nextRobotSysUser from NextRobotSysUser nextRobotSysUser where nextRobotSysUser.mobilePhoneNumber = ?1";
-        List<NextRobotSysUser> result = super.findByHQL(hql, NextRobotSysUser.class, mobilePhoneNumber);
-        if(result != null && result.size() == 1){
-            return result.get(0);
-        }
-        return null;
+    public SysUser findByMobilePhoneNumber(String mobilePhoneNumber) {
+        String hql = "select sysUser from SysUser sysUser where sysUser.mobilePhoneNumber = :mobilePhoneNumber";
+        Map<String, Object> params = new HashMap<>();
+        params.put("mobilePhoneNumber", mobilePhoneNumber);
+        SysUser result = super.findOneByHQL(hql, params, SysUser.class);
+        return result;
     }
 
     @Override
-    public NextRobotSysUser findByUserName(String userName) {
-        String hql = "select nextRobotSysUser from NextRobotSysUser nextRobotSysUser where nextRobotSysUser.userName = ?1";
-        List<NextRobotSysUser> result = super.findByHQL(hql, NextRobotSysUser.class, userName);
-        if(result != null && result.size() == 1){
-            return result.get(0);
-        }
-        return null;
+    public SysUser findByUserName(String userName) {
+        String hql = "select sysUser from SysUser sysUser where sysUser.userName = :userName";
+        Map<String, Object> params = new HashMap<>();
+        params.put("userName", userName);
+        SysUser result = super.findOneByHQL(hql, params, SysUser.class);
+        return result;
     }
 
     @Override
-    public NextRobotSysUser login(String field, String username, String password) {
-        StringBuilder hql = new StringBuilder("select nextRobotSysUser from NextRobotSysUser nextRobotSysUser where ");
-        hql.append("nextRobotSysUser.").append(field).append(" = ?1 ");
-        hql.append("and password = ?2 ");
-        List<NextRobotSysUser> result = super.findByHQL(hql.toString(), NextRobotSysUser.class, username, password);
-        if(result != null && result.size() == 1){
-            return result.get(0);
-        }
-        return null;
+    public SysUser login(String field, String username, String password) {
+        StringBuilder hql = new StringBuilder("select sysUser from SysUser sysUser where ");
+        hql.append("sysUser.").append(field).append(" = ").append(":").append(field).append(" ");
+        hql.append("and sysUser.password =:password ");
+        Map<String, Object> params = new HashMap<>();
+        params.put(field, username);
+        params.put("password", password);
+        SysUser result = super.findOneByHQL(hql.toString(), params, SysUser.class);
+        return result;
     }
 }

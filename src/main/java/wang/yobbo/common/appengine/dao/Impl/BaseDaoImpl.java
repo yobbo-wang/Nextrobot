@@ -14,9 +14,11 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xiaoyang on 2017/12/28.
@@ -106,7 +108,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param entity
      * @return
      */
-    public E save(E entity) {
+    public E save(E entity) throws Exception {
         return this.getBaseDaoManager().save(entity);
     }
 
@@ -140,8 +142,8 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param params 参数数组
      * @return
      */
-    public <T> List<T> findByHQL(String hql,  Class<T> entityBean, Object ...params){
-        Query query = this.getBaseDaoManager().getEntityManager().createQuery(hql, entityBean);
+    public <T> List<T> findByHQL(String hql, Map<String, Object> params, Class<T> entityType){
+        Query query = this.getBaseDaoManager().getEntityManager().createQuery(hql, entityType);
         this.getBaseDaoManager().setParameter(query, params);
         try{
             List<T> resultList = query.getResultList();
@@ -151,6 +153,25 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
         }
         return null;
     }
+
+    /**
+     * 根据HQL语句查询单条记录
+     * @param hql hql语句
+     * @param params 参数数组
+     * @return
+     */
+    @Override
+    public <T> T findOneByHQL(String hql, Map<String, Object> params, Class<T> entityType) {
+        Query query = this.getBaseDaoManager().getEntityManager().createQuery(hql, entityType);
+        this.getBaseDaoManager().setParameter(query, params);
+        try{
+            return (T)query.getSingleResult();
+        }catch (Exception e){
+            e.printStackTrace(); //unable set result to bean
+        }
+        return null;
+    }
+
 
     /**
      * 根据自定义sql执行
@@ -186,7 +207,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param params 参数数组
      * @return 返回指定entity
      */
-    public <T> List<T> fingAllBySql(String sql,Class<T> entityType, Object ...params){
+    public <T> List<T> findAllBySql(String sql, Map<String, Object> params, Class<T> entityType){
         Assert.notNull(sql, "sql must not null.");
         Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql, entityType);
         this.getBaseDaoManager().setParameter(query, params);
@@ -199,7 +220,7 @@ public class BaseDaoImpl<E extends AbstractEntity, ID extends Serializable> impl
      * @param params 参数数组
      * @return 返回Map结果集
      */
-    public <T> T findBySqlOne(String sql, Class<T> entityType, Object... params) {
+    public <T> T findOneBySql(String sql, Map<String, Object> params, Class<T> entityType) {
         Assert.notNull(sql, "sql must not null.");
         Query query = this.getBaseDaoManager().getEntityManager().createNativeQuery(sql, entityType);
         query.setFirstResult(0);

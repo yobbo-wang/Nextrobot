@@ -12,7 +12,7 @@ import wang.yobbo.common.appengine.entity.Pageable;
 import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.appengine.entity.Sortable;
 import wang.yobbo.common.appengine.plugin.SearchOperator;
-import wang.yobbo.host.entity.NextRobotHost;
+import wang.yobbo.host.entity.Host;
 import wang.yobbo.host.service.NextRobotHostService;
 
 import java.util.List;
@@ -33,32 +33,32 @@ public class HostTest {
 
     @Test
     public void test_1(){
-        List<NextRobotHost> all = this.nextRobotHostService.findAll();
+        List<Host> all = this.nextRobotHostService.findAll();
         printJson(all);
     }
 
     @Test
     public void test_2(){
-        NextRobotHost nextRobotHost = new NextRobotHost();
+        Host nextRobotHost = new Host();
         nextRobotHost.setName("201");
-        List<NextRobotHost> all = this.nextRobotHostService.findAll(nextRobotHost);
+        List<Host> all = this.nextRobotHostService.findAll(nextRobotHost);
         printJson(all);
     }
 
     @Test
     public void Test_3(){
-        NextRobotHost byId = this.nextRobotHostService.findById("12111111");
+        Host byId = this.nextRobotHostService.findById("12111111");
         System.out.println(byId);
         printJson(byId);
     }
 
     @Test
     public void Test_4(){
-        NextRobotHost nextRobotHost = new NextRobotHost();
+        Host nextRobotHost = new Host();
         nextRobotHost.setName("23-12");
         nextRobotHost.setIp("192.168.10.10");
-        NextRobotHost byId = this.nextRobotHostService.save(nextRobotHost);
-        printJson(byId);
+//        Host byId = this.nextRobotHostService.save(nextRobotHost);
+//        printJson(byId);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class HostTest {
         sortable.add(Sortable.Sort.DESC, "createDate");
         Searchable searchable = new Searchable(pageable, sortable);
         searchable.addSearchRule("name", "20", SearchOperator.like);
-        Page<NextRobotHost> page = this.nextRobotHostService.getPage(searchable);
+        Page<Host> page = this.nextRobotHostService.getPage(searchable);
         printJson(page);
     }
 
@@ -94,7 +94,7 @@ public class HostTest {
 
     @Test
     public void Test_8(){
-        System.out.println(this.nextRobotHostService.findTemplateByHql("select nextRobotBusinessTemplate from NextRobotBusinessTemplate nextRobotBusinessTemplate"));
+        System.out.println(this.nextRobotHostService.findTemplateByHql("select nextRobotBusinessTemplate from NextRobotBusinessTemplate nextRobotBusinessTemplate", null));
     }
 
     private void printJson(Object value){

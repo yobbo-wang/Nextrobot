@@ -8,8 +8,8 @@ import javax.persistence.*;
  * 实体属性
  */
 @Entity
-@Table(name = "NEXT_ROBOT_ENTITY_PROPERTY")
-public class NextRobotEntityProperty extends BaseEntity<String> {
+@Table(name = "NR_ENTITY_PROPERTY")
+public class EntityProperty extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "COLUMN_NAME", length = 50, nullable = false)

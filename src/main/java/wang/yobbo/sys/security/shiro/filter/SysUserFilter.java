@@ -5,7 +5,7 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wang.yobbo.common.appengine.plugin.NtConstants;
-import wang.yobbo.sys.entity.NextRobotSysUser;
+import wang.yobbo.sys.entity.SysUser;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -18,7 +18,7 @@ public class SysUserFilter extends AccessControlFilter {
     private String userUnknownErrorUrl;
 
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
-        NextRobotSysUser user = (NextRobotSysUser) request.getAttribute(NtConstants.CURRENT_USER);
+        SysUser user = (SysUser) request.getAttribute(NtConstants.CURRENT_USER);
         if (user == null) {
             return true;
         }
@@ -39,7 +39,7 @@ public class SysUserFilter extends AccessControlFilter {
     @Override
     protected void redirectToLogin(ServletRequest request,
                                    ServletResponse response) throws IOException {
-        NextRobotSysUser user = (NextRobotSysUser) request.getAttribute(NtConstants.CURRENT_USER);
+        SysUser user = (SysUser) request.getAttribute(NtConstants.CURRENT_USER);
         String url = null;
         if (Boolean.TRUE.equals(user.getDeleted())) {
             url = getUserNotfoundUrl();

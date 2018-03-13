@@ -14,9 +14,9 @@ import javax.persistence.Table;
  * @Cache(usage = CacheConcurrencyStrategy.READ_ONLY) 如果在实体上加了这个注解，只能新增,删除，不能修改
  */
 @Entity
-@Table(name = "NEXT_ROBOT_SYS_USER")
+@Table(name = "NR_SYS_USER")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class NextRobotSysUser extends BaseEntity<String>{
+public class SysUser extends BaseEntity<String>{
     private static final long serialVersionUID = 1L;
 
     //用户名

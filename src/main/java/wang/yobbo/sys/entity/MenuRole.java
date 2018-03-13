@@ -8,31 +8,31 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "NEXT_ROBOT_MENU_ROLE")
-public class NextRobotMenuRole extends BaseEntity<String> {
+@Table(name = "NR_MENU_ROLE")
+public class MenuRole extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne
     @JoinColumn(name = "ROLE_ID")
-    private NextRobotSysRole nextRobotSysRole;
+    private SysRole nextRobotSysRole;
 
     @ManyToOne
     @JoinColumn(name = "MENU_ID")
-    private NextRobotSysMenu nextRobotSysMenu;
+    private SysMenu nextRobotSysMenu;
 
-    public NextRobotSysRole getNextRobotSysRole() {
+    public SysRole getNextRobotSysRole() {
         return nextRobotSysRole;
     }
 
-    public void setNextRobotSysRole(NextRobotSysRole nextRobotSysRole) {
+    public void setNextRobotSysRole(SysRole nextRobotSysRole) {
         this.nextRobotSysRole = nextRobotSysRole;
     }
 
-    public NextRobotSysMenu getNextRobotSysMenu() {
+    public SysMenu getNextRobotSysMenu() {
         return nextRobotSysMenu;
     }
 
-    public void setNextRobotSysMenu(NextRobotSysMenu nextRobotSysMenu) {
+    public void setNextRobotSysMenu(SysMenu nextRobotSysMenu) {
         this.nextRobotSysMenu = nextRobotSysMenu;
     }
 }
