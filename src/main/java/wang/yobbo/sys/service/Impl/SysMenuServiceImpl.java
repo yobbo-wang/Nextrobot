@@ -152,6 +152,11 @@ public class SysMenuServiceImpl implements SysMenuService {
         return this.nextRobotBussisTemplateDao.findTemplateAll();
     }
 
+    @Override
+    public int deleteTemplate(String id) {
+        return this.nextRobotBussisTemplateDao.deleteTemplate(id);
+    }
+
     //创建文件
     private synchronized void createCodeFile(String packagePath, String path, String content) throws IOException {
         File realDir = new File(packagePath);

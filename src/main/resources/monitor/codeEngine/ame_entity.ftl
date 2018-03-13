@@ -30,5 +30,6 @@ public class ${engine.entityName ? cap_first} extends BaseEntity<String> {
 	public void set${field.column_name ? cap_first}(${field.type_name} ${field.column_name}){
 		this.${field.column_name} = ${field.column_name};
 	}
+
 </#list>
 }

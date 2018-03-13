@@ -6,10 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import wang.yobbo.common.appengine.InvokeResult;
 import wang.yobbo.common.spring.PropertyConfigurer;
@@ -44,6 +41,23 @@ public class SysMenuController {
         }catch (Exception e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @RequestMapping(value = "/deleteTemplate/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public InvokeResult deleteTemplate(@PathVariable(value = "id") String id){
+        try {
+            int i = this.sysMenuService.deleteTemplate(id);
+            if(i > 0){
+                return InvokeResult.success("删除成功");
+            }
+            else{
+                return InvokeResult.failure("删除失败");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return InvokeResult.failure("删除失败");
         }
     }
 

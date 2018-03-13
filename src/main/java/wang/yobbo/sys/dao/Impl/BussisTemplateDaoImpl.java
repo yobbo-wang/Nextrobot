@@ -21,4 +21,9 @@ public class BussisTemplateDaoImpl extends BaseDaoImpl<BusinessTemplate, String>
     public List<BusinessTemplate> findTemplateAll() {
         return super.findAll();
     }
+
+    @Override
+    public int deleteTemplate(String id) {
+        return super.delete(id);
+    }
 }

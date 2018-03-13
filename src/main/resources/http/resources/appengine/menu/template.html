@@ -1,13 +1,31 @@
 <!-- html块 -->
-<table class="easyui-datagrid"
-       data-options="singleSelect:true,border:false,url: '<#if contextPath ??>${contextPath}</#if>/menu/getTemplates',method:'get'">
+<table id="template-table" class="easyui-datagrid"
+       data-options="singleSelect:false,ctrlSelect:true,border:false,url: '<#if contextPath ??>${contextPath}</#if>/menu/getTemplates',method:'get'">
     <thead>
     <tr>
         <th data-options="field:'name',width:'25%'">名称</th>
         <th data-options="field:'fileType',width:'10%'">文件类型</th>
         <th data-options="field:'template_json',width:'35%'">模块数据</th>
         <th data-options="field:'createDate',width:'25%',formatter:function (value,row,index){return new Date(value).Format('yyyy-MM-dd HH:mm:ss');}">创建时间</th>
-        <th data-options="field:'de',width:'7%',formatter:function(value,row,index){return '<a >删除</a>';}">操作</th>
+        <th data-options="field:'de',width:'7%',formatter: templateFormatter">操作</th>
     </tr>
     </thead>
 </table>
+<script type="application/javascript">
+    function templateFormatter(value,row,index) {
+        return "<a onclick='deleteTemplate(\""+row.id+"\")'>删除</a>";
+    }
+    function deleteTemplate(id) {
+        if(id == null || id == undefined) return;
+        $.messager.progress({title : "温馨提示",msg : "请稍后，正在处理......"});
+        $.post(path + '/menu/deleteTemplate/' + id, function (result) {
+            $.messager.progress("close");
+            if (result.success) {
+                $.messager.show({title:'温馨提示',msg:result.data,timeout:3000,showType:'show'});
+                $('#template-table').datagrid("reload");
+            } else {
+                $.messager.alert("操作提示", result.errorMessage,"question");
+            }
+        });
+    }
+</script>

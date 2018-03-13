@@ -10,4 +10,6 @@ public interface BussisTemplateDao {
     BusinessTemplate findTemplate(String id);
 
     List<BusinessTemplate> findTemplateAll();
+
+    int deleteTemplate(String id);
 }

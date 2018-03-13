@@ -37,4 +37,6 @@ public interface SysMenuService {
     BusinessTemplate findTemplate(String id);
 
     List<BusinessTemplate> findTemplateAll();
+
+    int deleteTemplate(String id);
 }

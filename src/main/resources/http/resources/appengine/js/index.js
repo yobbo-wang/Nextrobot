@@ -210,7 +210,7 @@
             $(document.body).append("<div id='uploadTemlate' class='easyui-window'></div>");
             $('#uploadTemlate').window({
                 width:400,
-                height:200,
+                height:240,
                 title:'选择模板',
                 closed:true,
                 collapsible:false,
@@ -274,7 +274,7 @@
             html += "<td><input name='templateJson' class='easyui-textbox' data-options='multiline:true' style='width:260px;'/></td>";
             html += "</tr>";
             html += "<tr>";
-            html += "<td>请选择模板文件:</td>";
+            html += "<td>模&nbsp;&nbsp;&nbsp;板&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;件:</td>";
             html += "<td><input class=\"easyui-filebox\" data-options=\"prompt:'点击选择模板文件...',buttonText:'点击上传',onChange:function(){"+options.fileChangeMethod+";}\" id=\"templateFile\" name=\"templateFile\" style=\"width:260px;\"></td>";
             html += "</tr>";
             html += "<tr>";
@@ -282,7 +282,7 @@
             html += "<td><select class='easyui-combobox' name='fileType' data-options='required:true' style='width:200px;'>";
             html += "<option value='.jsp'>jsp</option><option value='.html'>html</option><option value='.java'>java</option>" ;
             html +=  "<option value='.sql'>sql</option><option value='.properties'>properties</option><option value='.xml'>xml</option>";
-            html +=  "<option value='.js'>js</option><option value='.css'>css</option><option value='.ftl'>ftl</option>";
+            html +=  "<option value='.js'>js</option><option value='.css'>css</option><option value='.ftl'>xml</option>";
             html +=  "</select></td>";
             html += "</tr>";
             html += "<tr>";
