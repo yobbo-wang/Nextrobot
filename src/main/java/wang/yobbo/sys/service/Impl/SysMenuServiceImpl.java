@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import wang.yobbo.common.appengine.InvokeResult;
 import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
 import wang.yobbo.common.spring.PropertyConfigurer;
@@ -23,7 +25,9 @@ import wang.yobbo.sys.entity.SysMenuEntity;
 import wang.yobbo.sys.service.SysMenuService;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.sql.Clob;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -118,8 +122,6 @@ public class SysMenuServiceImpl implements SysMenuService {
                 }else if("dao".equals(mode)){
                     List<Map<String, String>> dao = this.createDao(basePathPrefix, nextRobotSysMenuTable);
                     files.addAll(dao);
-                }else{
-                    //直接是模板路径情况....
                 }
             }
 
@@ -153,8 +155,115 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public int deleteTemplate(String id) {
+    public int deleteTemplate(String id) throws Exception {
         return this.nextRobotBussisTemplateDao.deleteTemplate(id);
+    }
+
+    //获取系统工程目录
+    @Override
+    public List<Map<String, Object>> getProjectDirTree(String systemBasePath) throws IOException {
+        try {
+            systemBasePath = URLDecoder.decode(systemBasePath,"utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new UnsupportedEncodingException("系统工程目录不支持utf-8字符编码");
+        }
+        File file = new File(systemBasePath);
+        if(!file.exists()) throw new IOException("系统工程目录不存在");
+        FileFilter fileFilter = new FileFilter() {
+            public boolean accept(File file) {
+                if(file.isDirectory()){
+                    return true;
+                }
+                return false;
+            }
+        };
+        List<Map<String, Object>> dir = new ArrayList<>();
+        Map<String, Object> dirs = new HashMap<>();
+        this.getDirList(file, fileFilter, dirs);
+        Object children = dirs.get("children");
+        if(children != null){
+            dir.addAll((List)children);
+        }
+        return dir;
+    }
+
+    @Override
+    public boolean createFileByTemplate(Map<String, Object> param) throws Exception {
+        Object id = param.get("id");
+        Object templateJson = param.get("template_json");
+        Object templateWritePath = param.get("templateWritePath");
+        Object name = param.get("name");
+        Object json = null;
+        if(id == null || id.toString().isEmpty()){
+            throw new Exception("请选择模板！");
+        }
+        //检查json
+        if(templateJson != null && !templateJson.toString().isEmpty()){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                json = mapper.readValue(templateJson.toString(), new TypeReference<List<Map>>() {});
+            } catch (IOException e) {
+                try {
+                    json = mapper.readValue(templateJson.toString(), new TypeReference<Map>() {});
+                } catch (IOException e1) {
+                    throw new IOException("请检查json数据格式");
+                }
+            }
+        }
+
+        BusinessTemplate businessTemplate = this.findTemplate(id.toString());
+        //读取文件流
+        Clob fileContent = businessTemplate.getFileContent();
+        Reader characterStream = fileContent.getCharacterStream();
+        byte[] bytes = IOUtils.toByteArray(characterStream, Charset.forName("utf-8"));
+        String fileContentStr = new String (bytes, Charset.forName("utf-8"));
+        String filePath = templateWritePath + "/" + name + businessTemplate.getFileType();
+
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
+        configuration.setDefaultEncoding( "UTF-8" );
+        Template template = new Template("", fileContentStr, configuration);
+        StringWriter stringWriter = new StringWriter();
+        template.process(json, stringWriter);
+        characterStream.close();
+        String fileContentFinally = stringWriter.toString();
+
+        File file = new File(filePath);
+        if(!file.exists()){
+            if(!file.createNewFile()){
+                throw new RuntimeException("创建文件是出错，请检查!");
+            }
+        }
+        FileOutputStream out = new FileOutputStream(file);
+        Writer writer = new BufferedWriter(new OutputStreamWriter(out, Charset.forName("utf-8")));
+        writer.write(fileContentFinally);
+        writer.flush();
+        out.close();
+        writer.close();
+        LOG.info("应用引擎已生成文件：" + filePath);
+        return true;
+    }
+
+    // 递归获取目录
+    private void getDirList(File file,FileFilter fileFilter, Map<String, Object> files){
+        File[] f = file.listFiles(fileFilter);
+        if(f != null && f.length >= 1){
+            List<Map<String, Object>> dir = new ArrayList<>();
+            for(int i=0;i<f.length;i++){
+                File file_1 = f[i];
+                Map<String, Object> dir_2 = new HashMap<>();
+                dir_2.put("text", file_1.getName());
+                dir_2.put("id", file_1.getPath().replaceAll("\\\\", "/"));
+                if(file_1.listFiles(fileFilter).length == 0 ){
+                    dir_2.put("state", "open");
+                }else{
+                    dir_2.put("state", "closed");
+                }
+                dir.add(dir_2);
+                this.getDirList(file_1,fileFilter,dir_2);
+            }
+            files.put("children", dir) ;
+        }
     }
 
     //创建文件

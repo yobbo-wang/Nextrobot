@@ -24,7 +24,7 @@ public class ${engine.entityName ? cap_first}ServiceImpl implements ${engine.ent
     @Autowired
     private ${engine.entityName ? cap_first}Dao ${engine.entityName ? uncap_first}Dao;
 
-    public ${engine.entityName ? cap_first} save(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first}) {
+    public ${engine.entityName ? cap_first} save(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first}) throws Exception{
         return this.${engine.entityName ? uncap_first}Dao.save(${engine.entityName ? uncap_first});
     }
 

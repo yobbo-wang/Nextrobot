@@ -11,5 +11,5 @@ public interface BussisTemplateDao {
 
     List<BusinessTemplate> findTemplateAll();
 
-    int deleteTemplate(String id);
+    int deleteTemplate(String id) throws Exception;
 }

@@ -7,7 +7,10 @@ import wang.yobbo.sys.entity.EntityProperty;
 import wang.yobbo.sys.entity.SysMenu;
 import wang.yobbo.sys.entity.SysMenuEntity;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
 
 public interface SysMenuService {
     Page<SysMenu> getPage(Searchable searchable);
@@ -38,5 +41,9 @@ public interface SysMenuService {
 
     List<BusinessTemplate> findTemplateAll();
 
-    int deleteTemplate(String id);
+    int deleteTemplate(String id) throws Exception;
+
+    List<Map<String, Object>> getProjectDirTree(String systemBasePath) throws IOException;
+
+    boolean createFileByTemplate(Map<String, Object> param) throws Exception;
 }

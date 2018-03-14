@@ -19,11 +19,14 @@ public class BussisTemplateDaoImpl extends BaseDaoImpl<BusinessTemplate, String>
 
     @Override
     public List<BusinessTemplate> findTemplateAll() {
-        return super.findAll();
+        String hql = "select template  from BusinessTemplate template where template.disable = 'N'";
+        return super.findByHQL(hql, null, BusinessTemplate.class);
     }
 
+    //逻辑删除 ,以下语句在mysql、oracle、sqlserver中通用
     @Override
-    public int deleteTemplate(String id) {
-        return super.delete(id);
+    public int deleteTemplate(String id) throws Exception {
+        String sql = "update NR_BUSINESS_TEMPLATE set DISABLE = 'Y' where id = '" +id+ "'";
+        return super.updateBySql(sql);
     }
 }

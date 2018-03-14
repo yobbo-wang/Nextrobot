@@ -1,6 +1,6 @@
 <!-- html块 -->
 <table id="template-table" class="easyui-datagrid"
-       data-options="singleSelect:false,ctrlSelect:true,border:false,url: '<#if contextPath ??>${contextPath}</#if>/menu/getTemplates',method:'get'">
+       data-options="singleSelect:true,border:false,url: '<#if contextPath ??>${contextPath}</#if>/menu/getTemplates',method:'get'">
     <thead>
     <tr>
         <th data-options="field:'name',width:'25%'">名称</th>
@@ -11,6 +11,37 @@
     </tr>
     </thead>
 </table>
+<div id="projectTreeDiv" style="display: none;">
+    <div style="padding:10px 60px 20px 60px">
+        <form id="project-template-edit" method="post">
+            <table cellpadding="5">
+                <tr>
+                    <td>文件生成目录:</td>
+                    <td><input class="easyui-combotree" name="templateWritePath" id="templateWritePath" style="height:30px;width:300px;"
+                               data-options="required:true,lines:true,
+                              initState:'closed',
+                              editable:false,
+                              method:'get',
+                              loadFilter:function(result){return result.data;}" /></td>
+                </tr>
+                <tr>
+                    <td>文件名:</td>
+                    <td>
+                        <input class="easyui-textbox" data-options="required:true" style="height:60px;width:300px;" name="name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>模板JSON数据:</td>
+                    <td>
+                        <input class="easyui-textbox" data-options="multiline:true" style="height:60px;width:300px;" name="template_json"/>
+                    </td>
+                </tr>
+            </table>
+            <div><label id="errorMsg" /></div>
+            <input type="hidden" name="id" />
+        </form>
+    </div>
+</div>
 <script type="application/javascript">
     function templateFormatter(value,row,index) {
         return "<a onclick='deleteTemplate(\""+row.id+"\")'>删除</a>";

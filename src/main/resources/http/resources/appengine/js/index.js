@@ -311,7 +311,41 @@
                 id: "createTemplate",
                 url: path + '/engine/appengine/menu/template.html',
                 save:function(){
-
+                    var template_table = $("#template-table");
+                    var row = template_table.datagrid("getSelected");
+                    if(row == undefined || row == null) return;
+                    if(template_table.attr("status") == "closed"){
+                        var status = appEngine.createFileByTemplate();
+                        return;
+                    }
+                    $($("#createTemplate").children()[0]).hide("hide", function () {
+                        template_table.attr("status", "closed");
+                       $('#projectTreeDiv').show("fast", function () {
+                           $("#project-template-edit").form("load", row);
+                           $('#templateWritePath').combotree('reload', path + '/menu/getProjectDirTree');
+                       });
+                    });
+                }
+            });
+        },
+        createFileByTemplate: function () {
+            $('#project-template-edit').form('submit', {
+                url : path + "/menu/createFileByTemplate",
+                method : 'post',
+                onSubmit : function() {
+                    var result = $(this).form('validate');
+                    if(result)$.messager.progress({title : "温馨提示",msg : "请稍后，正在处理......"});
+                    return result;
+                },
+                success : function(data) {
+                    $.messager.progress("close");
+                    var result = eval('(' + data + ')');
+                    if (result.success) {
+                        $.messager.show({title:'温馨提示',msg:result.data,timeout:3000,showType:'show'});
+                        $('#createTemplate').dialog("close");
+                    } else {
+                        $('#errorMsg').html("<span style='color:Red'>错误提示:" + result.errorMessage + "</span>");
+                    }
                 }
             });
         },

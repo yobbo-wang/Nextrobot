@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class ${engine.entityName ? cap_first}DaoImpl extends BaseDaoImpl<${engine.entityName ? cap_first}, String> implements ${engine.entityName ? cap_first}Dao{
 
-    public ${engine.entityName ? cap_first} save(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first}) {
+    public ${engine.entityName ? cap_first} save(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first}) throws Exception{
         return super.save(${engine.entityName ? uncap_first});
     }
 

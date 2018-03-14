@@ -19,7 +19,7 @@ public interface ${engine.entityName ? cap_first}Service {
     * @param ${engine.entityName?uncap_first}
     * @return ${engine.entityName ? cap_first} 返回 插入数据库后结果对象
     */
-    ${engine.entityName ? cap_first} save(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first});
+    ${engine.entityName ? cap_first} save(${engine.entityName ? cap_first} ${engine.entityName ? uncap_first}) throws Exception;
 
     /**功能：根据主键id查询对象
     * @param id 主键id

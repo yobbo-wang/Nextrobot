@@ -61,7 +61,43 @@ public class SysMenuController {
         }
     }
 
-    @RequestMapping(value = "findByPId", method = RequestMethod.POST)
+    @RequestMapping(value = "/createFileByTemplate", method = RequestMethod.POST)
+    @ResponseBody
+    public InvokeResult createFileByTemplate(@RequestParam Map<String, Object> param){
+        try{
+            if(param == null || param.isEmpty()) return InvokeResult.failure("生成失败，请检查参数");
+            boolean status = this.sysMenuService.createFileByTemplate(param);
+            if(status){
+                return InvokeResult.success("生成成功!");
+            }else {
+                return InvokeResult.failure("生成失败!");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return InvokeResult.failure("生成失败：" + e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/getProjectDirTree", method = RequestMethod.GET)
+    @ResponseBody
+    public InvokeResult getProjectDirTree(){
+        String systemBasePath = this.propertyConfigurer.getProperty("system.base.path");
+        if(systemBasePath.isEmpty()){
+            return InvokeResult.failure("请在系统配置文件中设置system.base.path");
+        }
+        try{
+            List<Map<String, Object >> dirs =  this.sysMenuService.getProjectDirTree(systemBasePath + "/src");
+            if(dirs == null || dirs.size() == 0){
+                return InvokeResult.failure("获取系统工程目录失败，请检查工程");
+            }
+            return InvokeResult.success(dirs);
+        }catch (Exception e){
+            e.printStackTrace();
+            return InvokeResult.failure("获取系统工程目录失败：" + e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/findByPId", method = RequestMethod.POST)
     @ResponseBody
     public List<SysMenu> findByPId(HttpServletRequest request){
         String pid = new String();
@@ -72,7 +108,7 @@ public class SysMenuController {
         return menus;
     }
 
-    @RequestMapping(value = "save", method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult save(SysMenu sysMenu){
         try{
@@ -87,7 +123,7 @@ public class SysMenuController {
         }
     }
 
-    @RequestMapping(value = "uploadTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadTemplate", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult uploadTemplate(@RequestParam("templateFile")MultipartFile templateFile,
                                        @RequestParam("templateJson")String templateJson,
@@ -134,7 +170,7 @@ public class SysMenuController {
         return InvokeResult.success("上传成功");
     }
 
-    @RequestMapping(value = "saveEntity", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveEntity", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult saveEntity(SysMenuEntity nextRobotSysMenuEntity, @RequestParam(value = "entityRow") String entityRow){
         if(StringUtils.isEmpty(entityRow))
@@ -155,7 +191,7 @@ public class SysMenuController {
         }
     }
 
-    @RequestMapping(value = "createBusinessCode", method = RequestMethod.POST)
+    @RequestMapping(value = "/createBusinessCode", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult createBusinessCode(SysMenuEntity nextRobotSysMenuTable,
                                            @RequestParam(value = "entityMode") String entityMode,
@@ -179,7 +215,7 @@ public class SysMenuController {
         }
     }
 
-    @RequestMapping(value = "addEntity", method = RequestMethod.POST)
+    @RequestMapping(value = "/addEntity", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult addEntity(SysMenuEntity sysMenuTable){
         try{
@@ -199,7 +235,7 @@ public class SysMenuController {
         }
     }
 
-    @RequestMapping(value = "deleteEntity", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteEntity", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult deleteEntity(@RequestParam(value="id") String id){
         try{
@@ -211,7 +247,7 @@ public class SysMenuController {
         }
     }
 
-    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult delete(@RequestParam(value="id") String id){
         try{
