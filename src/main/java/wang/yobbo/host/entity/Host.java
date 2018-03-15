@@ -19,10 +19,10 @@ public class Host extends BaseEntity<String> {
 
     
     @Column(name = "NAME")
-    private java.lang.String name;
+    private String name;
     
     @Column(name = "IP")
-    private java.lang.String ip;
+    private String ip;
 
     public java.lang.String getName(){
 		return name;

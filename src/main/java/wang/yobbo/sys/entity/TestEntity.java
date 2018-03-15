@@ -18,12 +18,12 @@ public class TestEntity extends BaseEntity<String> {
     private char h;
     private long g;
     private byte p; //tinyint
-    private java.lang.Integer l;
-    private java.lang.String i;
-    private java.lang.Boolean z;
-    private java.lang.Float k;
-    private java.lang.Double m;
-    private java.util.Date n;
+    private Integer l;
+    private String i;
+    private Boolean z;
+    private Float k;
+    private Double m;
+    private Date n;
     private java.sql.Timestamp o;
     private byte[] r; //tinyblob
     private java.sql.Date s;//date 只存日期

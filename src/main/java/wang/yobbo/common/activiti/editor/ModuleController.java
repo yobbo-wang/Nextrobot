@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * 流程设计模型控制器
  */
 @RestController
-@RequestMapping("/activiti-edit")
+@RequestMapping("/activiti")
 public class ModuleController {
     private final Logger logger = Logger.getLogger(ModuleController.class);
     @Autowired private RepositoryService repositoryService;

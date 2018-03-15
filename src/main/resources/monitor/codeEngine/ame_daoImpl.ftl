@@ -24,7 +24,7 @@ public class ${engine.entityName ? cap_first}DaoImpl extends BaseDaoImpl<${engin
     }
 
     public ${engine.entityName ? cap_first} findById(String id) {
-        return super.get(id);
+        return super.findById(id);
     }
 
     public int delete(String... ids) {

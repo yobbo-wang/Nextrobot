@@ -261,7 +261,9 @@ KISBPM.TOOLBAR = {
         },
         
         closeEditor: function(services) {
-        	window.location.href = "./";
+        	// window.location.href = "./";
+            // 关闭窗口
+            window.close();
         },
         
         /**

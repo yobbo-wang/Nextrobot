@@ -16,10 +16,15 @@ import javax.persistence.Table;
 @Table(name = "${engine.tableName ? upper_case}")
 public class ${engine.entityName ? cap_first} extends BaseEntity<String> {
 	private static final long serialVersionUID = 1L;
-
-<#list fieldList as field>    <#if field.remarks ? exists>//${field.remarks}</#if>
+<#list fieldList as field><#if field.remarks ? exists>//${field.remarks}</#if>
+    <#if field.type_name == 'Boolean' || field.type_name == 'boolean'>
+    @Column(name = "${field.column_name ? upper_case}"<#if field.column_size ? exists>,length = ${field.column_size} </#if><#if field.is_null_able ? exists && field.is_null_able == "NO">,nullable = false</#if>)
+    @org.hibernate.annotations.Type(type = "yes_no")
+    private ${field.type_name} ${field.column_name} = false;
+    <#else>
     @Column(name = "${field.column_name ? upper_case}"<#if field.column_size ? exists>,length = ${field.column_size} </#if><#if field.primary_key ? exists && field.primary_key == "YES">,unique = true</#if><#if field.is_null_able ? exists && field.is_null_able == "NO">,nullable = false</#if>)
     private ${field.type_name} ${field.column_name};
+    </#if>
 </#list>
 
 <#list fieldList as field>

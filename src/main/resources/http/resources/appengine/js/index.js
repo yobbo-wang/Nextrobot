@@ -25,11 +25,11 @@
             {"value":"char","text":"char"},
             {"value":"long","text":"long"},
             {"value":"byte","text":"byte"},
-            {"value":"java.lang.Integer","text": "Integer"},
-            {"value":"java.lang.String","text":"String"},
-            {"value":"java.lang.Boolean","text":"Boolean"},
-            {"value":"java.lang.Float","text":"Float"},
-            {"value":"java.lang.Double","text":"Double"},
+            {"value":"Integer","text": "Integer"},
+            {"value":"String","text":"String"},
+            {"value":"Boolean","text":"Boolean"},
+            {"value":"Float","text":"Float"},
+            {"value":"Double","text":"Double"},
             {"value":"java.util.Date","text":"java.util.Date"},
             {"value":"java.sql.Timestamp","text":"Timestamp"},
             {"value":"java.sql.Time","text":"Time"},
@@ -320,7 +320,7 @@
                     }
                     $($("#createTemplate").children()[0]).hide("hide", function () {
                         template_table.attr("status", "closed");
-                       $('#projectTreeDiv').show("fast", function () {
+                       $('#projectTreeDiv').show(function () {
                            $("#project-template-edit").form("load", row);
                            $('#templateWritePath').combotree('reload', path + '/menu/getProjectDirTree');
                        });
@@ -424,7 +424,9 @@
                 var row = $('#datagrid-entity').datagrid('getSelected');
                 var index = $('#datagrid-entity').datagrid('getRowIndex',row);
                 $('#datagrid-entity').datagrid('deleteRow',index); //动态删除
-            }else if(type == 'maintain'){
+            }else if(type == 'maintain'){  //设置主从表关系
+                var id = $('#sysMenuTableId').val();
+                if(id == undefined || id == null) return;
 
             }
         },
