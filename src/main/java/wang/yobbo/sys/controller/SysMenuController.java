@@ -44,6 +44,18 @@ public class SysMenuController {
         }
     }
 
+    @RequestMapping(value = "/getEntitys", method = RequestMethod.GET)
+    @ResponseBody
+    public List<SysMenuEntity> getEntitys(){
+        try{
+            List<SysMenuEntity> entityList = this.sysMenuService.getEntitys();
+            return entityList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @RequestMapping(value = "/deleteTemplate/{id}", method = RequestMethod.POST)
     @ResponseBody
     public InvokeResult deleteTemplate(@PathVariable(value = "id") String id){

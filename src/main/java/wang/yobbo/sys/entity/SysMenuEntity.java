@@ -5,6 +5,7 @@ import wang.yobbo.common.appengine.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,6 +16,16 @@ import java.util.List;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE) //读写
 public class SysMenuEntity extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
+
+    public SysMenuEntity() {
+    }
+
+    public SysMenuEntity(String entityName, String tableName, String businessClassification, String id) {
+        this.entityName = entityName;
+        this.tableName = tableName;
+        this.businessClassification = businessClassification;
+        super.setId(id);
+    }
 
     @Column(name = "ENTITY_NAME", length = 40, unique = true)
     private String entityName;

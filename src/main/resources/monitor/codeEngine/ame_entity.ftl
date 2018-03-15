@@ -1,9 +1,7 @@
 package ${engine.packageName}.${engine.businessClassification}.entity;
 
 import ${engine.packageName}.common.appengine.entity.BaseEntity;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 /**
  * 此文件由应用引擎生成，严禁修改，如重复生成时，该文件将被覆盖。
  * ${engine.entityName? cap_first} 实体信息
@@ -21,6 +19,10 @@ public class ${engine.entityName ? cap_first} extends BaseEntity<String> {
     @Column(name = "${field.column_name ? upper_case}"<#if field.column_size ? exists>,length = ${field.column_size} </#if><#if field.is_null_able ? exists && field.is_null_able == "NO">,nullable = false</#if>)
     @org.hibernate.annotations.Type(type = "yes_no")
     private ${field.type_name} ${field.column_name} = false;
+    <#elseif field.masterSlaveType ? exists>
+    @${field.masterSlaveType ? split('_')[0]}(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID") //通过主键关联
+    private ${field.type_name} ${field.column_name};
     <#else>
     @Column(name = "${field.column_name ? upper_case}"<#if field.column_size ? exists>,length = ${field.column_size} </#if><#if field.primary_key ? exists && field.primary_key == "YES">,unique = true</#if><#if field.is_null_able ? exists && field.is_null_able == "NO">,nullable = false</#if>)
     private ${field.type_name} ${field.column_name};

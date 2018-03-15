@@ -5,6 +5,8 @@ import wang.yobbo.common.appengine.dao.Impl.BaseDaoImpl;
 import wang.yobbo.sys.dao.SysMenuTableDao;
 import wang.yobbo.sys.entity.SysMenuEntity;
 
+import java.util.List;
+
 @Component
 public class SysMenuTableDaoImpl extends BaseDaoImpl<SysMenuEntity, String> implements SysMenuTableDao {
 
@@ -18,6 +20,12 @@ public class SysMenuTableDaoImpl extends BaseDaoImpl<SysMenuEntity, String> impl
 
     public SysMenuEntity findSysMenuTableById(String id) {
         return super.findById(id);
+    }
+
+    @Override
+    public List<SysMenuEntity> getEntitys() {
+        String hql = "select new SysMenuEntity(entity.entityName,entity.tableName,entity.businessClassification,entity.id) from SysMenuEntity entity";
+        return super.findByHQL(hql, null, SysMenuEntity.class);
     }
 
 }

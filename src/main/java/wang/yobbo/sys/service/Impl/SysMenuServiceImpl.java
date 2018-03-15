@@ -100,8 +100,8 @@ public class SysMenuServiceImpl implements SysMenuService {
         try {
             this.sysMenuTableDao.addEntity(nextRobotSysMenuTable); //保存
             this.nextRobotEntityPropertyDao.saveEntityProperty(nextRobotEntityProperties);
-            //业务分类首字母设置为小写
-            nextRobotSysMenuTable.setBusinessClassification(this.toLowerCaseFirstOne(nextRobotSysMenuTable.getBusinessClassification()));
+            //业务分类转为小写
+            nextRobotSysMenuTable.setBusinessClassification(nextRobotSysMenuTable.getBusinessClassification().toLowerCase());
             //将实体首字母设置为大写
             nextRobotSysMenuTable.setEntityName(this.toUpperCaseFirstOne(nextRobotSysMenuTable.getEntityName()));
             List<String> entityModeBean = mapper.readValue(entityMode, new TypeReference<List<String>>() {});
@@ -242,6 +242,11 @@ public class SysMenuServiceImpl implements SysMenuService {
         writer.close();
         LOG.info("应用引擎已生成文件：" + filePath);
         return true;
+    }
+
+    @Override
+    public List<SysMenuEntity> getEntitys() {
+        return this.sysMenuTableDao.getEntitys();
     }
 
     // 递归获取目录

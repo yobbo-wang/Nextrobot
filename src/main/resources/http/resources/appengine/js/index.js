@@ -426,8 +426,42 @@
                 $('#datagrid-entity').datagrid('deleteRow',index); //动态删除
             }else if(type == 'maintain'){  //设置主从表关系
                 var id = $('#sysMenuTableId').val();
-                if(id == undefined || id == null) return;
-
+                if(id == undefined || id == "") return;
+                appEngine.openDialog({
+                    width: 600,
+                    height: 400,
+                    modal: true,
+                    maximizable: false,
+                    title: '设置主从表关系',
+                    closed: true,
+                    id: "masterSlave",
+                    url: path + '/engine/appengine/menu/masterSlave.html',
+                    save:function(){
+                        var $form = $("#masterSlave-edit");
+                        var result = $form.form('validate');
+                        if(result){
+                            var datagridEntity = $('#datagrid-entity');
+                            var counts = datagridEntity.datagrid('getRows').length;
+                            var row = {ordinal_position: counts + 1, entity_id: id};
+                            var formDataArray = $form.serializeArray();
+                            for(var index in formDataArray){
+                                if(formDataArray[index].value != ""){
+                                    var key = formDataArray[index].name;
+                                    switch(key)
+                                    {
+                                        case "formPropertyName": row.column_name = formDataArray[index].value; break;
+                                        default: row[key] = formDataArray[index].value;
+                                    }
+                                }
+                            }
+                            row.type_name = row.packageName + '.' + row.businessClassification.toLocaleLowerCase() + '.entity.' + row.type_name;
+                            delete row.packageName;
+                            delete row.businessClassification;
+                            datagridEntity.datagrid('appendRow', row);
+                            $('#masterSlave').dialog("close");
+                        }
+                    }
+                });
             }
         },
         onClickCell : function(index, field){

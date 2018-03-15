@@ -2,6 +2,8 @@ package wang.yobbo.sys.dao;
 
 import wang.yobbo.sys.entity.SysMenuEntity;
 
+import java.util.List;
+
 public interface SysMenuTableDao {
     /**
      * 保存或更新菜单实体
@@ -13,4 +15,6 @@ public interface SysMenuTableDao {
     int deleteEntity(String id);
 
     SysMenuEntity findSysMenuTableById(String id);
+
+    List<SysMenuEntity> getEntitys();
 }

@@ -1,0 +1,74 @@
+<!--html块-->
+<div class="easyui-panel" data-options="border:false" style="width:100%;height: 100%;">
+    <div style="padding:10px 60px 20px 60px">
+        <form id="masterSlave-edit" method="post">
+            <table cellpadding="5">
+                <tr>
+                    <td>主从关系:</td>
+                    <td>
+                        <select class="easyui-combobox" id="type" name="masterSlaveType" data-options="panelHeight:150,required:true" style="height:30px;width:300px;">
+                            <option value="OneToOne_oneWay">一对一单向关联</option>
+                            <option value="OneToOne_twoWay">一对一双向关联</option>
+                            <option value="OneToMany_oneWay">一对多单向关联</option>
+                            <option value="OneToMany_twoWay">一对多双向关联</option>
+                            <option value="ManyToMany_oneWay">多对多单向关系</option>
+                            <option value="ManyToMany_twoWay">多对多双向关系</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>选择实体:</td>
+                    <td>
+                        <select class="easyui-combobox" id="entity" name="type_name"
+                                data-options="required:true,method:'get',valueField:'entityName',textField:'entityName',url:'<#if contextPath ??>${contextPath}</#if>/menu/getEntitys'"
+                                style="height:30px;width:300px;">
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>主实体从属性名:</td>
+                    <td><input class="easyui-textbox" id="formPropertyName" type="text" name="formPropertyName" data-options="required:true" style="height:30px;width:300px;"></input></td>
+                </tr>
+
+                <tr id="masterPropertyTr" style="display: none;">
+                    <td>从实体主属性名:</td>
+                    <td><input class="easyui-textbox" type="text" name="masterPropertyName"  style="height:30px;width:300px;"></input></td>
+                </tr>
+
+                <tr>
+                    <td><p style="color:#0000FF;">说明：</p></td>
+                </tr>
+            </table>
+            <div>
+                <label id="errorMsg" />
+            </div>
+            <input name="packageName" value="<#if package_name ??>${package_name}</#if>" type="hidden" />
+            <input name="businessClassification" value="" id="businessClassification" type="hidden"/>
+        </form>
+    </div>
+</div>
+<script type="application/javascript">
+    $("#type").combobox({
+        onChange: function (newValue,oldValue) {
+            if(newValue.indexOf('two') > -1){
+                $('#masterPropertyTr').show();
+            }else{
+                $('#masterPropertyTr').hide();
+            }
+        }
+    });
+
+    $('#entity').combobox({
+        onSelect: function (row) {
+            var formPropertyName = $('#formPropertyName');
+            if(formPropertyName.textbox('getValue') == '' || formPropertyName.textbox('getValue') == undefined){
+                formPropertyName.textbox('setValue', row.entityName);
+                $("#businessClassification").val(row.businessClassification);
+            }
+        }
+    });
+
+
+</script>

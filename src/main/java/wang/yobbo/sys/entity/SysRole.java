@@ -14,7 +14,7 @@ public class SysRole extends BaseEntity<String> {
     @Column(name = "ROLE_NAME", length = 100, nullable = false)
     private String roleName;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
     private transient Set<SysUser> user_roleSet;
 

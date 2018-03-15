@@ -39,6 +39,10 @@ public class EntityProperty extends BaseEntity<String> {
     @Column(name = "ENTITY_ID", length = 32, updatable = false)
     private String entity_id;
 
+//    @Transient
+    @Column(name = "MASTER_SLAVE_TYPE", length = 32, updatable = false)
+    private String masterSlaveType;
+
     public String getColumn_name() {
         return column_name;
     }
@@ -109,5 +113,13 @@ public class EntityProperty extends BaseEntity<String> {
 
     public void setEntity_id(String entity_id) {
         this.entity_id = entity_id;
+    }
+
+    public String getMasterSlaveType() {
+        return masterSlaveType;
+    }
+
+    public void setMasterSlaveType(String masterSlaveType) {
+        this.masterSlaveType = masterSlaveType;
     }
 }

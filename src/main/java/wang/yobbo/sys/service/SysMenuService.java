@@ -46,4 +46,6 @@ public interface SysMenuService {
     List<Map<String, Object>> getProjectDirTree(String systemBasePath) throws IOException;
 
     boolean createFileByTemplate(Map<String, Object> param) throws Exception;
+
+    List<SysMenuEntity> getEntitys();
 }

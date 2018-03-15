@@ -18,6 +18,7 @@ import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.common.spring.SpringContextUtil;
 import wang.yobbo.sys.entity.BusinessTemplate;
 import wang.yobbo.sys.entity.SysMenu;
+import wang.yobbo.sys.entity.SysMenuEntity;
 import wang.yobbo.sys.entity.SysUser;
 import wang.yobbo.sys.service.SysMenuService;
 import wang.yobbo.sys.service.SysUserService;
@@ -68,6 +69,12 @@ public class UserTest {
     private PropertyConfigurer propertyConfigurer;
 
     private short a;
+
+    @Test
+    public void testGetEntitys(){
+        List<SysMenuEntity> entitys = this.sysMenuService.getEntitys();
+        System.out.println(entitys);
+    }
 
     @Test
     public void testFindTemplate(){
