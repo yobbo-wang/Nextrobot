@@ -447,7 +447,7 @@
                             var datagridEntity = $('#datagrid-entity');
                             var rows = datagridEntity.datagrid('getRows');
                             var count = rows.length;
-                            var row = {ordinal_position: counts + 1, entity_id: id};
+                            var row = {ordinal_position: count + 1, entity_id: id};
                             var formDataArray = $form.serializeArray();
                             for(var index in formDataArray){
                                 if(formDataArray[index].value != ""){
@@ -455,14 +455,12 @@
                                     var value = formDataArray[index].value;
                                     switch(key)
                                     {
-                                        case "formPropertyName": row.column_name = formDataArray[index].value; break;
+                                        case "formPropertyName": row.column_name = value; break;
                                         default: row[key] = value;
                                     }
                                 }
                             }
                             row.type_name = row.packageName + '.' + row.businessClassification.toLocaleLowerCase() + '.entity.' + row.type_name;
-                            delete row.packageName;
-                            delete row.businessClassification;
                             //检查列表中是否已存在字段，如果存在不添加
                             for(var index in rows){
                                 if(rows[index].column_name == row.column_name || rows[index].type_name == row.type_name) {
@@ -470,6 +468,11 @@
                                     return;
                                 }
                             }
+                            if(row['masterSlaveType'].indexOf('Many') > -1) {
+                                row.type_name = 'java.util.List<' + row.type_name + '>';
+                            }
+                            delete row.packageName;
+                            delete row.businessClassification;
                             datagridEntity.datagrid('appendRow', row);
                             $('#masterSlave').dialog("close");
                         }
