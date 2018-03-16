@@ -15,6 +15,17 @@ import java.util.Date;
 public class BusinessTemplate extends BaseEntity<String> {
     private static final long serialVersionUID = 1L;
 
+    public BusinessTemplate(){}
+
+    public BusinessTemplate(String name, String fileType, String template_json, String id,Date createDate,Date updateDate ) {
+        this.name = name;
+        this.fileType = fileType;
+        this.template_json = template_json;
+        super.setId(id);
+        super.setCreateDate(createDate);
+        super.setUpdateDate(updateDate);
+    }
+
     @Column(name = "NAME", length = 50, nullable = false)
     private String name;
 
@@ -33,17 +44,6 @@ public class BusinessTemplate extends BaseEntity<String> {
     @Column(name = "DISABLE", nullable = false)
     @Type(type = "yes_no")
     private Boolean disable = Boolean.FALSE;
-
-    public BusinessTemplate(String name, String fileType, String template_json, String id,Date createDate,Date updateDate ) {
-        this.name = name;
-        this.fileType = fileType;
-        this.template_json = template_json;
-        super.setId(id);
-        super.setCreateDate(createDate);
-        super.setUpdateDate(updateDate);
-    }
-
-    public BusinessTemplate(){}
 
     public String getName() {
         return name;
