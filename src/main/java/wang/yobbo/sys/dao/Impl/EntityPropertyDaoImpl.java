@@ -21,4 +21,9 @@ public class EntityPropertyDaoImpl extends BaseDaoImpl<EntityProperty, String> i
         }
         return newProperties;
     }
+
+    @Override
+    public int delete(String ... id) {
+        return super.delete(id);
+    }
 }

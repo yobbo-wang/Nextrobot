@@ -192,8 +192,10 @@
             if(!result)return;
             var entityRow = $('#datagrid-entity').datagrid("getRows");
             if(entityRow.length == 0)return;
+            var deleteEntityRow = $('#datagrid-entity').datagrid("getChanges", "deleted");
             var entityInfo = $('#entityInfo').serializeArray();
             entityInfo.push({name: "entityRow", value: JSON.stringify(entityRow)});
+            entityInfo.push({name: "deleteEntityRow", value: JSON.stringify(deleteEntityRow)});
             $.messager.progress({title : "温馨提示",msg : "请稍后，正在处理......"});
             $.post(path + '/menu/saveEntity', entityInfo , function (result) {
                 $.messager.progress("close");
@@ -243,8 +245,10 @@
                     $.each(checks, function (i, r) {
                         entityMode.push(r.getAttribute("name"));
                     });
+                    var deleteEntityRow = $('#datagrid-entity').datagrid("getChanges", "deleted");
                     entityInfo.push({name: "entityMode", value: JSON.stringify(entityMode)});
                     entityInfo.push({name: "entityRow", value: JSON.stringify(entityRow)});
+                    entityInfo.push({name: "deleteEntityRow", value: JSON.stringify(deleteEntityRow)});
                     $.messager.progress({title : "温馨提示",msg : "请稍后，正在处理......"});
                     $.post(path + '/menu/createBusinessCode', entityInfo , function (result) {
                         $.messager.progress("close");
@@ -441,22 +445,31 @@
                         var result = $form.form('validate');
                         if(result){
                             var datagridEntity = $('#datagrid-entity');
-                            var counts = datagridEntity.datagrid('getRows').length;
+                            var rows = datagridEntity.datagrid('getRows');
+                            var count = rows.length;
                             var row = {ordinal_position: counts + 1, entity_id: id};
                             var formDataArray = $form.serializeArray();
                             for(var index in formDataArray){
                                 if(formDataArray[index].value != ""){
                                     var key = formDataArray[index].name;
+                                    var value = formDataArray[index].value;
                                     switch(key)
                                     {
                                         case "formPropertyName": row.column_name = formDataArray[index].value; break;
-                                        default: row[key] = formDataArray[index].value;
+                                        default: row[key] = value;
                                     }
                                 }
                             }
                             row.type_name = row.packageName + '.' + row.businessClassification.toLocaleLowerCase() + '.entity.' + row.type_name;
                             delete row.packageName;
                             delete row.businessClassification;
+                            //检查列表中是否已存在字段，如果存在不添加
+                            for(var index in rows){
+                                if(rows[index].column_name == row.column_name || rows[index].type_name == row.type_name) {
+                                    $('#masterSlave').dialog("close");
+                                    return;
+                                }
+                            }
                             datagridEntity.datagrid('appendRow', row);
                             $('#masterSlave').dialog("close");
                         }

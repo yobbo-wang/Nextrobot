@@ -184,13 +184,20 @@ public class SysMenuController {
 
     @RequestMapping(value = "/saveEntity", method = RequestMethod.POST)
     @ResponseBody
-    public InvokeResult saveEntity(SysMenuEntity nextRobotSysMenuEntity, @RequestParam(value = "entityRow") String entityRow){
+    public InvokeResult saveEntity(SysMenuEntity nextRobotSysMenuEntity,
+                                   @RequestParam(value = "entityRow") String entityRow,
+                                   @RequestParam(value = "deleteEntityRow") String deleteEntityRow){
         if(StringUtils.isEmpty(entityRow))
             return InvokeResult.failure("请添加实体属性!");
         ObjectMapper mapper = new ObjectMapper();
         try {
             this.sysMenuService.addEntity(nextRobotSysMenuEntity);
             List<EntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<EntityProperty>>(){});
+            List<EntityProperty> nextRobotEntityPropertiesDelete = mapper.readValue(deleteEntityRow, new TypeReference<List<EntityProperty>>(){});
+            for(EntityProperty entityProperty : nextRobotEntityPropertiesDelete){
+                if(entityProperty.getId().isEmpty()) continue;
+                this.sysMenuService.deleteEntityProperty(entityProperty.getId());
+            }
             List<EntityProperty> newProperties = this.sysMenuService.saveEntityProperty(nextRobotEntityProperties);
             if(!newProperties.isEmpty() && newProperties.size() > 0){
                 return InvokeResult.success(newProperties);
@@ -207,7 +214,8 @@ public class SysMenuController {
     @ResponseBody
     public InvokeResult createBusinessCode(SysMenuEntity nextRobotSysMenuTable,
                                            @RequestParam(value = "entityMode") String entityMode,
-                                           @RequestParam(value = "entityRow") String entityRow){
+                                           @RequestParam(value = "entityRow") String entityRow,
+                                           @RequestParam(value = "deleteEntityRow") String deleteEntityRow){
         if(StringUtils.isEmpty(entityMode))
             return InvokeResult.failure("请选择生成业务代码!");
         if(StringUtils.isEmpty(entityRow))
@@ -215,6 +223,11 @@ public class SysMenuController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             List<EntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<EntityProperty>>(){});
+            List<EntityProperty> nextRobotEntityPropertiesDelete = mapper.readValue(deleteEntityRow, new TypeReference<List<EntityProperty>>(){});
+            for(EntityProperty entityProperty : nextRobotEntityPropertiesDelete){
+                if(entityProperty.getId().isEmpty()) continue;
+                this.sysMenuService.deleteEntityProperty(entityProperty.getId());
+            }
             boolean businessCode = this.sysMenuService.createBusinessCode(nextRobotSysMenuTable, entityMode, nextRobotEntityProperties);
             if(businessCode){
                 return InvokeResult.success("生成成功!");

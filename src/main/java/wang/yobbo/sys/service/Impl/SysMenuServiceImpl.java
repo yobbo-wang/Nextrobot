@@ -249,6 +249,11 @@ public class SysMenuServiceImpl implements SysMenuService {
         return this.sysMenuTableDao.getEntitys();
     }
 
+    @Override
+    public int deleteEntityProperty(String... id) {
+        return this.nextRobotEntityPropertyDao.delete(id);
+    }
+
     // 递归获取目录
     private void getDirList(File file,FileFilter fileFilter, Map<String, Object> files){
         File[] f = file.listFiles(fileFilter);

@@ -48,4 +48,6 @@ public interface SysMenuService {
     boolean createFileByTemplate(Map<String, Object> param) throws Exception;
 
     List<SysMenuEntity> getEntitys();
+
+    int deleteEntityProperty(String ...id);
 }

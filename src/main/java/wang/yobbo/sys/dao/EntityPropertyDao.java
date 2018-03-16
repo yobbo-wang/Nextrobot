@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface EntityPropertyDao {
     List<EntityProperty> saveEntityProperty(List<EntityProperty> nextRobotEntityProperties) throws Exception;
+
+    int delete(String[] id);
 }
