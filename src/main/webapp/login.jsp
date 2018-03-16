@@ -10,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link href="<%= path%>/resources/layui/css/layui.css" rel="stylesheet" />
     <link id="layuicss-layer" rel="stylesheet" href="<%=path %>/resources/layui/css/modules/layer/layer.css" media="all">
-    <link id="layuicss-layuiAdmin" rel="stylesheet" href="<%=path %>/resources/ms/css/admin-1.css" media="all">
-    <link href="<%=path %>/resources/ms/css/login-1.css" rel="stylesheet" />
+    <link id="layuicss-layuiAdmin" rel="stylesheet" href="<%=path %>/resources/nextrobot/css/admin-1.css" media="all">
+    <link href="<%=path %>/resources/nextrobot/css/login-1.css" rel="stylesheet" />
     <link href="<%= path%>/resources/font-awesome/css/font-awesome.css" rel="stylesheet" />
 </head>
 <body class="layui-layout-body">

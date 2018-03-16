@@ -8,7 +8,7 @@
     <title>自动化运维工具管理平台</title>
     <link rel="stylesheet" href="<%= path%>/resources/layui/css/layui.css" type="text/css">
     <link rel="stylesheet" href="<%= path%>/resources/font-awesome/css/font-awesome.css" type="text/css">
-    <link rel="stylesheet" href="<%= path%>/resources/ms/css/engine.css" type="text/css">
+    <link rel="stylesheet" href="<%= path%>/resources/nextrobot/css/engine.css" type="text/css">
     <script type="application/javascript">var path = '<%= path%>'</script>
 </head>
 <body class="kit-theme">
@@ -91,7 +91,7 @@
 <script type="application/javascript">
     var message;
     layui.config({
-        base: '<%=path%>/resources/ms/js/',
+        base: '<%=path%>/resources/nextrobot/js/',
         version: '1.0.1'
     }).use(['app', 'message'], function() {
         var app = layui.app,
