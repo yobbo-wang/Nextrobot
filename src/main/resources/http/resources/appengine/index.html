@@ -130,6 +130,16 @@ $.extend($.fn.datagrid.methods, {
 		});
 	}
 });
+
+// function escapeHtml(s) {
+//     if (s === undefined) {
+//         return s;
+//     } else {
+//         s = String(s === null ? "" : s);
+//         return s.replace(/</g, "&lt;").replace(/>/g,"&gt;");
+//     }
+// }
+
 function typeFormatter(value){
     var type = "";
 	switch (value){
