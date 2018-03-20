@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.Date;
 
 @Entity
-public class TestEntity extends BaseEntity<String> {
+public class TestEntity /*extends BaseEntity<String>*/ {
 
     private short a; //smallint
     private int b; //int

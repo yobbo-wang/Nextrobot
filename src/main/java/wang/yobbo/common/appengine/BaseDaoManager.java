@@ -278,6 +278,15 @@ public final class BaseDaoManager {
         return this.findAll(hql, (org.springframework.data.domain.Pageable)null, params);
     }
 
+    //TODO
+     @Nullable
+     @Contract(pure = true)
+     public <T>List<T> findAll(T t){
+                List<T> entities = this.findAll();
+               List<T> dtos = new ArrayList();
+               return null;
+       }
+
     private  <T> List<T> findAll(String hql, org.springframework.data.domain.Pageable pageable, Object... params) {
         Query query = entityManager.createQuery(hql + this.prepareOrder(pageable != null ? pageable.getSort() : null));
         this.setParameter(query, params);
