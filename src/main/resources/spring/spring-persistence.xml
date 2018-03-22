@@ -49,6 +49,7 @@
     <!-- druid log -->
     <bean id="log-filter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter"/>
 
+    <!-- 在启动容器时创建DDL语句的类SpringHibernateJpaPersistenceProvider -->
     <bean id="ehcacheEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="jpaVendorAdapter">

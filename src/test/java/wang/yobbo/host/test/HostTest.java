@@ -1,7 +1,18 @@
 package wang.yobbo.host.test;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.cfgxml.spi.LoadedConfig;
+import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.TargetType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +23,12 @@ import wang.yobbo.common.appengine.entity.Pageable;
 import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.appengine.entity.Sortable;
 import wang.yobbo.common.appengine.plugin.SearchOperator;
+import wang.yobbo.common.spring.PropertyConfigurer;
 import wang.yobbo.host.entity.Host;
 import wang.yobbo.host.service.NextRobotHostService;
+import wang.yobbo.sys.entity.TestEntity;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by xiaoyang on 2018/3/3.
@@ -25,6 +38,34 @@ import java.util.List;
 public class HostTest {
     @Autowired
     private NextRobotHostService nextRobotHostService;
+
+    @Autowired
+    private DruidDataSource dataSource;
+
+    @Autowired
+    private PropertyConfigurer propertyConfigurer;
+
+    // 根据dataSource动态创建表
+    @Test
+    public void testDDl(){
+        Map configuration = new Hashtable();
+        configuration.put("hibernate.connection.url", this.dataSource.getUrl());
+        configuration.put("hibernate.connection.username", this.dataSource.getUsername());
+        configuration.put("hibernate.connection.password", this.dataSource.getPassword());
+        configuration.put("hibernate.connection.driver_class", this.dataSource.getDriverClassName());
+        configuration.put("hibernate.hbm2ddl.auto" , "create");
+        configuration.put("hibernate.dialect", propertyConfigurer.getProperty("jpa.databasePlatform"));
+        configuration.put("hibernate.show_sql", true);
+
+        ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration).build();
+        MetadataSources metadataSources = new MetadataSources(registry);
+        metadataSources.addAnnotatedClassName("wang.yobbo.sys.entity.TestEntity");
+        Metadata metadata = metadataSources.buildMetadata();
+        SchemaExport export = new SchemaExport();
+        export.create(EnumSet.of(TargetType.DATABASE), metadata);
+
+
+    }
 
     @Test
     public void testCount(){
