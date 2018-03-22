@@ -15,10 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import wang.yobbo.common.appengine.compile.JavaStringCompiler;
 import wang.yobbo.common.spring.PropertyConfigurer;
 
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.Hashtable;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/spring-root.xml")
@@ -48,19 +46,40 @@ public class compiler {
         JavaStringCompiler stringCompiler = JavaStringCompiler.getInstance();  //初始化编译容器
         try {
             Map<String, byte[]> results = stringCompiler.compile("CompilerTest.java", CODE);  //编译java代码，放到内存中
-            Class<?> clazz = stringCompiler.loadClass("wang.yobbo.sys.entity.CompilerTest", results);
+            //Class<?> clazz = stringCompiler.loadClass("wang.yobbo.sys.entity.CompilerTest", results);
 
-            //TODO 一下代码失败。待找原因
-            Class<?> aClass = Class.forName("wang.yobbo.sys.entity.CompilerTest");
+            //获取class流写入到文件中
+            OutputStream out = new FileOutputStream("E:\\intelljis workspace\\Nextrobot\\target\\classes\\wang\\yobbo\\sys\\entity\\CompilerTest.class");
+            InputStream is = new ByteArrayInputStream(results.get("wang.yobbo.sys.entity.CompilerTest"));
+            byte[] buff = new byte[1024];
+            int len = 0;
+            while( (len=is.read(buff)) != -1){
+                out.write(buff, 0, len);
+            }
+            is.close();
+            out.close();
 
-            System.out.println(aClass);
+
+            //调用hibernate底层方法创建表
+            Map configuration = new Hashtable();
+            configuration.put("hibernate.connection.url", this.dataSource.getUrl());
+            configuration.put("hibernate.connection.username", this.dataSource.getUsername());
+            configuration.put("hibernate.connection.password", this.dataSource.getPassword());
+            configuration.put("hibernate.connection.driver_class", this.dataSource.getDriverClassName());
+            configuration.put("hibernate.hbm2ddl.auto" , "create");
+            configuration.put("hibernate.dialect", propertyConfigurer.getProperty("jpa.databasePlatform"));
+            configuration.put("hibernate.show_sql", true);
+
+            ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration).build();
+            MetadataSources metadataSources = new MetadataSources(registry);
+            metadataSources.addAnnotatedClassName("wang.yobbo.sys.entity.CompilerTest");
+            Metadata metadata = metadataSources.buildMetadata();
+            SchemaExport export = new SchemaExport();
+            export.create(EnumSet.of(TargetType.DATABASE), metadata);
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-
 
     }
 
