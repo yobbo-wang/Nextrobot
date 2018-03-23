@@ -265,7 +265,7 @@
             html += '<input type="checkbox" checked name="entity" id="entity"/> <label for="entity">实体代码</label>';
             html += '<input type="checkbox" name="service" id="service"/> <label for="service">业务操作层代码</label>';
             html += '<input type="checkbox" name="dao" id="dao"/> <label for="dao">数据操作层代码</label>';
-            html += '<div style="color: #0000FF;">说明：应用引擎只负责生成业务代码，不生成数据库表，新生成的实体代码重新启动项目后，会自动创建数据库表结构。</div>';
+            html += '<div style="color: #0000FF;">说明：在应用引擎中选择生成实体代码，会自动创建表。如重复生成，会重新生成新表，注意备份数据。</div>';
             html += '<div><label id="errorMsg" /></div>';
             html += '</from></div>';
             $('#createEntityMode').html(html);

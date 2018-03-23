@@ -1,19 +1,27 @@
 package wang.yobbo.sys.service.Impl;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.apache.commons.io.IOUtils;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.TargetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import wang.yobbo.common.appengine.InvokeResult;
+import wang.yobbo.common.appengine.compile.JavaStringCompiler;
 import wang.yobbo.common.appengine.entity.Searchable;
 import wang.yobbo.common.httpengine.http.EngineViewServlet;
 import wang.yobbo.common.spring.PropertyConfigurer;
+import wang.yobbo.common.spring.SpringContextUtil;
 import wang.yobbo.sys.dao.BussisTemplateDao;
 import wang.yobbo.sys.dao.EntityPropertyDao;
 import wang.yobbo.sys.dao.SysMenuDao;
@@ -28,6 +36,7 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.sql.Clob;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -312,6 +321,9 @@ public class SysMenuServiceImpl implements SysMenuService {
         String templateEntityPath = "ame_entity.ftl";
         String packagePath = path + "/" + nextRobotSysMenuTable.getBusinessClassification() + "/entity";
         String entityPath = packagePath + "/" + nextRobotSysMenuTable.getEntityName() + ".java";
+        String classPath = SysMenuServiceImpl.class.getClassLoader().getResource("/").getPath()
+                + engine.get("packageName").toString().replaceAll("\\.", "/") + "/"
+                + nextRobotSysMenuTable.getBusinessClassification() + "/entity/";
         dataMap.put("engine", engine);
         dataMap.put("fieldList", nextRobotEntityProperties);
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
@@ -324,7 +336,73 @@ public class SysMenuServiceImpl implements SysMenuService {
         fileInfo.put("filePath",entityPath);
         fileInfo.put("fileContent", stringWriter.toString());
         fileInfo.put("packagePath", packagePath);
+        fileInfo.put("classPath", classPath);
+        this.CreateClassFileAndCreateDBTable(classPath, nextRobotSysMenuTable.getEntityName(),nextRobotSysMenuTable.getBusinessClassification(), stringWriter.toString());
         return fileInfo;
+    }
+
+    //创建class文件和创建数据库表
+    private void CreateClassFileAndCreateDBTable(String classPath, String entityName,String classification, String javaCode) throws IOException, SQLException {
+        JavaStringCompiler stringCompiler = JavaStringCompiler.getInstance();
+        String classesDir = Thread.currentThread().getContextClassLoader().getResource("/").getPath();
+        Iterable<String> options = Arrays.asList("-encoding", "UTF-8","-classpath",this.buildClassPath(), "-d", classesDir, "-sourcepath", classesDir);
+        Map<String, byte[]> results = stringCompiler.compile( entityName + ".java", javaCode, options);
+        //判断classes目录是否已创建
+        File realDir = new File(classPath);
+        if(!realDir.exists()){
+            if(!realDir.mkdirs()) {
+                throw new RuntimeException("创建编译包路径时出错，请检查项目目录结构!");
+            }
+        }
+        File file = new File(classPath + entityName + ".class");
+        if(!file.exists()){
+            if(!file.createNewFile()){
+                throw new RuntimeException("创建编译文件时出错，请检查目录结构!");
+            }
+        }
+        OutputStream out = new FileOutputStream(classPath + entityName + ".class");
+        InputStream is = new ByteArrayInputStream(results.get(propertyConfigurer.getProperty("system.package.name") + "." + classification +
+                ".entity." + entityName));
+        byte[] buff = new byte[1024];
+        int len = 0;
+        while( (len=is.read(buff)) != -1){
+            out.write(buff, 0, len);
+        }
+        is.close();
+        out.close();
+
+        Object bean = SpringContextUtil.getBean("dataSource");
+        if(bean == null){
+            throw new RuntimeException("数据库连接池不可用");
+        }
+        final DruidDataSource dataSource = (DruidDataSource)bean;
+        //调用hibernate底层方法创建表
+        Map configuration = new Hashtable();
+        configuration.put("hibernate.connection.url", dataSource.getUrl());
+        configuration.put("hibernate.connection.username", dataSource.getUsername());
+        configuration.put("hibernate.connection.password", dataSource.getPassword());
+        configuration.put("hibernate.connection.driver_class", dataSource.getDriverClassName());
+        configuration.put("hibernate.hbm2ddl.auto" , "create");
+        configuration.put("hibernate.dialect", propertyConfigurer.getProperty("jpa.databasePlatform"));
+        configuration.put("hibernate.show_sql", true);
+
+        ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration).build();
+        MetadataSources metadataSources = new MetadataSources(registry);
+        metadataSources.addAnnotatedClassName(propertyConfigurer.getProperty("system.package.name") + "." + classification + ".entity." + entityName);
+        Metadata metadata = metadataSources.buildMetadata();
+        SchemaExport export = new SchemaExport();
+        export.create(EnumSet.of(TargetType.DATABASE), metadata);
+    }
+
+    //获取系统classpath
+    private String buildClassPath() {
+        java.net.URLClassLoader parentClassLoader = (java.net.URLClassLoader) this.getClass().getClassLoader();
+        StringBuilder classpath = new StringBuilder();
+        for (java.net.URL url : parentClassLoader.getURLs()) {
+            String p = url.getFile();
+            classpath.append(p).append(File.pathSeparator);
+        }
+        return classpath.toString();
     }
 
     //生成dao

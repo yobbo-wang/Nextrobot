@@ -44,10 +44,10 @@ public class JavaStringCompiler {
 	 * @throws IOException
 	 *             If compile error.
 	 */
-	public Map<String, byte[]> compile(String fileName, String source) throws IOException {
+	public Map<String, byte[]> compile(String fileName, String source, Iterable<String> options) throws IOException {
 		try (MemoryJavaFileManager manager = new MemoryJavaFileManager(stdManager)) {
 			JavaFileObject javaFileObject = manager.makeStringSource(fileName, source);
-			CompilationTask task = compiler.getTask(null, manager, null, null, null, Arrays.asList(javaFileObject));
+			CompilationTask task = compiler.getTask(null, manager, null, options, null, Arrays.asList(javaFileObject));
 			Boolean result = task.call();
 			if (result == null || !result.booleanValue()) {
 				throw new RuntimeException("Compilation failed.");
