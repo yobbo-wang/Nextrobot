@@ -46,6 +46,7 @@
             </div>
             <input name="packageName" value="<#if package_name ??>${package_name}</#if>" type="hidden" />
             <input name="businessClassification" value="" id="businessClassification" type="hidden"/>
+            <input name="master_slave_type_id" type="hidden"/>
         </form>
     </div>
 </div>
@@ -62,6 +63,7 @@
 
     $('#entity').combobox({
         onSelect: function (row) {
+            $('input[name="master_slave_type_id"]').val(row.id);
             var formPropertyName = $('#formPropertyName');
             if(formPropertyName.textbox('getValue') == '' || formPropertyName.textbox('getValue') == undefined){
                 formPropertyName.textbox('setValue', row.entityName);

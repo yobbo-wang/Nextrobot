@@ -1,6 +1,7 @@
 package wang.yobbo.compiler;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import org.apache.commons.lang3.ClassUtils;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -98,15 +99,16 @@ public class compiler {
 
     @Test
     public void dd(){
-        this.buildClassPath();
-        JavaStringCompiler stringCompiler = JavaStringCompiler.getInstance();  //初始化编译容器
+
+//        this.buildClassPath();
+//        JavaStringCompiler stringCompiler = JavaStringCompiler.getInstance();  //初始化编译容器
         try {
-            Iterable<String> options = Arrays.asList("-encoding", "UTF-8",
-                    "-classpath", this.classpath,
-                    "-d", "/D:/ideaWorkspace/Nextrobot/target/Nextrobot/WEB-INF/classes/",
-                    "-sourcepath", "/D:/ideaWorkspace/Nextrobot/target/Nextrobot/WEB-INF/classes/");
-            Map<String, byte[]> results = stringCompiler.compile("Message.java", CODE, options);  //编译java代码，放到内存中
-            //Class<?> clazz = stringCompiler.loadClass("wang.yobbo.sys.entity.CompilerTest", results);
+//            Iterable<String> options = Arrays.asList("-encoding", "UTF-8",
+//                    "-classpath", this.classpath,
+//                    "-d", "/D:/ideaWorkspace/Nextrobot/target/Nextrobot/WEB-INF/classes/",
+//                    "-sourcepath", "/D:/ideaWorkspace/Nextrobot/target/Nextrobot/WEB-INF/classes/");
+//            Map<String, byte[]> results = stringCompiler.compile("Message.java", CODE, options);  //编译java代码，放到内存中
+//            //Class<?> clazz = stringCompiler.loadClass("wang.yobbo.sys.entity.CompilerTest", results);
 
             //获取class流写入到文件中
 //            OutputStream out = new FileOutputStream("E:\\intelljis workspace\\Nextrobot\\target\\classes\\wang\\yobbo\\sys\\entity\\CompilerTest.class");
@@ -136,7 +138,7 @@ public class compiler {
 //            SchemaExport export = new SchemaExport();
 //            export.create(EnumSet.of(TargetType.DATABASE), metadata);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

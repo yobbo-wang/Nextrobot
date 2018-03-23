@@ -21,7 +21,8 @@ public class ${engine.entityName ? cap_first} extends BaseEntity<String> {
     private ${field.type_name} ${field.column_name} = false;
     <#elseif field.masterSlaveType ? exists>
     @${field.masterSlaveType ? split('_')[0]}(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "${field.column_name ? upper_case}_${field.masterSlaveType ? split('_')[2] ? upper_case}_ID") //通过主键关联
+    //@JoinColumn(name = "${field.column_name ? upper_case}_${field.masterSlaveType ? split('_')[2] ? upper_case}_ID") //通过主键关联
+    @JoinColumn(name = "ID")
     private ${field.type_name} ${field.column_name};
     <#else>
     @Column(name = "${field.column_name ? upper_case}"<#if field.column_size ? exists>,length = ${field.column_size} </#if><#if field.primary_key ? exists && field.primary_key == "YES">,unique = true</#if><#if field.is_null_able ? exists && field.is_null_able == "NO">,nullable = false</#if>)

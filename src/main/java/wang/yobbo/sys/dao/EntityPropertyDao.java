@@ -11,4 +11,6 @@ public interface EntityPropertyDao {
     List<EntityProperty> saveEntityProperty(List<EntityProperty> nextRobotEntityProperties) throws Exception;
 
     int delete(String[] id);
+
+    List<EntityProperty> queryEntityPropertyByEntityId(String master_slave_type_id);
 }

@@ -104,6 +104,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
     }
 
+    //创建业务代码
     public boolean createBusinessCode(SysMenuEntity nextRobotSysMenuTable, String entityMode, List<EntityProperty> nextRobotEntityProperties) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -123,6 +124,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             List<Map<String, String>> files = new ArrayList<Map<String, String>>();
             for(String mode : entityModeBean){
                 if("entity".equals(mode)){
+                    this.hashEntity(basePathPrefix, nextRobotEntityProperties, files);
                     Map entity = this.createEntity(basePathPrefix, nextRobotSysMenuTable, nextRobotEntityProperties);
                     files.add(entity);
                 }else if("service".equals(mode)){
@@ -144,6 +146,31 @@ public class SysMenuServiceImpl implements SysMenuService {
             throw new Exception(e.getMessage());
         }
         return true;
+    }
+
+    //判断主从关系中实体是否已生成
+    private void hashEntity(String basePathPrefix, List<EntityProperty> nextRobotEntityProperties, List<Map<String, String>> files) throws Exception {
+        //判断实体中是否引用另外实体
+        for(EntityProperty entityProperty : nextRobotEntityProperties){
+            if(entityProperty.getMasterSlaveType() != null && !entityProperty.getMasterSlaveType().isEmpty()){
+                String entity =  entityProperty.getMasterSlaveType().contains("Many") ?
+                        entityProperty.getType_name().replaceAll("java.util.List<", "").replaceAll(">", "") : entityProperty.getType_name();
+                try {
+                    //判断java文件是否已生成 TODO
+                    new File(basePathPrefix);
+                    Class<?> name = Class.forName(entity);
+                    if(name != null) continue;
+                }catch (Exception e){}
+                SysMenuEntity sysMenuEntity = this.sysMenuTableDao.findSysMenuTableById(entityProperty.getMaster_slave_type_id());
+                List<EntityProperty> entityProperties = this.nextRobotEntityPropertyDao.queryEntityPropertyByEntityId(entityProperty.getMaster_slave_type_id());
+                //业务分类转为小写
+                sysMenuEntity.setBusinessClassification(sysMenuEntity.getBusinessClassification().toLowerCase());
+                //将实体首字母设置为大写
+                sysMenuEntity.setEntityName(this.toUpperCaseFirstOne(sysMenuEntity.getEntityName()));
+                Map newEntity = this.createEntity(basePathPrefix, sysMenuEntity, entityProperties);
+                files.add(newEntity);
+            }
+        }
     }
 
     public List<EntityProperty> saveEntityProperty(List<EntityProperty> nextRobotEntityProperties) throws Exception {
@@ -332,6 +359,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         Template template = configuration.getTemplate(templateEntityPath);
         StringWriter stringWriter = new StringWriter();
         template.process(dataMap, stringWriter);
+
         Map<String,Object> fileInfo = new HashMap<String, Object>();
         fileInfo.put("filePath",entityPath);
         fileInfo.put("fileContent", stringWriter.toString());
