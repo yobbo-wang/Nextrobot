@@ -124,7 +124,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             List<Map<String, String>> files = new ArrayList<Map<String, String>>();
             for(String mode : entityModeBean){
                 if("entity".equals(mode)){
-                    this.hashEntity(basePathPrefix, nextRobotEntityProperties, files);
+                    this.hashEntity(basePathPrefix, nextRobotEntityProperties, files); //判断是包含另外实体
                     Map entity = this.createEntity(basePathPrefix, nextRobotSysMenuTable, nextRobotEntityProperties);
                     files.add(entity);
                 }else if("service".equals(mode)){
@@ -136,9 +136,34 @@ public class SysMenuServiceImpl implements SysMenuService {
                 }
             }
 
+            List<Map<String, String>> entitys = new ArrayList<>();
             //遍历模板文件，写入到指定文件中
             for(Map<String, String> file : files){
+                if(file.containsKey("entity") && "true".equals(file.get("entity"))){
+                    Map<String, String> entity = new HashMap<>();
+                    String filePath = file.get("filePath");
+                    entity.put("fileContent", file.get("fileContent"));
+                    String javaPackageSunFix = filePath.replaceAll(basePath + "/src/main/java/", "");
+                    String entityPackageName = javaPackageSunFix.replaceAll(".java", "");
+                    String classPath = Thread.currentThread().getContextClassLoader().getResource("/").getPath() + entityPackageName.replaceAll("\\.", "/") + ".class";
+                    entity.put("classPath", classPath);
+                    entity.put("entityName", file.get("entityName"));
+                    entity.put("entityPackageName", entityPackageName.replaceAll("/", "."));
+                    entitys.add(entity);
+                }
+                if(!file.containsKey("packagePath")) continue;
                 this.createCodeFile(file.get("packagePath") ,file.get("filePath"), file.get("fileContent"));
+            }
+
+            List<String> entityName = new ArrayList<>();
+            //生成完实体后，编译实体后创建表
+            for(Map<String, String> entity : entitys){
+                this.createClassFile(entity.get("classPath"), entity.get("entityName"), entity.get("entityPackageName"), entity.get("fileContent"));
+                entityName.add(entity.get("entityPackageName"));
+            }
+
+            if(entityName != null && entityName.size() > 0){
+                this.createDBTable(entityName);
             }
 
         } catch (IOException e) {
@@ -155,12 +180,18 @@ public class SysMenuServiceImpl implements SysMenuService {
             if(entityProperty.getMasterSlaveType() != null && !entityProperty.getMasterSlaveType().isEmpty()){
                 String entity =  entityProperty.getMasterSlaveType().contains("Many") ?
                         entityProperty.getType_name().replaceAll("java.util.List<", "").replaceAll(">", "") : entityProperty.getType_name();
-                try {
-                    //判断java文件是否已生成 TODO
-                    new File(basePathPrefix);
-                    Class<?> name = Class.forName(entity);
-                    if(name != null) continue;
-                }catch (Exception e){}
+                //判断java文件是否已生成
+                String filePath = EngineViewServlet.getBase_path() + "/src/main/java/" + entity.replaceAll("\\.", "/") + ".java";
+                File file = new File(filePath);
+                if(file.exists()){
+                    Map<String, String> map = new HashMap<>();
+                    map.put("filePath", filePath);
+                    map.put("entity", "true");
+                    map.put("entityName", file.getName().replaceAll(".java", ""));
+                    map.put("fileContent", new String(wang.yobbo.sys.util.IOUtils.fileTobytes(file), Charset.forName("utf-8"))) ;
+                    files.add(map);
+                    continue;
+                }
                 SysMenuEntity sysMenuEntity = this.sysMenuTableDao.findSysMenuTableById(entityProperty.getMaster_slave_type_id());
                 List<EntityProperty> entityProperties = this.nextRobotEntityPropertyDao.queryEntityPropertyByEntityId(entityProperty.getMaster_slave_type_id());
                 //业务分类转为小写
@@ -348,9 +379,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         String templateEntityPath = "ame_entity.ftl";
         String packagePath = path + "/" + nextRobotSysMenuTable.getBusinessClassification() + "/entity";
         String entityPath = packagePath + "/" + nextRobotSysMenuTable.getEntityName() + ".java";
-        String classPath = SysMenuServiceImpl.class.getClassLoader().getResource("/").getPath()
-                + engine.get("packageName").toString().replaceAll("\\.", "/") + "/"
-                + nextRobotSysMenuTable.getBusinessClassification() + "/entity/";
         dataMap.put("engine", engine);
         dataMap.put("fieldList", nextRobotEntityProperties);
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
@@ -364,33 +392,32 @@ public class SysMenuServiceImpl implements SysMenuService {
         fileInfo.put("filePath",entityPath);
         fileInfo.put("fileContent", stringWriter.toString());
         fileInfo.put("packagePath", packagePath);
-        fileInfo.put("classPath", classPath);
-        this.CreateClassFileAndCreateDBTable(classPath, nextRobotSysMenuTable.getEntityName(),nextRobotSysMenuTable.getBusinessClassification(), stringWriter.toString());
+        fileInfo.put("entityName", nextRobotSysMenuTable.getEntityName());
+        fileInfo.put("entity", "true");
         return fileInfo;
     }
 
-    //创建class文件和创建数据库表
-    private void CreateClassFileAndCreateDBTable(String classPath, String entityName,String classification, String javaCode) throws IOException, SQLException {
+    //创建class文件
+    private void createClassFile(String classPath, String entityName,String packageEntityName, String javaCode) throws IOException {
         JavaStringCompiler stringCompiler = JavaStringCompiler.getInstance();
         String classesDir = Thread.currentThread().getContextClassLoader().getResource("/").getPath();
         Iterable<String> options = Arrays.asList("-encoding", "UTF-8","-classpath",this.buildClassPath(), "-d", classesDir, "-sourcepath", classesDir);
         Map<String, byte[]> results = stringCompiler.compile( entityName + ".java", javaCode, options);
         //判断classes目录是否已创建
-        File realDir = new File(classPath);
+        File realDir = new File(classPath.replaceAll(entityName + ".class", ""));
         if(!realDir.exists()){
             if(!realDir.mkdirs()) {
                 throw new RuntimeException("创建编译包路径时出错，请检查项目目录结构!");
             }
         }
-        File file = new File(classPath + entityName + ".class");
+        File file = new File(classPath);
         if(!file.exists()){
             if(!file.createNewFile()){
                 throw new RuntimeException("创建编译文件时出错，请检查目录结构!");
             }
         }
-        OutputStream out = new FileOutputStream(classPath + entityName + ".class");
-        InputStream is = new ByteArrayInputStream(results.get(propertyConfigurer.getProperty("system.package.name") + "." + classification +
-                ".entity." + entityName));
+        OutputStream out = new FileOutputStream(classPath);
+        InputStream is = new ByteArrayInputStream(results.get(packageEntityName));
         byte[] buff = new byte[1024];
         int len = 0;
         while( (len=is.read(buff)) != -1){
@@ -398,7 +425,10 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         is.close();
         out.close();
+    }
 
+    //创建class文件和创建数据库表
+    private void createDBTable(List<String> entityNames) {
         Object bean = SpringContextUtil.getBean("dataSource");
         if(bean == null){
             throw new RuntimeException("数据库连接池不可用");
@@ -416,7 +446,9 @@ public class SysMenuServiceImpl implements SysMenuService {
 
         ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration).build();
         MetadataSources metadataSources = new MetadataSources(registry);
-        metadataSources.addAnnotatedClassName(propertyConfigurer.getProperty("system.package.name") + "." + classification + ".entity." + entityName);
+        for(String entityName : entityNames){
+            metadataSources.addAnnotatedClassName(entityName);
+        }
         Metadata metadata = metadataSources.buildMetadata();
         SchemaExport export = new SchemaExport();
         export.create(EnumSet.of(TargetType.DATABASE), metadata);
