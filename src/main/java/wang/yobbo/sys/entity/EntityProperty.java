@@ -36,7 +36,7 @@ public class EntityProperty extends BaseEntity<String> {
     @Column(name = "REMARKS", length = 200)
     private String remarks;
 
-    @Column(name = "ENTITY_ID", length = 32, updatable = false)
+    @Column(name = "ENTITY_ID", length = 32)
     private String entity_id;
 
 //    @Transient

@@ -26,7 +26,8 @@
                     <a href="javascript:;">任务</a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="javascript:;">
+                            <a data-options="url:'http://www.baidu.com',icon:'fa-share-alt',title:'任务模板',id:'task-template',renderType:'page'"
+                             href="javascript:;" class="kit-target">
                                 <span>任务模板</span>
                             </a>
                         </dd>
@@ -56,8 +57,8 @@
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;">应用权限配置</a><hr></dd>
                         <dd>
-                            <a href="javascript:;" class="kit-target"
-                               data-options="url:'<%= path%>/engine/appengine/index.html',icon:'fa-share-alt',title:'应用引擎',id:'engine-setting'">应用引擎</a>
+                            <a data-options="url:'<%= path%>/engine/appengine/index.html',icon:'fa-share-alt',title:'应用引擎',id:'engine-setting'"
+                             href="javascript:;" class="kit-target">应用引擎</a>
                         </dd>
                     </dl>
                 </li>

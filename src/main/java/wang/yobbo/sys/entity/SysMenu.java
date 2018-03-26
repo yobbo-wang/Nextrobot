@@ -43,7 +43,7 @@ public class SysMenu extends BaseEntity<String> {
     private List<SysMenu> children = new ArrayList<SysMenu>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "MENU_ID")
+    @JoinColumn(name = "MENU_ID", updatable = false)
     private List<SysMenuEntity> tables = new ArrayList<SysMenuEntity>();
 
     public String getText() {

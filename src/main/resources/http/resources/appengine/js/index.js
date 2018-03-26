@@ -201,6 +201,7 @@
                 $.messager.progress("close");
                 if (result.success) {
                     $.messager.show({title:'温馨提示',msg:'保存成功!',timeout:3000,showType:'show'});
+                    $("#menu-list").treegrid('reload');
                     $("#datagrid-entity").datagrid({data: result.data});
                 } else {
                     $.messager.alert("操作提示", result.errorMessage,"question");
@@ -254,6 +255,7 @@
                         $.messager.progress("close");
                         if (result.success) {
                             $.messager.show({title:'温馨提示',msg:result.data,timeout:3000,showType:'show'});
+                            $("#menu-list").treegrid('reload');
                             $('#createEntityMode').dialog("close");
                         } else {
                             $('#errorMsg').html("<span style='color:Red'>错误提示:" + result.errorMessage + "</span>");

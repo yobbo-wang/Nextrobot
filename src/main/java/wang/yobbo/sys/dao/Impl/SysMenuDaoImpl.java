@@ -15,8 +15,8 @@ import java.util.Map;
 public class SysMenuDaoImpl extends BaseDaoImpl<SysMenu, String> implements SysMenuDao {
     public List<SysMenu> findByPId(String pid) {
         String hql = (pid != null && pid.length() > 0) ?
-                "select sysMenu from SysMenu sysMenu where sysMenu.parentId = :parentId" :
-                "select sysMenu from SysMenu sysMenu where sysMenu.parentId is null";
+                "select sysMenu from SysMenu sysMenu where sysMenu.parentId = :parentId order by orderNumber asc" :
+                "select sysMenu from SysMenu sysMenu where sysMenu.parentId is null order by orderNumber asc";
         List<SysMenu> list = null;
         if(pid != null && pid.length() > 0){
             Map<String, Object> params = new HashMap<>();

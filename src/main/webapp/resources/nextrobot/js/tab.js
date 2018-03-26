@@ -16,6 +16,7 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
             page: 'page',
             iframe: 'iframe'
         };
+    //如果没指定窗口方式，默认使用iframe
     var Tab = function() {
         this.config = {
             elem: undefined,
@@ -237,7 +238,9 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
         tabAdd: function(options) {
             var that = this,
                 _config = that._config,
-                loadIndex = undefined;
+                loadIndex = undefined,
+            renderType = options.hasOwnProperty('renderType') &&
+            options['renderType'] == 'page' ? 'page' : _config.renderType;
             options = options || {
                 id: new Date().getTime(),
                 title: '新标签页',
@@ -267,8 +270,8 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
             titleHtm.push('<i class="layui-icon layui-unselect layui-tab-close">&#x1006;</i>');
             titleHtm.push('</li>');
             var contentHtm = '<div class="layui-tab-item layui-show" lay-item-id="' + id + '">{{content}}</div>';
-            switch (_config.renderType) {
-                case renderType.page:
+            switch (renderType) {
+                case 'page':
                     contentHtm = contentHtm.replace('{{content}}', that.getBodyContent(url + '?v=' + new Date().getTime(), function() {
                         setTimeout(function() {
                             NProgress.done();
@@ -276,14 +279,14 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
                         }, 500);
                     }));
                     break;
-                case renderType.iframe:
+                case 'iframe':
                     contentHtm = contentHtm.replace('{{content}}', '<iframe src="' + url + '"></iframe>');
                     break;
             }
             //追加html
             that._title.append(titleHtm.join(''));
             that._content.append(contentHtm);
-            if (_config.renderType === renderType.iframe) {
+            if (renderType === renderType.iframe) {
                 that._content.find('div[lay-item-id=' + id + ']').find('iframe').on('load', function() {
                     NProgress.done();
                     _config.openWait && loadIndex && that.closeLoad(loadIndex);
