@@ -1,4 +1,9 @@
 ;(function ($) {
+        String.prototype.UpperFirstLetter = function (str) {
+            return str.replace(/\b\w+\b/g, function(word) {
+                return word.substring(0,1).toUpperCase( ) +  word.substring(1);
+            });
+        };
         Date.prototype.Format = function (fmt) {
             var o = {
                 "M+": this.getMonth() + 1, //月份
@@ -191,8 +196,8 @@
             var result = $('#entityInfo').form('validate');
             if(!result)return;
             var entityRow = $('#datagrid-entity').datagrid("getRows");
-            if(entityRow.length == 0)return;
             var deleteEntityRow = $('#datagrid-entity').datagrid("getChanges", "deleted");
+            if(entityRow.length == 0 && deleteEntityRow.length == 0)return;
             var entityInfo = $('#entityInfo').serializeArray();
             entityInfo.push({name: "entityRow", value: JSON.stringify(entityRow)});
             entityInfo.push({name: "deleteEntityRow", value: JSON.stringify(deleteEntityRow)});
@@ -462,7 +467,7 @@
                                     }
                                 }
                             }
-                            row.type_name = row.packageName + '.' + row.businessClassification.toLocaleLowerCase() + '.entity.' + row.type_name;
+                            row.type_name = row.packageName + '.' + row.businessClassification.toLocaleLowerCase() + '.entity.' + new String().UpperFirstLetter(row.type_name);
                             if(row['masterSlaveType'].indexOf('Many') > -1) {
                                 row.type_name = 'java.util.List<' + row.type_name + '>';
                             }

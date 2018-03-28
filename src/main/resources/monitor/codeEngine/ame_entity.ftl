@@ -3,8 +3,6 @@ package ${engine.packageName}.${engine.businessClassification}.entity;
 import ${engine.packageName}.common.appengine.entity.BaseEntity;
 import javax.persistence.*;
 /**
- * 自定义扩展建议：
- *      用应用引擎生成实体文件后，可以进行自定义扩展
  * 此文件由应用引擎生成，严禁修改，如重复生成时，该文件将被覆盖。
  * ${engine.entityName? cap_first} 实体信息
  * <#if engine.remark ? exists>${engine.remark}<#else>实体</#if>

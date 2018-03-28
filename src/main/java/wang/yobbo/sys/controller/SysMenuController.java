@@ -191,19 +191,15 @@ public class SysMenuController {
             return InvokeResult.failure("请添加实体属性!");
         ObjectMapper mapper = new ObjectMapper();
         try {
-            this.sysMenuService.addEntity(nextRobotSysMenuEntity);
+            if(nextRobotSysMenuEntity != null)this.sysMenuService.addEntity(nextRobotSysMenuEntity);
             List<EntityProperty> nextRobotEntityProperties = mapper.readValue(entityRow, new TypeReference<List<EntityProperty>>(){});
             List<EntityProperty> nextRobotEntityPropertiesDelete = mapper.readValue(deleteEntityRow, new TypeReference<List<EntityProperty>>(){});
             for(EntityProperty entityProperty : nextRobotEntityPropertiesDelete){
-                if(entityProperty.getId().isEmpty()) continue;
+                if(entityProperty == null || entityProperty.getId().isEmpty()) continue;
                 this.sysMenuService.deleteEntityProperty(entityProperty.getId());
             }
             List<EntityProperty> newProperties = this.sysMenuService.saveEntityProperty(nextRobotEntityProperties);
-            if(!newProperties.isEmpty() && newProperties.size() > 0){
-                return InvokeResult.success(newProperties);
-            }else{
-                return InvokeResult.failure("保存失败");
-            }
+            return InvokeResult.success(newProperties);
         } catch (Exception e) {
             e.printStackTrace();
             return InvokeResult.failure("保存失败");
