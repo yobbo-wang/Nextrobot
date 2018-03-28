@@ -411,10 +411,10 @@ public class SysMenuServiceImpl implements SysMenuService {
             }
         }
         File file = new File(classPath);
-        if(!file.exists()){
-            if(!file.createNewFile()){
-                throw new RuntimeException("创建编译文件时出错，请检查目录结构!");
-            }
+        if(file.exists()){
+            file.delete(); //每次都创建最新的class
+        }else{
+            file.createNewFile();
         }
         OutputStream out = new FileOutputStream(classPath);
         InputStream is = new ByteArrayInputStream(results.get(packageEntityName));
@@ -425,6 +425,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         is.close();
         out.close();
+        LOG.info("已自动编译创建：" + classPath);
     }
 
     //创建class文件和创建数据库表
@@ -440,7 +441,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         configuration.put("hibernate.connection.username", dataSource.getUsername());
         configuration.put("hibernate.connection.password", dataSource.getPassword());
         configuration.put("hibernate.connection.driver_class", dataSource.getDriverClassName());
-        configuration.put("hibernate.hbm2ddl.auto" , "create");
+        configuration.put("hibernate.hbm2ddl.auto" , "update");
         configuration.put("hibernate.dialect", propertyConfigurer.getProperty("jpa.databasePlatform"));
         configuration.put("hibernate.show_sql", true);
 

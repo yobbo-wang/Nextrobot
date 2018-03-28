@@ -46,6 +46,9 @@ public class EntityProperty extends BaseEntity<String> {
     @Column(name = "MASTER_SLAVE_TYPE_ID", length = 32)
     private String master_slave_type_id;
 
+    @Column(name = "FROM_FOREIGN_KEY_ID", length = 50)
+    private String fromForeignKeyId;
+
     public String getColumn_name() {
         return column_name;
     }
@@ -132,5 +135,13 @@ public class EntityProperty extends BaseEntity<String> {
 
     public void setMaster_slave_type_id(String master_slave_type_id) {
         this.master_slave_type_id = master_slave_type_id;
+    }
+
+    public String getFromForeignKeyId() {
+        return fromForeignKeyId;
+    }
+
+    public void setFromForeignKeyId(String fromForeignKeyId) {
+        this.fromForeignKeyId = fromForeignKeyId;
     }
 }

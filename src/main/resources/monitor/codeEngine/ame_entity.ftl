@@ -16,20 +16,21 @@ import javax.persistence.*;
 @Table(name = "${engine.tableName ? upper_case}")
 public class ${engine.entityName ? cap_first} extends BaseEntity<String> {
 	private static final long serialVersionUID = 1L;
-<#list fieldList as field><#if field.remarks ? exists>//${field.remarks}</#if>
+<#list fieldList as field><#if field.remarks ? exists && field.remarks ? length gt 0 >
+    /**${field.remarks}*/</#if>
     <#if field.type_name == 'Boolean' || field.type_name == 'boolean'>
     @Column(name = "${field.column_name ? upper_case}"<#if field.column_size ? exists>,length = ${field.column_size} </#if><#if field.is_null_able ? exists && field.is_null_able == "NO">,nullable = false</#if>)
     @org.hibernate.annotations.Type(type = "yes_no")
     private ${field.type_name} ${field.column_name} = false;
     <#elseif field.masterSlaveType ? exists>
     @${field.masterSlaveType ? split('_')[0]}(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //@JoinColumn(name = "${field.column_name ? upper_case}_${field.masterSlaveType ? split('_')[2] ? upper_case}_ID") //通过主键关联
-    @JoinColumn(name = "ID")
+    //通过外键${field.fromForeignKeyId ? upper_case}关联
+    @JoinColumn(name = "${field.fromForeignKeyId ? upper_case}")
     private ${field.type_name} ${field.column_name};
     <#else>
     @Column(name = "${field.column_name ? upper_case}"<#if field.column_size ? exists>,length = ${field.column_size} </#if><#if field.primary_key ? exists && field.primary_key == "YES">,unique = true</#if><#if field.is_null_able ? exists && field.is_null_able == "NO">,nullable = false</#if>)
     private ${field.type_name} ${field.column_name};
-        </#if>
+    </#if>
 </#list>
 
 <#list fieldList as field>

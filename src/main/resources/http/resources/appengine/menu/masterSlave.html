@@ -7,18 +7,15 @@
                     <td>主从关系:</td>
                     <td>
                         <select class="easyui-combobox" id="type" name="masterSlaveType" data-options="panelHeight:150,required:true" style="height:30px;width:300px;">
-                            <option value="OneToOne_oneWay_one">一对一单向关联</option>
-                            <option value="OneToOne_twoWay_one">一对一双向关联</option>
-                            <option value="OneToMany_oneWay_many">一对多单向关联</option>
-                            <option value="OneToMany_twoWay_many">一对多双向关联</option>
-                            <option value="ManyToMany_oneWay_many">多对多单向关系</option>
-                            <option value="ManyToMany_twoWay_many">多对多双向关系</option>
+                            <option value="OneToOne">一对一关联</option>
+                            <option value="OneToMany">一对多关联</option>
+                            <option value="ManyToMany">多对多关系</option>
                         </select>
                     </td>
                 </tr>
 
                 <tr>
-                    <td>选择实体:</td>
+                    <td>选择关联实体:</td>
                     <td>
                         <select class="easyui-combobox" id="entity" name="type_name"
                                 data-options="required:true,method:'get',valueField:'entityName',textField:'entityName',url:'<#if contextPath ??>${contextPath}</#if>/menu/getEntitys'"
@@ -28,19 +25,19 @@
                 </tr>
 
                 <tr>
-                    <td>主实体从属性名:</td>
+                    <td>从属性名:</td>
                     <td><input class="easyui-textbox" id="formPropertyName" type="text" name="formPropertyName" data-options="required:true" style="height:30px;width:300px;"></input></td>
                 </tr>
 
-                <tr id="masterPropertyTr" style="display: none;">
-                    <td>从实体主属性名:</td>
-                    <td><input class="easyui-textbox" type="text" name="masterPropertyName"  style="height:30px;width:300px;"></input></td>
+                <tr>
+                    <td>从实体外键:</td>
+                    <td><input class="easyui-textbox" id="fromForeignKeyId" type="text" name="fromForeignKeyId" data-options="required:true" style="height:30px;width:300px;"></input></td>
                 </tr>
 
-                <tr>
-                    <td><p style="color:#0000FF;">说明：</p></td>
-                </tr>
             </table>
+            <div>
+                <p style="color:#0000FF;">说明：主实体表示当前实体类，从实体表示关联的实体。如果从实体未生成，为确保能创建数据表，系统会自动创建从实体到应用工程中</p>
+            </div>
             <div>
                 <label id="errorMsg" />
             </div>
@@ -51,26 +48,18 @@
     </div>
 </div>
 <script type="application/javascript">
-    $("#type").combobox({
-        onChange: function (newValue,oldValue) {
-            if(newValue.indexOf('two') > -1){
-                $('#masterPropertyTr').show();
-            }else{
-                $('#masterPropertyTr').hide();
-            }
-        }
-    });
-
     $('#entity').combobox({
         onSelect: function (row) {
             $('input[name="master_slave_type_id"]').val(row.id);
             var formPropertyName = $('#formPropertyName');
+            var fromForeignKeyId = $('#fromForeignKeyId');
             if(formPropertyName.textbox('getValue') == '' || formPropertyName.textbox('getValue') == undefined){
                 formPropertyName.textbox('setValue', row.entityName);
                 $("#businessClassification").val(row.businessClassification);
             }
+            if(fromForeignKeyId.textbox('getValue') == '' || fromForeignKeyId.textbox('getValue') == undefined){
+                fromForeignKeyId.textbox('setValue', row.entityName + '_ID');
+            }
         }
     });
-
-
 </script>
