@@ -24,7 +24,6 @@ public class ${engine.entityName ? cap_first} extends BaseEntity<String> {
     private ${field.type_name} ${field.column_name} = false;
     <#elseif field.masterSlaveType ? exists>
     @${field.masterSlaveType ? split('_')[0]}(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //通过外键${field.fromForeignKeyId ? upper_case}关联
     @JoinColumn(name = "${field.fromForeignKeyId ? upper_case}")
     private ${field.type_name} ${field.column_name};
     <#else>
