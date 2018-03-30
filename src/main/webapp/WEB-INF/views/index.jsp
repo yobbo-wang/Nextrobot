@@ -83,7 +83,7 @@
         </div>
     </div>
 
-     <div class="layui-side layui-bg-black kit-side">
+     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <ul class="layui-nav layui-nav-tree layui-bg-black layui-inline">
               <li class="layui-nav-item layui-nav-itemed">
@@ -96,15 +96,36 @@
                 </dl>
               </li>
               <li class="layui-nav-item">
-                <a href="javascript:;">解决方案</a>
+                <a href="javascript:;" lay-direction="2" lay-tips="解决方案"><cite>解决方案</cite></a>
                 <dl class="layui-nav-child">
-                  <dd><a href="">移动模块</a></dd>
-                  <dd><a href="">后台模版</a></dd>
-                  <dd><a href="">电商平台</a></dd>
+                  <dd><a href="javascript:;">移动模块</a>
+                  <dd><a href="javascript:;">后台模版</a></dd>
+                  <dd><a href="javascript:;">电商平台</a></dd>
                 </dl>
               </li>
               <li class="layui-nav-item"><a href="">云市场</a></li>
               <li class="layui-nav-item"><a href="">社区</a></li>
+              <li data-name="set" class="layui-nav-item">
+                <a href="javascript:;" lay-tips="设置" lay-direction="2">
+                  <cite>设置</cite>
+                </a>
+                <dl class="layui-nav-child">
+                  <dd>
+                    <a href="javascript:;">系统设置</a>
+                    <dl class="layui-nav-child">
+                      <dd><a lay-href="set/system/website.html">网站设置</a></dd>
+                      <dd><a lay-href="set/system/email.html">邮件服务</a></dd>
+                    </dl>
+                  </dd>
+                  <dd>
+                    <a href="javascript:;">我的设置</a>
+                    <dl class="layui-nav-child">
+                      <dd><a lay-href="set/user/info.html">基本资料</a></dd>
+                      <dd><a lay-href="set/user/password.html">修改密码</a></dd>
+                    </dl>
+                  </dd>
+                </dl>
+              </li>
             </ul>
         </div>
      </div>
@@ -157,48 +178,6 @@
                 switchSkin(skin === undefined ? 'default' : skin);
             }();
 
-        $('#color').click(function(){
-            layer.open({
-                type:1,
-                title:'配色方案',
-                area: ['290px', 'calc(100% - 52px)'],
-                offset: 'rb',
-                shadeClose:true,
-                id:'colors',
-                anim: 2,
-                shade:0.2,
-                closeBtn:0,
-                isOutAnim:false,
-                resize:false,
-                move: false,
-                skin: 'color-class',
-                btn:['黑白格','橘子橙','原谅绿','少女粉','天空蓝','枫叶红'],
-                yes: function(index, layero){
-                    switchSkin('default');
-                }
-                ,btn2: function(index, layero){
-                    switchSkin('orange');
-                    return false;
-                }
-                ,btn3: function(index, layero){
-                    switchSkin('green');
-                    return false;
-                }
-                ,btn4: function(index, layero){
-                    switchSkin('pink');
-                    return false;
-                }
-                ,btn5: function(index, layero){
-                    switchSkin('blue.1');
-                    return false;
-                }
-                ,btn6: function(index, layero){
-                    switchSkin('red');
-                    return false;
-                }
-
-            });
-        })
         $('.layui-nav-item').click(function(){
             $(this).siblings('li').attr('class','layui-nav-item');
         })

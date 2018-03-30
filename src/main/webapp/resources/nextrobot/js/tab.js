@@ -21,7 +21,7 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
         this.config = {
             elem: undefined,
             mainUrl: path + "/main/index",
-            renderType: 'iframe',
+            renderType: renderType.iframe,
             openWait: false
         };
         this.v = '1.0.5';
@@ -61,6 +61,7 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
     Tab.fn.getId = function() {
         return _tab.getCurrLayId();
     };
+
     //私用对象
     var _tab = {
         _config: {},
@@ -90,17 +91,24 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
             //模板
             var tpl = [
                     '<div class="layui-tab layui-tab-card kit-tab mag0" lay-filter="' + that._filter + '">',
-                    '<ul class="layui-tab-title">',
-                    '<li class="layui-this" lay-id="-1" data-url="' + _config.mainUrl + '"><i class="layui-icon layui-icon-home"></i></li>',
+                    '<div class="menu-list" id="menu-list">',
+                    '<i class="fa fa-align-justify"></i>' +
+                    '</div>',
+                    '<ul class="layui-tab-title" style="left: 40px;">',
+                    '<li class="layui-this" lay-id="-1" data-url="' + _config.mainUrl + '"><i class="layui-icon layui-icon-home"></i><cite style="font-style: normal;padding-left: 5px;">首页</cite></li>',
                     '</ul>',
-                    '<i class="fa fa-chevron-down kit-tab-tool"></i>',
-                    '<div class="kit-tab-tool-body layui-anim layui-anim-upbit" id="kuaijie">',
-                    '<ul id="menudiv">',
-                    '<li class="kit-item"><a class="kit-item" data-target="refresh">刷新当前标签页</a></li>',
-                    '<li class="kit-item"><a class="kit-item" data-target="closeCurrent">关闭当前标签页</a></li>',
-                    '<li class="kit-item"><a class="kit-item" data-target="closeOther">关闭其他标签页</a></li>',
-                    '<li class="kit-item"><a class="kit-item" data-target="closeAll">关闭全部标签页</a></li>',
-                    '</ul>',
+                    '<div class="layui-icon layadmin-tabs-control layui-icon-down">',
+                    '<ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">',
+                    '<li class="layui-nav-item" lay-unselect="">',
+                    '<a href="javascript:;"></a>',
+                    '<dl class="layui-nav-child layui-anim-fadein layui-anim layui-anim-upbit">',
+                    '<dd><a class="kit-item" data-target="refresh">刷新当前标签页</a></dd>',
+                    '<dd><a class="kit-item" data-target="closeCurrent">关闭当前标签页</a></dd>',
+                    '<dd><a class="kit-item" data-target="closeOther">关闭其它标签页</a></dd>',
+                    '<dd><a class="kit-item" data-target="closeAll">关闭全部标签页</a></dd>',
+                    '</dl>',
+                    '</li>',
+                    '<span class="layui-nav-bar" style="left: 20px; top: 35px; width: 0px; opacity: 0;"></span></ul>',
                     '</div>',
                     '<div class="layui-tab-content">',
                     '<div class="layui-tab-item layui-show" lay-item-id="-1">{{content}}</div>',
@@ -120,12 +128,20 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
             $(_config.elem).html(_htm);
             that._title = $('.kit-tab ul.layui-tab-title');
             that._content = $('.kit-tab div.layui-tab-content');
-            var _tool = $('.kit-tab-tool'),
-                _toolBody = $('.kit-tab-tool-body'),
-                _tooMenu = $('#kuaijie');
-            //监听操作点击事件
-            _tool.on('click', function() {
-                _tooMenu.toggle();
+            var _toolBody = $('.layui-icon-down');
+                // _tooMenu = $('#kuaijie');
+            //监听操作点击事件 , .layadmin-tabs-select dl.layui-anim-upbit
+            $('.layadmin-tabs-select').mouseover(function () {
+                $('.layadmin-tabs-select dl.layui-anim-upbit').toggleClass('layui-show');
+            }).mouseout(function () {
+                //判断鼠标位置是否在区域内
+                // if(window.event.srcElement.contains($('.layadmin-tabs-select dl.layui-anim-upbit')[0])) return;
+               $('.layadmin-tabs-select dl.layui-anim-upbit').toggleClass('layui-show');
+            });
+
+            //点击列表，折叠
+            $('#menu-list').click(function () {
+                $(".layui-layout-admin").toggleClass("showMenu");
             });
             //监听操作项点击事件
             _toolBody.find('a.kit-item').each(function() {
@@ -171,7 +187,7 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
                             break;
                     }
                     //_tool.click();
-                    _tooMenu.hide();
+                    // _tooMenu.hide();
                 });
             });
 
