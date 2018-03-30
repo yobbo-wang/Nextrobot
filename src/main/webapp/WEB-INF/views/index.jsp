@@ -55,7 +55,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;">应用引擎</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">应用权限配置</a><hr></dd>
+                        <dd><a href="javascript:;">权限配置</a><hr></dd>
                         <dd>
                             <a data-options="url:'<%= path%>/engine/appengine/index.html',icon:'fa-share-alt',title:'应用引擎',id:'engine-setting'"
                              href="javascript:;" class="kit-target">应用引擎</a>
