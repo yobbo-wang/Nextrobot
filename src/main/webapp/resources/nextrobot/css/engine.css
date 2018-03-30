@@ -34,10 +34,13 @@
 .kit-side .layui-nav-tree .layui-nav-child a {padding-left: 30px}
 .kit-sided .layui-nav-tree .layui-nav-child a {padding-left: 0}
 .kit-sided .layui-side-scroll a span, .kit-sided .layui-menu .menu-title span{display: none}
-.kit-tab .kit-tab-tool {z-index: 5;position: absolute;width: 40px;height: 40px;top: 10px;right: 0px;border-top: 1px solid #f6f6f6;line-height: 40px;text-align: center;cursor: pointer;}
+.kit-tab .kit-tab-tool {z-index: 5;position: absolute;width: 40px;height: 40px;top: 0px;right: 0px;border-top: 1px solid #f6f6f6;line-height: 40px;text-align: center;cursor: pointer;}
 .kit-tab .kit-tab-tool-body ul {text-align: center;padding: 8px 0;}
 .kit-tab .kit-tab-tool-body ul li.kit-item:hover {background-color: #f3f3f3;}
 .kit-tab .kit-tab-tool-body ul li.kit-item {line-height: 35px;cursor: pointer;color: #393D49;}
+.layui-nav .layui-this:after{ bottom:-5px!important;}
+.header .layui-nav-child, .layui-body, .layui-layout-admin .layui-side, .header .layui-nav-bar {top: 60px !important;}
+.layui-nav .layui-this:after, .layui-nav-bar, .layui-nav-tree .layui-nav-itemed:after{background-color: #393d49 !important;}
 /* 表格下拉框高度属性 */
 .engine_table_body .layui-form .layui-anim{height: 150px;}
 .engine_table_body .layui-form .layui-input-inline{width: 100%;}

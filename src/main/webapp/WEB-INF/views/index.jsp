@@ -75,6 +75,7 @@
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" class="kit-target" data-options="url:'<%= path%>/login.jsp',icon:'fa-share-alt',title:'修改密码',id:'update-pwd'">修改信息</a></dd>
                         <dd><a href="javascript:;" class="kit-target" data-options="url:'<%= path%>/login.jsp',icon:'fa-share-alt',title:'安全管理',id:'security-manager'">安全管理</a></dd><hr>
+                        <dd><a href="javascript:;" class="clearCache">清除缓存</a></dd>
                         <dd><a href="<%=path%>/logout" >退出系统</a></dd>
                     </dl>
                 </li>
@@ -200,6 +201,17 @@
         })
         $('.layui-nav-item').click(function(){
             $(this).siblings('li').attr('class','layui-nav-item');
+        })
+
+        //清除缓存
+        $(".clearCache").click(function(){
+            window.sessionStorage.clear();
+            window.localStorage.clear();
+            var index = layer.msg('清除缓存中，请稍候',{icon: 16,time:false,shade:0.8});
+            setTimeout(function(){
+                layer.close(index);
+                layer.msg("缓存清除成功！");
+            },1000);
         })
     });
 </script>
