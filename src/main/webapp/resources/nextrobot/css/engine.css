@@ -11,16 +11,16 @@
 .layui-nav-right .layui-nav-item{margin: 0 !important;}
 .logo {position: absolute;left: 0;top: 16px;}
 /*.layui-ms{background: #fff !important;}*/
-.layui-ms{color: #333 !important;border-bottom: 1px solid #f6f6f6;}
+.layui-ms{color: #333 !important;/**border-bottom: 1px solid #f6f6f6;*/}
 .layui-ms .logo{left: 40px;}
 .logo img {width: 142px;height: 31px;}
 .layui-ms .layui-tab-left{left: 220px;}
 .layui-nav-child dd{text-align: center;}
 .layui-tab-card {border: 0;}
 .kit-tab{border-bottom: 0;box-shadow: none;}
-.kit-tab .layui-tab-title {background-color: #fff !important;width: calc(100% - 0px);padding-right: 0;z-index: 2;box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);}
-.layui-tab-card>.layui-tab-title .layui-this {background-color: #f6f6f6;}
-.kit-tab .layui-tab-title li{border-right: 1px solid #fff;}
+.kit-tab .layui-tab-title {background-color: #fff !important;width: calc(100% - 0px);padding-right: 0;z-index: 2;/**box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);*/}
+.layui-tab-card>.layui-tab-title .layui-this {background-color: #1AA094;color: #fff;}
+.kit-tab .layui-tab-title li{border-right:1px solid #f2f2f2}
 .kit-tab .layui-tab-title li:last-child{border-right:0}
 .create-body{width: 100%;top: 80px;bottom: 10px;max-width: 1250px;margin: 0 auto;position: relative;}
 .layui-layer-btn-{border-top: 1px solid #eee !important;}

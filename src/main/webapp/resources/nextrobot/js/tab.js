@@ -89,7 +89,7 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
                 return;
             //模板
             var tpl = [
-                    '<div class="layui-tab layui-tab-card kit-tab" lay-filter="' + that._filter + '">',
+                    '<div class="layui-tab layui-tab-card kit-tab mag0" lay-filter="' + that._filter + '">',
                     '<ul class="layui-tab-title">',
                     '<li class="layui-this" lay-id="-1" data-url="' + _config.mainUrl + '"><i class="layui-icon layui-icon-home"></i></li>',
                     '</ul>',

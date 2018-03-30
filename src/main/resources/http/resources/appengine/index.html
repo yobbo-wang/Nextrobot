@@ -45,22 +45,22 @@
 					<tr style="color:#444;">
 						<td>&nbsp业务分类:</td>
 						<td>
-							<input class="easyui-textbox" name="businessClassification" data-options="required:true"/>
+							<input class="easyui-textbox" name="businessClassification" data-options="required:true,width:'92%'"/>
 						</td>
 						<td>&nbsp;实体名:</td>
 						<td>
-							<input class="easyui-textbox" name="entityName" data-options="readonly:true"/>
+							<input class="easyui-textbox" name="entityName" data-options="readonly:true,width:'92%'"/>
 							<input type="hidden" id="sysMenuTableId" name="id"/>
 							<input type="hidden" name="menuId"/>
 						</td>
 						<td>&nbsp表名:</td>
 						<td>
-							<input class="easyui-textbox" name="tableName" data-options="readonly:true"/>
+							<input class="easyui-textbox" name="tableName" data-options="readonly:true,width:'92%'"/>
 						</td>
 					</tr>
 					<tr>
 						<td rowspan="4">&nbsp;注&emsp;&emsp;释:</td>
-						<td><input class="easyui-textbox" name="remark"/></td>
+						<td><input class="easyui-textbox" name="remark" data-options="width:'92%'"/></td>
 						<td colspan="6">
 							<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="appEngine.saveEntity()">保存</a>
 							<a class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="appEngine.createEntityCode()">生成业务代码</a>

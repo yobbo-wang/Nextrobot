@@ -82,8 +82,35 @@
         </div>
     </div>
 
+     <div class="layui-side layui-bg-black kit-side">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree layui-bg-black layui-inline">
+              <li class="layui-nav-item layui-nav-itemed">
+                <a href="javascript:;">默认展开</a>
+                <dl class="layui-nav-child">
+                  <dd><a href="javascript:;">选项一</a></dd>
+                  <dd><a href="javascript:;">选项二</a></dd>
+                  <dd><a href="javascript:;">选项三</a></dd>
+                  <dd><a href="">跳转项</a></dd>
+                </dl>
+              </li>
+              <li class="layui-nav-item">
+                <a href="javascript:;">解决方案</a>
+                <dl class="layui-nav-child">
+                  <dd><a href="">移动模块</a></dd>
+                  <dd><a href="">后台模版</a></dd>
+                  <dd><a href="">电商平台</a></dd>
+                </dl>
+              </li>
+              <li class="layui-nav-item"><a href="">云市场</a></li>
+              <li class="layui-nav-item"><a href="">社区</a></li>
+            </ul>
+        </div>
+     </div>
+
     <!-- body 容器-->
-    <div class="layui-body" id="container" style="overflow: hidden;top: 50px !important;left: 0px !important;">
+    <div class="layui-body" id="container" style="overflow: hidden;
+    border-top: 5px solid #1AA094;border-left: 2px solid #1AA094;">
         <div style="padding: 15px;"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63e;</i> 正在拼命加载...</div>
     </div>
 </div>
